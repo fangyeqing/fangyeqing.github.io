@@ -419,6 +419,59 @@
 ]]></content>
     </entry>
     
+    <entry>
+      <title><![CDATA[hexo+github page搭建博客]]></title>
+      <url>https://fangyeqing.github.io/2016/10/28/hexo+github_page%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%EF%BC%88windows&linxu%EF%BC%89/</url>
+      <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
+
+
+<h2 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h2><p>在windows和linux下都配置了，感觉还是Linux方便一点</p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文="">   
+
+<h3 id="node-js环境-windows-linux略"><a href="#node-js环境-windows-linux略" class="headerlink" title="node.js环境(windows,linux略)"></a>node.js环境(windows,linux略)</h3><p><a href="https://nodejs.org/en/download/" target="_blank" rel="external">官方下载地址</a>，选择对应版本，改个安装路径，然后一路下一步。  </p>
+<p>安装完成可以在windows命令行，查看是否安装成功。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">node -v</div><div class="line">npm -v</div></pre></td></tr></table></figure></p>
+<h3 id="git环境"><a href="#git环境" class="headerlink" title="git环境"></a>git环境</h3><p>略</p>
+<h2 id="配置github"><a href="#配置github" class="headerlink" title="配置github"></a>配置github</h2><p><a href="https://github.com/" target="_blank" rel="external">https://github.com/</a></p>
+<h3 id="新建repository"><a href="#新建repository" class="headerlink" title="新建repository"></a>新建repository</h3><p>点击<strong>New repository</strong>  </p>
+<p><strong>Repository name</strong>下填写博客目录，例如：username.github.io<br><strong>Description</strong>下填写描述，例如：我的博客  </p>
+<h3 id="生成github-page"><a href="#生成github-page" class="headerlink" title="生成github page"></a>生成github page</h3><p>创建目录后进入该目录，“<strong>Setting</strong>”进行设置。  </p>
+<p>下拉到“<strong>GitHub Pages</strong>”模块，点击“<strong>Launch automatic page generator</strong>”按钮，生成github page。</p>
+<p>刚才配置的“username.github.io”已经可以访问了。</p>
+<h2 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h2><p>linux的cd很简单，但是windows有点坑爹，中间加一个/d。</p>
+<p>通过cmd命令行窗口进入到想要安装的目录。当然也可以通过文件系统进入当该目录，shift+右键点进去。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd /d D:\coding files\Workspace\hexo</div></pre></td></tr></table></figure></p>
+<p>然后执行安装命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-cli -g</div></pre></td></tr></table></figure></p>
+<p>等待比较久之后安装完了，会有WARN，但没事，查看是否成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo -v</div></pre></td></tr></table></figure></p>
+<p>初始化。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">hexo init              #不加路径表示当前文件夹作为hexo目录 </div><div class="line">npm install</div><div class="line">hexo generate          #生成静态文件,从source/_post目录将md转成public中的html</div><div class="line">hexo server            #启动本地server，端口4000</div></pre></td></tr></table></figure></p>
+<p>到这里已经可以在本地访问到了，<a href="http://localhost:4000" target="_blank" rel="external">http://localhost:4000</a></p>
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>修改配置文件：_config.yml。主要配置网站url、deploy到github的地址。每个冒号后面一定要有空格。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"># Site</div><div class="line">title: 小懒的博客</div><div class="line">subtitle:</div><div class="line">description:Re0: 从零开始的程序猿世界</div><div class="line">author: 小懒</div><div class="line">language: zh-Hans</div><div class="line">timezone: Asia/Shanghai</div><div class="line"></div><div class="line"># URL</div><div class="line">url: https://fangyeqing.github.io/</div><div class="line">root: /</div><div class="line"></div><div class="line"># Deployment</div><div class="line">deploy:</div><div class="line">  type: git</div><div class="line">  repo: https://github.com/fangyeqing/fangyeqing.github.io.git</div><div class="line">  branch: master</div></pre></td></tr></table></figure></p>
+<h2 id="部署到github-page"><a href="#部署到github-page" class="headerlink" title="部署到github page"></a>部署到github page</h2><p>部署之前安装一下hexo-git部署插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-deployer-git --save</div></pre></td></tr></table></figure></p>
+<p>部署加-g参数表示部署之前执行生成静态文件操作，相当于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo deploy -g</div></pre></td></tr></table></figure></p>
+<h3 id="出现问题"><a href="#出现问题" class="headerlink" title="出现问题"></a>出现问题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Username for &apos;https://github.com&apos;: error: unable to read askpass response from &apos;/usr/libexec/openssh/gnome-ssh-askpass&apos;</div></pre></td></tr></table></figure>
+<p>执行如下指令，或者直接把它加入到.bash_profile中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">unset SSH_ASKPASS</div></pre></td></tr></table></figure></p>
+<h2 id="添加新文章"><a href="#添加新文章" class="headerlink" title="添加新文章"></a>添加新文章</h2><p>source/_post文件夹: 新建md类型的文档,新建的文章头需要添加一些yml信息，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: Samza学习</div><div class="line">date: 2016-10-28 17:40:00</div><div class="line">categories: samza</div><div class="line">toc: true</div><div class="line">---</div></pre></td></tr></table></figure></p>
+<p>categories：分类<br>toc：设定是否开启目录，需要主题支持。</p>
+<p>可以现在本地测试一下，确认没问题再deploy上去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hexo g</div><div class="line">hexo s</div></pre></td></tr></table></figure></p>
+<p>重新发布<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo d -g</div></pre></td></tr></table></figure></p>
+<h2 id="主题修改"><a href="#主题修改" class="headerlink" title="主题修改"></a>主题修改</h2><p>去<a href="https://github.com/hexojs/hexo/wiki/Themes" target="_blank" rel="external">hexo的github</a>下载主题，放到themes目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/MOxFIVE/hexo-theme-yelee.git themes/yelee</div></pre></td></tr></table></figure></p>
+<p>然后根据<a href="http://moxfive.coding.me/yelee/" target="_blank" rel="external">作者的gitbook</a>修改_config.yml文件，实现各种配置</p>
+<p>改完继续重新发布出去</p>
+<p>其中比较重要的，</p>
+<ul>
+<li>评论系统利用多说，fangyeqing.duoshuo.com</li>
+<li><p>文章摘要，在首页显示摘要，非全文</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: Hello World</div><div class="line">date: 2015-12-03 00:00:00</div><div class="line">categories: samza</div><div class="line">toc: true</div><div class="line">---</div><div class="line">&lt;Excerpt in index | 首页摘要&gt; </div><div class="line">摘要内容...</div><div class="line">&lt;!-- more --&gt;</div><div class="line">&lt;The rest of contents | 余下全文&gt;</div><div class="line">余下的全文内容...</div></pre></td></tr></table></figure>
+</li>
+<li><p>关于我</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page about</div></pre></td></tr></table></figure>
+</li>
+<li><p>标签云</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page tags</div></pre></td></tr></table></figure>
+</the></excerpt>]]></content>
+    </entry>
+    
   
   
 </search>
