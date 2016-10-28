@@ -15,12 +15,25 @@
 
 
 
-<meta property="og:type" content="website">
+<meta name="description" content="提高查询速度当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：
+broker 节点：配置缓存，加大缓存大小，或者从local替换成memcached。
+historycal集群查询为CPU密集型，通过数据分配策略，使数据尽量分散在不同的历史节点。
+集群分片例如：根据冷热数据分成hot和_default_tier，近30天的数据在hot片上和">
+<meta property="og:type" content="article">
 <meta property="og:title" content="小懒的博客">
-<meta property="og:url" content="https://fangyeqing.github.io/archives/2016/index.html">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/29/druid.io实践1---提高查询速度/index.html">
 <meta property="og:site_name" content="小懒的博客">
+<meta property="og:description" content="提高查询速度当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：
+broker 节点：配置缓存，加大缓存大小，或者从local替换成memcached。
+historycal集群查询为CPU密集型，通过数据分配策略，使数据尽量分散在不同的历史节点。
+集群分片例如：根据冷热数据分成hot和_default_tier，近30天的数据在hot片上和">
+<meta property="og:updated_time" content="2016-10-28T16:38:45.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="小懒的博客">
+<meta name="twitter:description" content="提高查询速度当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：
+broker 节点：配置缓存，加大缓存大小，或者从local替换成memcached。
+historycal集群查询为CPU密集型，通过数据分配策略，使数据尽量分散在不同的历史节点。
+集群分片例如：根据冷热数据分成hot和_default_tier，近30天的数据在hot片上和">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -52,7 +65,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Archives: 2016 | 小懒的博客</title>
+<title>小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -62,8 +75,8 @@
         fancybox: true,
         animate: true,
         isHome: false,
-        isPost: false,
-        isArchive: true,
+        isPost: true,
+        isArchive: false,
         isTag: false,
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
@@ -255,337 +268,174 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap">
+      <div class="body-wrap"><article id="post-druid.io实践1---提高查询速度" class="article article-type-post" itemscope itemprop="blogPost">
   
+    <div class="article-meta">
+      <a href="/2016/10/29/druid.io实践1---提高查询速度/" class="article-date">
+      <time datetime="2016-10-28T16:45:34.000Z" itemprop="datePublished">2016-10-29</time>
+</a>
+
+
+    </div>
   
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
     
     
+    <div class="article-entry" itemprop="articleBody">
       
+          
+        <h1 id="提高查询速度"><a href="#提高查询速度" class="headerlink" title="提高查询速度"></a>提高查询速度</h1><p>当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：</p>
+<h2 id="broker-节点："><a href="#broker-节点：" class="headerlink" title="broker 节点："></a>broker 节点：</h2><p>配置缓存，加大缓存大小，或者从local替换成memcached。</p>
+<h2 id="historycal集群"><a href="#historycal集群" class="headerlink" title="historycal集群"></a>historycal集群</h2><p>查询为CPU密集型，通过数据分配策略，使数据尽量分散在不同的历史节点。</p>
+<h3 id="集群分片"><a href="#集群分片" class="headerlink" title="集群分片"></a>集群分片</h3><p>例如：根据冷热数据分成hot和_default_tier，近30天的数据在hot片上和default片上都有，永久的数据在default片，根据数据使用频率配置不同的机器数。  </p>
+<h3 id="增加节点数"><a href="#增加节点数" class="headerlink" title="增加节点数"></a>增加节点数</h3><p>节点存储空间尽量一致，使segment均匀分散在节点间，降低查询时每个historical节点的负载。例如：default分片增加到2-3台，hot分片增加到5-10台机器，热数据分散到更多台。 </p>
+<h3 id="调整druid-server-priority配置，默认为0。"><a href="#调整druid-server-priority配置，默认为0。" class="headerlink" title="调整druid.server.priority配置，默认为0。"></a>调整druid.server.priority配置，默认为0。</h3><p>broker节点中，druid.broker.select.tier的配置默认为highestPriority，表示如果有重复的数据样本，优先查询优先级高的。例如：hot分片的机器druid.server.priority设置为100，default分片的默认0，则查询热数据时，不会查询default，只会去查询hot，而hot集群机器比较多，每台机器压力小。</p>
+
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
+    </div>
     
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/10/29/druid.io实践2---集群数据迁移/" class="archive-article-date">
-      <time datetime="2016-10-28T16:45:34.000Z" itemprop="datePublished">10-29</time>
-</a>
-
-
-        </div>
-         
-        <div class="article-info info-on-archive">
-          
-
-          
-        </div>
-        <div class="clearfix"></div>
-    </header>
   </div>
-</article>
   
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/10/29/druid.io实践1---提高查询速度/" class="archive-article-date">
-      <time datetime="2016-10-28T16:45:34.000Z" itemprop="datePublished">10-29</time>
-</a>
-
-
-        </div>
-         
-        <div class="article-info info-on-archive">
-          
-
-          
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/10/28/druid.io_3---druid集群/" class="archive-article-date">
-      <time datetime="2016-10-28T13:43:00.000Z" itemprop="datePublished">10-28</time>
-</a>
-
-
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/28/druid.io_3---druid集群/">druid.io学习3---druid集群</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/10/29/druid.io实践1---提高查询速度/"></a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
+        <p><span>发布时间:</span>2016-10-29, 00:45:34</p>
+        <p><span>最后更新:</span>2016-10-29, 00:38:45</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io实践1---提高查询速度/" title="">https://fangyeqing.github.io/2016/10/29/druid.io实践1---提高查询速度/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io实践1---提高查询速度/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
     </div>
 
 
-          
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/10/28/druid.io_2---druid数据相关/" class="archive-article-date">
-      <time datetime="2016-10-28T13:41:00.000Z" itemprop="datePublished">10-28</time>
-</a>
 
-
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
-    </div>
-
-
-          
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/10/28/druid.io_1---OLAP&druid概念/" class="archive-article-date">
-      <time datetime="2016-10-28T13:40:00.000Z" itemprop="datePublished">10-28</time>
-</a>
-
-
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
-    </div>
-
-
-          
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/10/28/Samza_5---Samza_API/" class="archive-article-date">
-      <time datetime="2016-10-28T09:44:00.000Z" itemprop="datePublished">10-28</time>
-</a>
-
-
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/samza/">samza</a>
-    </div>
-
-
-          
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/10/28/Samza_4---核心部件/" class="archive-article-date">
-      <time datetime="2016-10-28T09:43:00.000Z" itemprop="datePublished">10-28</time>
-</a>
-
-
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/samza/">samza</a>
-    </div>
-
-
-          
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/10/28/Samza_3---架构/" class="archive-article-date">
-      <time datetime="2016-10-28T09:42:00.000Z" itemprop="datePublished">10-28</time>
-</a>
-
-
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/samza/">samza</a>
-    </div>
-
-
-          
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/10/28/Samza_2---基本概念/" class="archive-article-date">
-      <time datetime="2016-10-28T09:41:00.000Z" itemprop="datePublished">10-28</time>
-</a>
-
-
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/samza/">samza</a>
-    </div>
-
-
-          
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/10/28/Samza_1---Hello_Samza/" class="archive-article-date">
-      <time datetime="2016-10-28T09:40:00.000Z" itemprop="datePublished">10-28</time>
-</a>
-
-
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/samza/">samza</a>
-    </div>
-
-
-          
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/2016/page/2/">2</a><a class="extend next" rel="next" href="/archives/2016/page/2/">Next &raquo;</a>
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/10/29/druid.io实践2---集群数据迁移/">
+                    
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/10/28/druid.io_3---druid集群/">
+                    druid.io学习3---druid集群
+                </a>
+            </div>
+        
     </nav>
-  
 
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#提高查询速度"><span class="toc-number">1.</span> <span class="toc-text">提高查询速度</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#broker-节点："><span class="toc-number">1.1.</span> <span class="toc-text">broker 节点：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#historycal集群"><span class="toc-number">1.2.</span> <span class="toc-text">historycal集群</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#集群分片"><span class="toc-number">1.2.1.</span> <span class="toc-text">集群分片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增加节点数"><span class="toc-number">1.2.2.</span> <span class="toc-text">增加节点数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调整druid-server-priority配置，默认为0。"><span class="toc-number">1.2.3.</span> <span class="toc-text">调整druid.server.priority配置，默认为0。</span></a></li></ol></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/29/druid.io实践1---提高查询速度/" data-title="" data-url="https://fangyeqing.github.io/2016/10/29/druid.io实践1---提高查询速度/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/10/29/druid.io实践2---集群数据迁移/" title="上一篇: ">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/10/28/druid.io_3---druid集群/" title="下一篇: druid.io学习3---druid集群">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io学习3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hello-world/">Hello World</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">hexo+github page搭建博客</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
 </div>
       <footer id="footer">
     <div class="outer">

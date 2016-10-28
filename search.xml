@@ -4,8 +4,63 @@
   
     
     <entry>
+      <title></title>
+      <url>https://fangyeqing.github.io/2016/10/29/druid.io%E5%AE%9E%E8%B7%B52---%E9%9B%86%E7%BE%A4%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB/</url>
+      <content type="html"><![CDATA[<h1 id="druid集群数据迁移"><a href="#druid集群数据迁移" class="headerlink" title="druid集群数据迁移"></a>druid集群数据迁移</h1><h2 id="背景交代"><a href="#背景交代" class="headerlink" title="背景交代"></a>背景交代</h2><p>druid数据存储采用hdfs。<br>实时输入流通过tranquility从kafka消费topic进行realtime indexing。<br>批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  </p>
+<p>数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。</p>
+<h2 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路"></a>大体思路</h2><ul>
+<li><p>kafka镜像流：<br>启动samza任务，从老的kafka集群consume消息，produce到新的kafka集群。直接使用kafka的mirror也可以，由于项目使用的arvo编解码，涉及到schema-id的问题，所以只能通过samza任务。</p>
+</li>
+<li><p>druid批量数据获取&amp;index：<br>给新druid集群提交任务，camus批量拉取数据，发送post请求提交配置json到overload执行batch index。 </p>
+</li>
+<li><p>脏数据覆盖(批量路线稳定、数据正确之后)</p>
+<ul>
+<li>利用hadoop-distcp迁移老hdfs中之前所有的segment数据</li>
+<li>利用insert-segment-to-db工具在mysql生成这之前的元数据（索引）。</li>
+</ul>
+</li>
+<li><p>druid实时数据获取&amp;index：<br>Tranquility任务，获取实时数据，提交给overload执行realtime index   </p>
+</li>
+<li><p>切换（稳定后）<br>将老的kafka的流的生产者逐个切换到新的kafka上</p>
+</li>
+</ul>
+<h2 id="使用工具介绍"><a href="#使用工具介绍" class="headerlink" title="使用工具介绍"></a>使用工具介绍</h2><h3 id="hadoop-distcp"><a href="#hadoop-distcp" class="headerlink" title="hadoop-distcp"></a>hadoop-distcp</h3><p>迁移老hdfs中之前所有的segment数据  </p>
+<h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>DistCp（分布式拷贝）是用于大规模集群内部和集群之间拷贝的工具。 它使用Map/Reduce实现文件分发，错误处理和恢复，以及报告生成。 它把文件和目录的列表作为map任务的输入，每个任务会完成源列表中部分文件的拷贝</p>
+<p><a href="https://hadoop.apache.org/docs/r1.0.4/cn/distcp.html" target="_blank" rel="external">https://hadoop.apache.org/docs/r1.0.4/cn/distcp.html</a>  </p>
+<p><a href="http://hadoop.apache.org/docs/r2.7.3/hadoop-distcp/DistCp.html" target="_blank" rel="external">http://hadoop.apache.org/docs/r2.7.3/hadoop-distcp/DistCp.html</a>  </p>
+<p><a href="http://stackoverflow.com/questions/31862904/how-to-do-i-copy-data-from-one-hdfs-to-another-hdfs" target="_blank" rel="external">http://stackoverflow.com/questions/31862904/how-to-do-i-copy-data-from-one-hdfs-to-another-hdfs</a>  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Usage: $ hadoop distcp &lt;src&gt; &lt;dst&gt;</div><div class="line"></div><div class="line">example: $ hadoop distcp hdfs://nn1:8020/file1 hdfs://nn2:8020/file2</div></pre></td></tr></table></figure>
+<p>默认情况下，如果在拷贝的目的地同名文件已经存在，则会默认跳过这些文件。  </p>
+<p>可以通过-overwrite选项指定覆盖掉同名文件，或者通过-update选项来更新同名文件。</p>
+<p>-overwrite来覆盖刚开启批量任务时的数据不完整那个小时的数据。</p>
+<h3 id="insert-segment-to-db"><a href="#insert-segment-to-db" class="headerlink" title="insert-segment-to-db"></a>insert-segment-to-db</h3><h4 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h4><p>HDFS上Segment在新的mysql中生成索引    </p>
+<p><a href="https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ" target="_blank" rel="external">https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ</a>     </p>
+<p><a href="https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU" target="_blank" rel="external">https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU</a>  </p>
+<p><a href="http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html" target="_blank" rel="external">http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html</a></p>
+<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><p>–workingDir：segment位置  </p>
+<p>–updateDescriptor：默认true，如果desciptor.json的实际路径与“loadSpec”中的路径是不同的，该工具将更新“loadSpec”字段的描述符。 </p>
+<p>例如：将老集群的数据迁移过去之后，desciptor.json中的路径没变，生成索引时会更新成现在的路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">hadoop fs -cat hdfs://nn1:port/.../dataSource/20161025T060000.000+0800_20161025T070000.000+0800/2016-10-25T07_33_53.379+08_00/0/descriptor.json</div><div class="line"></div><div class="line">其中loadSpec部分：</div><div class="line"></div><div class="line">&quot;loadSpec&quot;: &#123;</div><div class="line">    &quot;type&quot;: &quot;hdfs&quot;,</div><div class="line">    &quot;path&quot;: &quot;hdfs://nn1:port/.../dataSource/20161025T060000.000+0800_20161025T070000.000+0800/2016-10-25T07_33_53.379+08_00/0/index.zip&quot;</div><div class="line">&#125;,</div></pre></td></tr></table></figure></p>
+<h4 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h4><p>官方例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">java </div><div class="line">-Ddruid.metadata.storage.type=mysql </div><div class="line">-Ddruid.metadata.storage.connector.connectURI=jdbc:mysql://mysql-db:3306/druid</div><div class="line">-Ddruid.metadata.storage.connector.user=userxxx</div><div class="line">-Ddruid.metadata.storage.connector.password=passxxxx</div><div class="line">-Ddruid.extensions.loadList=[\&quot;mysql-metadata-storage\&quot;,\&quot;druid-hdfs-storage\&quot;] </div><div class="line">-Ddruid.storage.type=hdfs</div><div class="line">-cp $DRUID_CLASSPATH </div><div class="line">io.druid.cli.Main tools insert-segment-to-db --workingDir hdfs://nn1:port/.../dataSource</div></pre></td></tr></table></figure></p>
+<p>打印的日志：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2016-10-25T17:15:49,342 INFO [main] io.druid.storage.hdfs.HdfsDataSegmentFinder - Found segment [dataSource_2016-01-13T09:00:00.000+08:00_2016-01-13T10:00:00.000+08:00_2016-01-13T10:34:03.820+08:00_6] located at [hdfs://nn1:port/.../dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/index.zip]</div><div class="line">2016-10-25T17:15:49,342 INFO [main] io.druid.storage.hdfs.HdfsDataSegmentFinder - Updating loadSpec in descriptor.json at [hdfs://nn1:port/.../dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/descriptor.json] with new path [dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/index.zip]</div></pre></td></tr></table></figure></p>
+<p>会先更新descriptor.json中的路径：由之前的老集群的绝对路径—新集群的相对路径</p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title></title>
+      <url>https://fangyeqing.github.io/2016/10/29/druid.io%E5%AE%9E%E8%B7%B51---%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E9%80%9F%E5%BA%A6/</url>
+      <content type="html"><![CDATA[<h1 id="提高查询速度"><a href="#提高查询速度" class="headerlink" title="提高查询速度"></a>提高查询速度</h1><p>当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：</p>
+<h2 id="broker-节点："><a href="#broker-节点：" class="headerlink" title="broker 节点："></a>broker 节点：</h2><p>配置缓存，加大缓存大小，或者从local替换成memcached。</p>
+<h2 id="historycal集群"><a href="#historycal集群" class="headerlink" title="historycal集群"></a>historycal集群</h2><p>查询为CPU密集型，通过数据分配策略，使数据尽量分散在不同的历史节点。</p>
+<h3 id="集群分片"><a href="#集群分片" class="headerlink" title="集群分片"></a>集群分片</h3><p>例如：根据冷热数据分成hot和_default_tier，近30天的数据在hot片上和default片上都有，永久的数据在default片，根据数据使用频率配置不同的机器数。  </p>
+<h3 id="增加节点数"><a href="#增加节点数" class="headerlink" title="增加节点数"></a>增加节点数</h3><p>节点存储空间尽量一致，使segment均匀分散在节点间，降低查询时每个historical节点的负载。例如：default分片增加到2-3台，hot分片增加到5-10台机器，热数据分散到更多台。 </p>
+<h3 id="调整druid-server-priority配置，默认为0。"><a href="#调整druid-server-priority配置，默认为0。" class="headerlink" title="调整druid.server.priority配置，默认为0。"></a>调整druid.server.priority配置，默认为0。</h3><p>broker节点中，druid.broker.select.tier的配置默认为highestPriority，表示如果有重复的数据样本，优先查询优先级高的。例如：hot分片的机器druid.server.priority设置为100，default分片的默认0，则查询热数据时，不会查询default，只会去查询hot，而hot集群机器比较多，每台机器压力小。</p>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[druid.io学习3---druid集群]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/druid.io%E5%AD%A6%E4%B9%A03---druid%E9%9B%86%E7%BE%A4/</url>
+      <url>https://fangyeqing.github.io/2016/10/28/druid.io_3---druid%E9%9B%86%E7%BE%A4/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
 <h1 id="druid集群"><a href="#druid集群" class="headerlink" title="druid集群"></a>druid集群</h1><h2 id="Indexing-Service"><a href="#Indexing-Service" class="headerlink" title="Indexing Service"></a>Indexing Service</h2><p>索引服务负责<strong>实时</strong>和<strong>批量</strong>数据的导入、分析、索引、压缩，生成“segment”（数据段），存入Deep Storage（例如HDFS）。<br>实时数据通过<strong>Tranquility</strong>客户端，批量数据通过<strong>Batch Data Ingestion</strong>，将任务提交给overload，分配给Middle Manager创建Poen执行。  </p>
@@ -100,20 +155,6 @@
 <li><p>此刻，这个Segment可以用于查询。</p>
 </li>
 </ul>
-<h3 id="提高查询速度"><a href="#提高查询速度" class="headerlink" title="提高查询速度"></a>提高查询速度</h3><ul>
-<li><p>broker 节点：缓存配置加大，或者从local替换成memcached。</p>
-</li>
-<li><p>historycal集群：查询为CPU密集型，通过数据分配策略，使数据尽量分散在不同的历史节点。</p>
-<ul>
-<li><p>集群分片，例如：根据冷热数据分成hot和_default_tier，近30天的数据在hot片上和default片上都有，永久的数据在default片，根据数据使用频率配置不同的机器数。  </p>
-</li>
-<li><p>增加节点数，节点存储空间尽量一致，使segment均匀分散在节点间，降低查询时每个historical节点的负载。例如：default分片增加到2-3台，hot分片增加到5-10台机器，热数据分散到更多台。 </p>
-</li>
-<li><p>调整druid.server.priority配置，默认为0。broker节点中，druid.broker.select.tier的配置默认为highestPriority，表示如果有重复的数据样本，优先查询优先级高的。例如：hot分片的机器druid.server.priority设置为100，default分片的默认0，则查询热数据时，不会查询default，只会去查询hot，而hot集群机器比较多，每台机器压力小。</p>
-</li>
-</ul>
-</li>
-</ul>
 <h2 id="Broker-Node"><a href="#Broker-Node" class="headerlink" title="Broker Node"></a>Broker Node</h2><p>broker（代理）提供针对segment的路由查询，代理节点从Zookeeper获取Segments存储在哪些节点和怎样找到正确的节点的元数据。将查询转发到Realtime和Historical节点。把来自于所有单个节点的结果合并在一起。  </p>
 <h3 id="转发查询"><a href="#转发查询" class="headerlink" title="转发查询"></a>转发查询</h3><p>Zookeeper维护有关历史和实时的节点信息和他们所能提供服务的Segment。  </p>
 <p>在Zookeeper的每一个数据源，代理节点建立相关Segments的时间轴和为这些Segments提供服务的节点。</p>
@@ -164,8 +205,8 @@
     </entry>
     
     <entry>
-      <title><![CDATA[druid.io学习2---druid数据]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/druid.io%E5%AD%A6%E4%B9%A02---druid%E6%95%B0%E6%8D%AE/</url>
+      <title><![CDATA[druid.io 2---druid数据]]></title>
+      <url>https://fangyeqing.github.io/2016/10/28/druid.io_2---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/</url>
       <content type="html"><![CDATA[<p><excerpt in="" index="" |="" 首页摘要="">   </excerpt></p>
 <h1 id="druid数据"><a href="#druid数据" class="headerlink" title="druid数据"></a>druid数据</h1><h2 id="数据格式："><a href="#数据格式：" class="headerlink" title="数据格式："></a>数据格式：</h2><ul>
 <li><strong>Timestamp列</strong>: 所有的查询都以时间为中心。  </li>
@@ -240,8 +281,8 @@
     </entry>
     
     <entry>
-      <title><![CDATA[druid.io学习1---概念]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/druid.io%E5%AD%A6%E4%B9%A01---%E6%A6%82%E5%BF%B5/</url>
+      <title><![CDATA[druid.io 1---概念]]></title>
+      <url>https://fangyeqing.github.io/2016/10/28/druid.io_1---OLAP&druid%E6%A6%82%E5%BF%B5/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
 <h1 id="OLAP"><a href="#OLAP" class="headerlink" title="OLAP"></a>OLAP</h1><ul>
@@ -345,8 +386,8 @@
     </entry>
     
     <entry>
-      <title><![CDATA[Samza学习5---Samza API]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/Samza%E5%AD%A6%E4%B9%A05---Samza_API/</url>
+      <title><![CDATA[Samza 5---Samza API]]></title>
+      <url>https://fangyeqing.github.io/2016/10/28/Samza_5---Samza_API/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
 <h1 id="Samza-API"><a href="#Samza-API" class="headerlink" title="Samza API"></a>Samza API</h1><p>任务类必须实现StreamTask,可选 InitableTask, ClosableTask,WindowableTask<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class xxxxTask implements StreamTask, InitableTask, ClosableTask,WindowableTask &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
@@ -379,8 +420,8 @@
     </entry>
     
     <entry>
-      <title><![CDATA[Samza学习4---核心部件]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/Samza%E5%AD%A6%E4%B9%A04---%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6/</url>
+      <title><![CDATA[Samza 4---核心部件]]></title>
+      <url>https://fangyeqing.github.io/2016/10/28/Samza_4---%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
 <h1 id="核心部件"><a href="#核心部件" class="headerlink" title="核心部件"></a>核心部件</h1><h2 id="SamzaContainer"><a href="#SamzaContainer" class="headerlink" title="SamzaContainer"></a>SamzaContainer</h2><p>SamzaContainer负责管理一个或多个StreamTask实例的启动，执行和关闭。每个SamzaContainer通常在独立的Java虚拟机上运行。一个Samza job可以由几个SamzaContainers组成，并可以在在不同的机器上运行。</p>
@@ -584,8 +625,8 @@
     </entry>
     
     <entry>
-      <title><![CDATA[Samza学习3---架构]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/Samza%E5%AD%A6%E4%B9%A03---%E6%9E%B6%E6%9E%84/</url>
+      <title><![CDATA[Samza 3---架构]]></title>
+      <url>https://fangyeqing.github.io/2016/10/28/Samza_3---%E6%9E%B6%E6%9E%84/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
 <h1 id="Samza架构"><a href="#Samza架构" class="headerlink" title="Samza架构"></a>Samza架构</h1><p>Samza是由以下三层构成：  </p>
@@ -621,8 +662,8 @@
     </entry>
     
     <entry>
-      <title><![CDATA[Samza学习2---基本概念]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/Samza%E5%AD%A6%E4%B9%A02---%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</url>
+      <title><![CDATA[Samza 2---基本概念]]></title>
+      <url>https://fangyeqing.github.io/2016/10/28/Samza_2---%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
 <h1 id="Samza"><a href="#Samza" class="headerlink" title="Samza"></a>Samza</h1><p>samza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。</p>
@@ -684,8 +725,8 @@
     </entry>
     
     <entry>
-      <title><![CDATA[Samza学习1---Hello Samza]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/Samza%E5%AD%A6%E4%B9%A01---Hello_Samza/</url>
+      <title><![CDATA[Samza1---Hello Samza]]></title>
+      <url>https://fangyeqing.github.io/2016/10/28/Samza_1---Hello_Samza/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
 
@@ -800,6 +841,9 @@
 <p>其中比较重要的，</p>
 <ul>
 <li>评论系统利用多说，fangyeqing.duoshuo.com</li>
+<li><p>站内搜索,需要先安装一个插件，然后修改配置文件themes/yelee/_config.yml,反注释掉on：true</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-search --save</div><div class="line"></div><div class="line">search: </div><div class="line">  #on: true</div><div class="line">  onload: false</div></pre></td></tr></table></figure>
+</li>
 <li><p>文章摘要，在首页显示摘要，非全文</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: Hello World</div><div class="line">date: 2015-12-03 00:00:00</div><div class="line">categories: samza</div><div class="line">toc: true</div><div class="line">---</div><div class="line">&lt;Excerpt in index | 首页摘要&gt; </div><div class="line">摘要内容...</div><div class="line">&lt;!-- more --&gt;</div><div class="line">&lt;The rest of contents | 余下全文&gt;</div><div class="line">余下的全文内容...</div></pre></td></tr></table></figure>
 </li>

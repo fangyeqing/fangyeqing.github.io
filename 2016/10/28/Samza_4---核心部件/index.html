@@ -18,17 +18,17 @@
 <meta name="description" content="核心部件SamzaContainerSamzaContainer负责管理一个或多个StreamTask实例的启动，执行和关闭。每个SamzaContainer通常在独立的Java虚拟机上运行。一个Samza job可以由几个SamzaContainers组成，并可以在在不同的机器上运行。
 当SamzaContainer启动时，它按照顺序执行以下操作：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Samza学习4---核心部件">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza学习4---核心部件/index.html">
+<meta property="og:title" content="Samza 4---核心部件">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza_4---核心部件/index.html">
 <meta property="og:site_name" content="小懒的博客">
 <meta property="og:description" content="核心部件SamzaContainerSamzaContainer负责管理一个或多个StreamTask实例的启动，执行和关闭。每个SamzaContainer通常在独立的Java虚拟机上运行。一个Samza job可以由几个SamzaContainers组成，并可以在在不同的机器上运行。
 当SamzaContainer启动时，它按照顺序执行以下操作：">
 <meta property="og:image" content="http://samza.apache.org/img/0.8/learn/documentation/container/tasks-and-partitions.svg">
 <meta property="og:image" content="https://samza.apache.org/img/0.11/learn/documentation/container/checkpointing.svg">
 <meta property="og:image" content="http://samza.apache.org/img/0.10/learn/documentation/container/stateful_job.png">
-<meta property="og:updated_time" content="2016-10-28T13:30:00.000Z">
+<meta property="og:updated_time" content="2016-10-28T16:41:37.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Samza学习4---核心部件">
+<meta name="twitter:title" content="Samza 4---核心部件">
 <meta name="twitter:description" content="核心部件SamzaContainerSamzaContainer负责管理一个或多个StreamTask实例的启动，执行和关闭。每个SamzaContainer通常在独立的Java虚拟机上运行。一个Samza job可以由几个SamzaContainers组成，并可以在在不同的机器上运行。
 当SamzaContainer启动时，它按照顺序执行以下操作：">
 <meta name="twitter:image" content="http://samza.apache.org/img/0.8/learn/documentation/container/tasks-and-partitions.svg">
@@ -63,7 +63,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Samza学习4---核心部件 | 小懒的博客</title>
+<title>Samza 4---核心部件 | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -266,10 +266,10 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-Samza学习4---核心部件" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Samza_4---核心部件" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/Samza学习4---核心部件/" class="article-date">
+      <a href="/2016/10/28/Samza_4---核心部件/" class="article-date">
       <time datetime="2016-10-28T09:43:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
@@ -285,7 +285,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Samza学习4---核心部件
+      Samza 4---核心部件
     </h1>
   
 
@@ -513,13 +513,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/28/Samza学习4---核心部件/">Samza学习4---核心部件</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-28, 17:43:00</p>
-        <p><span>最后更新:</span>2016-10-28, 21:30:00</p>
+        <p><span>最后更新:</span>2016-10-29, 00:41:37</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/28/Samza学习4---核心部件/" title="Samza学习4---核心部件">https://fangyeqing.github.io/2016/10/28/Samza学习4---核心部件/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/Samza学习4---核心部件/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/28/Samza_4---核心部件/" title="Samza 4---核心部件">https://fangyeqing.github.io/2016/10/28/Samza_4---核心部件/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/Samza_4---核心部件/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -532,15 +532,15 @@
     <nav id="article-nav">
         
             <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/10/28/Samza学习5---Samza_API/">
-                    Samza学习5---Samza API
+                <a href="/2016/10/28/Samza_5---Samza_API/">
+                    Samza 5---Samza API
                 </a>
             </div>
         
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/28/Samza学习3---架构/">
-                    Samza学习3---架构
+                <a href="/2016/10/28/Samza_3---架构/">
+                    Samza 3---架构
                 </a>
             </div>
         
@@ -588,7 +588,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"Samza学习4---核心部件　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Samza 4---核心部件　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -604,7 +604,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/Samza学习4---核心部件/" data-title="Samza学习4---核心部件" data-url="https://fangyeqing.github.io/2016/10/28/Samza学习4---核心部件/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/Samza_4---核心部件/" data-title="Samza 4---核心部件" data-url="https://fangyeqing.github.io/2016/10/28/Samza_4---核心部件/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -627,7 +627,7 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/10/28/Samza学习5---Samza_API/" title="上一篇: Samza学习5---Samza API">
+            <a href="/2016/10/28/Samza_5---Samza_API/" title="上一篇: Samza 5---Samza API">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -635,13 +635,13 @@
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/28/Samza学习3---架构/" title="下一篇: Samza学习3---架构">
+            <a href="/2016/10/28/Samza_3---架构/" title="下一篇: Samza 3---架构">
                 <i class="fa fa-angle-right"></i>
             </a>
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io学习3---druid集群/">druid.io学习3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io学习2---druid数据/">druid.io学习2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io学习1---概念/">druid.io学习1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习5---Samza_API/">Samza学习5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习4---核心部件/">Samza学习4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习3---架构/">Samza学习3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习2---基本概念/">Samza学习2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习1---Hello_Samza/">Samza学习1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hello-world/">Hello World</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io学习3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hello-world/">Hello World</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">hexo+github page搭建博客</a></li></ul>
 
 
 
