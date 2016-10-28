@@ -262,6 +262,212 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-druid.io学习3---druid集群" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/28/druid.io学习3---druid集群/" class="article-date">
+      <time datetime="2016-10-28T13:43:00.000Z" itemprop="datePublished">2016-10-28</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/28/druid.io学习3---druid集群/">druid.io学习3---druid集群</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <Excerpt in index | 首页摘要>   
+
+<h1 id="druid集群"><a href="#druid集群" class="headerlink" title="druid集群"></a>druid集群</h1><h2 id="Indexing-Service"><a href="#Indexing-Service" class="headerlink" title="Indexing Service"></a>Indexing Service</h2><p>索引服务负责<strong>实时</strong>和<strong>批量</strong>数据的导入、分析、索引、压缩，生成“segment”（数据段），存入Deep Storage（例如HDFS）。<br>实时数据通过<strong>Tranquility</strong>客户端，批量数据通过<strong>Batch Data Ingestion</strong>，将任务提交给overload，分配给Middle Manager创建Poen执行。  </p>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>索引服务是主从结构，由三个部分组成：</p>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    </div>
+
+
+      
+      
+        <p class="article-more-link">
+          <a href="/2016/10/28/druid.io学习3---druid集群/#more">阅读全文 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-druid.io学习2---druid数据" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/28/druid.io学习2---druid数据/" class="article-date">
+      <time datetime="2016-10-28T13:41:00.000Z" itemprop="datePublished">2016-10-28</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/28/druid.io学习2---druid数据/">druid.io学习2---druid数据</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <p><Excerpt in index | 首页摘要>   </p>
+<h1 id="druid数据"><a href="#druid数据" class="headerlink" title="druid数据"></a>druid数据</h1><h2 id="数据格式："><a href="#数据格式：" class="headerlink" title="数据格式："></a>数据格式：</h2><ul>
+<li><strong>Timestamp列</strong>: 所有的查询都以时间为中心。  </li>
+<li><strong>Dimension列（维度）</strong>: Dimensions对应事件的维度,通常用于筛选过滤数据。</li>
+<li><strong>Metric列（度量）</strong>: Metrics是用于聚合和计算的列。通常是数字,并且支持count、sum、mean等聚合操作。<br>线上广告的例子：</li>
+</ul>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    </div>
+
+
+      
+      
+        <p class="article-more-link">
+          <a href="/2016/10/28/druid.io学习2---druid数据/#more">阅读全文 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-druid.io学习1---概念" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/28/druid.io学习1---概念/" class="article-date">
+      <time datetime="2016-10-28T13:40:00.000Z" itemprop="datePublished">2016-10-28</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/28/druid.io学习1---概念/">druid.io学习1---概念</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <Excerpt in index | 首页摘要>   
+
+<h1 id="OLAP"><a href="#OLAP" class="headerlink" title="OLAP"></a>OLAP</h1><ul>
+<li>OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用户组建多维的数据模型。  </li>
+<li>维指的是用户的分析角度，例如对销售数据的分析，时间周期是一个维度，产品类别、分销渠道、地理分布、客户群类也分别是不同的维度。  </li>
+<li>一旦多维数据模型建立完成，用户可以快速地从各个分析角度获取数据，也能动态地在各个角度之间切换数据或者进行多角度综合分析，具有极大的分析灵活性。</li>
+</ul>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    </div>
+
+
+      
+      
+        <p class="article-more-link">
+          <a href="/2016/10/28/druid.io学习1---概念/#more">阅读全文 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-Samza学习5---Samza_API" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">

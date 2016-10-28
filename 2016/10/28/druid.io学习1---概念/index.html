@@ -15,31 +15,25 @@
 
 
 
-<meta name="description" content="Samza架构Samza是由以下三层构成：  
-
-数据流层（A streaming layer）：分布式消息中间件Kafka  
-执行层（An execution layer）：Hadoop资源调度管理系统YARN  
-处理层（A progressing layer）：Samza API">
+<meta name="description" content="OLAP
+OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用户组建多维的数据模型。  
+维指的是用户的分析角度，例如对销售数据的分析，时间周期是一个维度，产品类别、分销渠道、地理分布、客户群类也分别是不同的维度。  
+一旦多维数据模型建立完成，用户可以快速地从各个分析角度获取数据，也能动态地在各个角度之间切换数据或者进行多角度综合分析，具有极大的分析灵活性。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Samza学习3---架构">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza学习3---架构/index.html">
+<meta property="og:title" content="druid.io学习1---概念">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/druid.io学习1---概念/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="Samza架构Samza是由以下三层构成：  
-
-数据流层（A streaming layer）：分布式消息中间件Kafka  
-执行层（An execution layer）：Hadoop资源调度管理系统YARN  
-处理层（A progressing layer）：Samza API">
-<meta property="og:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-ecosystem.png">
-<meta property="og:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-yarn-kafka-integration.png">
-<meta property="og:updated_time" content="2016-10-28T13:30:04.000Z">
+<meta property="og:description" content="OLAP
+OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用户组建多维的数据模型。  
+维指的是用户的分析角度，例如对销售数据的分析，时间周期是一个维度，产品类别、分销渠道、地理分布、客户群类也分别是不同的维度。  
+一旦多维数据模型建立完成，用户可以快速地从各个分析角度获取数据，也能动态地在各个角度之间切换数据或者进行多角度综合分析，具有极大的分析灵活性。">
+<meta property="og:updated_time" content="2016-10-28T15:42:46.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Samza学习3---架构">
-<meta name="twitter:description" content="Samza架构Samza是由以下三层构成：  
-
-数据流层（A streaming layer）：分布式消息中间件Kafka  
-执行层（An execution layer）：Hadoop资源调度管理系统YARN  
-处理层（A progressing layer）：Samza API">
-<meta name="twitter:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-ecosystem.png">
+<meta name="twitter:title" content="druid.io学习1---概念">
+<meta name="twitter:description" content="OLAP
+OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用户组建多维的数据模型。  
+维指的是用户的分析角度，例如对销售数据的分析，时间周期是一个维度，产品类别、分销渠道、地理分布、客户群类也分别是不同的维度。  
+一旦多维数据模型建立完成，用户可以快速地从各个分析角度获取数据，也能动态地在各个角度之间切换数据或者进行多角度综合分析，具有极大的分析灵活性。">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -71,7 +65,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Samza学习3---架构 | 小懒的博客</title>
+<title>druid.io学习1---概念 | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -274,11 +268,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-Samza学习3---架构" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-druid.io学习1---概念" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/Samza学习3---架构/" class="article-date">
-      <time datetime="2016-10-28T09:42:00.000Z" itemprop="datePublished">2016-10-28</time>
+      <a href="/2016/10/28/druid.io学习1---概念/" class="article-date">
+      <time datetime="2016-10-28T13:40:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
 
@@ -293,7 +287,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Samza学习3---架构
+      druid.io学习1---概念
     </h1>
   
 
@@ -302,7 +296,7 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/samza/">samza</a>
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
     </div>
 
 
@@ -316,35 +310,103 @@
           
         <excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="Samza架构"><a href="#Samza架构" class="headerlink" title="Samza架构"></a>Samza架构</h1><p>Samza是由以下三层构成：  </p>
-<ul>
-<li>数据流层（A streaming layer）：分布式消息中间件Kafka  </li>
-<li>执行层（An execution layer）：Hadoop资源调度管理系统YARN  </li>
-<li>处理层（A progressing layer）：Samza API   </li>
+<h1 id="OLAP"><a href="#OLAP" class="headerlink" title="OLAP"></a>OLAP</h1><ul>
+<li>OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用户组建多维的数据模型。  </li>
+<li>维指的是用户的分析角度，例如对销售数据的分析，时间周期是一个维度，产品类别、分销渠道、地理分布、客户群类也分别是不同的维度。  </li>
+<li>一旦多维数据模型建立完成，用户可以快速地从各个分析角度获取数据，也能动态地在各个角度之间切换数据或者进行多角度综合分析，具有极大的分析灵活性。</li>
 </ul>
-<p><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-ecosystem.png" alt="image"></p>
 <a id="more"></a>  
-<the rest="" of="" contents="" |="" 余下全文="">  
+<the rest="" of="" contents="" |="" 余下全文=""> 
 
-<h2 id="kafka"><a href="#kafka" class="headerlink" title="kafka"></a>kafka</h2><p>Kafka是一个分布式发布/订阅消息队列系统，它支持<strong>at-least once</strong>通信保障（即系统保证没有信息丢失，但是在某些故障情况下，消费者可能收到超过一条同样的信息）和<strong>高度可用的分区</strong>特性（即使一台机器宕机了，分区依然是可用的）。</p>
-<p>每一条数据流被称为一个topic。每一个话题都在多台被称作broker的机器上进行分区和复制。当一个生产者发送一条消息给一个话题，它会提供一个key，这个key被用来决定这条消息应该被发送到哪一个分区。生产者发送信息而Kafka的broker则接收和存储它们。Kafka的消费者能通过在一个话题的所有分区上订阅消息来读取消息。</p>
-<p>Kafka有一些有趣的特点：</p>
-<ul>
-<li>同一个key的所有消息都被划分到同一个分区，这就意味着如果你想要读到一个特定用户的所有消息，你只要从包含这个用户id的分区读取即可，而不是整个topic（假设把用户id用作key）</li>
-<li>一个topic的分区是按顺序到达的一序列消息，所以你可以通过单调递增偏移量offset来引用任何消息（就好比放一个索引到一个数组里）；这也意味着broker不需要跟踪被一个特定的消费者读取的消息，为什么呢？因为消费者保存了消息的偏移量offset能够跟踪到它。然后我们知道的是带着一个比当前偏移量小的消息是已经被处理过的，而每一个带着更大偏移量的消息还没有被处理过。</li>
+<h2 id="主要名词"><a href="#主要名词" class="headerlink" title="主要名词"></a>主要名词</h2><ul>
+<li>维(Dimension)：是用户观察数据的特定角度，是问题的一类属性，属性集合构成一个维(时间维、地理维等)。</li>
+<li>维的层次(Level)：用户观察数据的某个特定角度(即某个维)还可能存在细节程度不同的各个描述方面(时间维包括日期、月份、季度、年)。  </li>
+<li>维的成员(Member)：即维的一个取值，是数据项在某个维中位置的描述，如“某年某月某日”是在时间维上的位置描述。  </li>
+<li>度量(Measure)：多维数组的取值。  </li>
 </ul>
-<h2 id="YARN"><a href="#YARN" class="headerlink" title="YARN"></a>YARN</h2><p>YARN有三个组成部分：资源管理器（ResourceManager）、节点管理器（NodeManager）和应用管理器（ApplicationMaster）。</p>
-<ul>
-<li>NodeManager：在一个YARN网格里，每一台机器上都跑着NodeManager，它负责在所在的机器上启动进程。</li>
-<li>ResourceManager与所有的NodeMananger交互告诉它们跑什么应用，反过来NodeManager也会告诉ResourceManager它们希望什么时间在集群里跑这些东东。</li>
-<li>ApplicationMaster让特定应用的代码跑在YARN集群上，它负责管理应用的负载、容器（通常是UNIX进程），并且当其中一个容器失败时发出通知。</li>
+<h2 id="多维分析操作"><a href="#多维分析操作" class="headerlink" title="多维分析操作"></a>多维分析操作</h2><ul>
+<li>钻取（Drill-up和Drill-down）：改变维的层次，变换分析的粒度。它包括向下钻取(Drill-down)和向上钻取(Drill-up)/上滚(Roll-up)。向上钻取是在某一维上将低层次的细节数据概括到高层次的汇总数据，或者减少维数;而向下钻取则相反，从汇总数据深入到细节数据进行观察或增加新维。  </li>
+<li>切片和切块（Slice&amp;Dice）：在一部分维上选定值后，关心度量数据在剩余维上的分布。如果剩余的维只有两个，则是切片;如果有三个或以上，则是切块。  </li>
+<li>旋转（Pivot）：变换维的方向，即在表格中重新安排维的放置(如行列互换)。</li>
 </ul>
-<p>Samza提供了一个YARN ApplicationMaster和一个开箱即用的YARN Job运行器。如图所示（不同的颜色表示不同的机器）</p>
-<p><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-yarn-kafka-integration.png" alt="image"></p>
-<p>Samza的客户端告诉YARN的RM（ResourceManager，以下简称RM）运行一个新的Job，RM会告诉YARN的一个NodeManager（简称NM）为Samza的ApplicationMaster（AM）在集群里分配空间。一旦NM分配了空间，就会启动这个Samza的AM。AM开始后，它会向RM请求运行SamzaContainers所需的YARN containers。RM和NMs一起为containers分配空间。一旦空间被分配，NMs就会开启Samza containers。  </p>
-<p>YARN启动并且监控一个或者多个SamzaContainers，并且你的处理逻辑代码（使用StreamTask API）在这些容器里运行。这些Samza 流任务的输入和输出都来自Kafka的Brokers（通常他们都是作为YARN NMs位于同台机器）</p>
-<p>通过对topic的分区，将数据流处理拆解到任务中以及在多台机器上并行执行任务，使得Samza具有很高的消息吞吐量。通过结合YARN和Kafka，Samza实现了高容错：如果一个进程或者机器失败，它会自动在另一台机器上重启它并且继续从消息终端的地方开始处理，这些都是自动化的。</p>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+<h2 id="与OLTP区别"><a href="#与OLTP区别" class="headerlink" title="与OLTP区别"></a>与OLTP区别</h2><ul>
+<li>联机事务处理OLTP（on-line transaction processing）：<br>传统的关系型数据库的主要应用，主要是基本的、日常的事务处理，例如银行交易。  </li>
+<li>联机分析处理OLAP（On-Line Analytical Processing）：<br>数据仓库系统的主要应用，支持复杂的分析操作，侧重决策支持，并且提供直观易懂的查询结果。   </li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>比较</th>
+<th>OLTP</th>
+<th>OLAP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>用户</td>
+<td>操作人员,低层管理人员</td>
+<td>决策人员,高级管理人员</td>
+</tr>
+<tr>
+<td>功能</td>
+<td>日常操作处理</td>
+<td>分析决策</td>
+</tr>
+<tr>
+<td>DB设计</td>
+<td>面向应用</td>
+<td>面向主题</td>
+</tr>
+<tr>
+<td>数据</td>
+<td>当前的, 最新的细节的,二维的分立的</td>
+<td>历史的, 聚集的, 多维的集成的, 统一的</td>
+</tr>
+<tr>
+<td>存</td>
+<td>简单快速的insert和update</td>
+<td>定期批量任务更新</td>
+</tr>
+<tr>
+<td>取</td>
+<td>简单的读取少量结果</td>
+<td>读取大量结果并做聚合操作</td>
+</tr>
+<tr>
+<td>工作单位</td>
+<td>简单的事务</td>
+<td>复杂的查询</td>
+</tr>
+<tr>
+<td>用户数</td>
+<td>上千个</td>
+<td>上百个</td>
+</tr>
+<tr>
+<td>DB 大小</td>
+<td>100MB-GB</td>
+<td>100GB-TB</td>
+</tr>
+<tr>
+<td>主要应用</td>
+<td>数据库</td>
+<td>数据仓库</td>
+</tr>
+</tbody>
+</table>
+<h1 id="druid概念"><a href="#druid概念" class="headerlink" title="druid概念"></a>druid概念</h1><p>Druid：海量数据实时OLAP分析系统  </p>
+<p>Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。<br>Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。</p>
+<p>优势：  </p>
+<ul>
+<li>设计时充分考虑到了高可用性，各种节点挂掉都不会使得druid停止工作（但是状态会无法更新）；  </li>
+<li>各个组成部分之间耦合性低，如果不需要实时数据完全可以忽略实时节点；  </li>
+<li>使用Bitmap indexing加速列存储的查询速度，并使用CONCISE算法来对bitmap indexing进行压缩，使得生成的segments比原始文本文件小很多  </li>
+</ul>
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a></p>
+<p><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a></p>
+<p><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a></p>
+<p><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a>  </p>
+<p><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
 </the></excerpt>
       
     </div>
@@ -353,13 +415,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/28/Samza学习3---架构/">Samza学习3---架构</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/28/druid.io学习1---概念/">druid.io学习1---概念</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
-        <p><span>发布时间:</span>2016-10-28, 17:42:00</p>
-        <p><span>最后更新:</span>2016-10-28, 21:30:04</p>
+        <p><span>发布时间:</span>2016-10-28, 21:40:00</p>
+        <p><span>最后更新:</span>2016-10-28, 23:42:46</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/28/Samza学习3---架构/" title="Samza学习3---架构">https://fangyeqing.github.io/2016/10/28/Samza学习3---架构/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/Samza学习3---架构/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/28/druid.io学习1---概念/" title="druid.io学习1---概念">https://fangyeqing.github.io/2016/10/28/druid.io学习1---概念/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/druid.io学习1---概念/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -372,15 +434,15 @@
     <nav id="article-nav">
         
             <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/10/28/Samza学习4---核心部件/">
-                    Samza学习4---核心部件
+                <a href="/2016/10/28/druid.io学习2---druid数据/">
+                    druid.io学习2---druid数据
                 </a>
             </div>
         
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/28/Samza学习2---基本概念/">
-                    Samza学习2---基本概念
+                <a href="/2016/10/28/Samza学习5---Samza_API/">
+                    Samza学习5---Samza API
                 </a>
             </div>
         
@@ -392,7 +454,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Samza架构"><span class="toc-number">1.</span> <span class="toc-text">Samza架构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#kafka"><span class="toc-number">1.1.</span> <span class="toc-text">kafka</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YARN"><span class="toc-number">1.2.</span> <span class="toc-text">YARN</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考："><span class="toc-number">2.</span> <span class="toc-text">参考：</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#OLAP"><span class="toc-number">1.</span> <span class="toc-text">OLAP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主要名词"><span class="toc-number">1.1.</span> <span class="toc-text">主要名词</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多维分析操作"><span class="toc-number">1.2.</span> <span class="toc-text">多维分析操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#与OLTP区别"><span class="toc-number">1.3.</span> <span class="toc-text">与OLTP区别</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#druid概念"><span class="toc-number">2.</span> <span class="toc-text">druid概念</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考："><span class="toc-number">3.</span> <span class="toc-text">参考：</span></a></li></ol>
         
     </div>
     <style>
@@ -428,7 +490,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"Samza学习3---架构　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"druid.io学习1---概念　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -444,7 +506,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/Samza学习3---架构/" data-title="Samza学习3---架构" data-url="https://fangyeqing.github.io/2016/10/28/Samza学习3---架构/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/druid.io学习1---概念/" data-title="druid.io学习1---概念" data-url="https://fangyeqing.github.io/2016/10/28/druid.io学习1---概念/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -467,7 +529,7 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/10/28/Samza学习4---核心部件/" title="上一篇: Samza学习4---核心部件">
+            <a href="/2016/10/28/druid.io学习2---druid数据/" title="上一篇: druid.io学习2---druid数据">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -475,7 +537,7 @@
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/28/Samza学习2---基本概念/" title="下一篇: Samza学习2---基本概念">
+            <a href="/2016/10/28/Samza学习5---Samza_API/" title="下一篇: Samza学习5---Samza API">
                 <i class="fa fa-angle-right"></i>
             </a>
         

@@ -4,6 +4,347 @@
   
     
     <entry>
+      <title><![CDATA[druid.io学习3---druid集群]]></title>
+      <url>https://fangyeqing.github.io/2016/10/28/druid.io%E5%AD%A6%E4%B9%A03---druid%E9%9B%86%E7%BE%A4/</url>
+      <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
+
+<h1 id="druid集群"><a href="#druid集群" class="headerlink" title="druid集群"></a>druid集群</h1><h2 id="Indexing-Service"><a href="#Indexing-Service" class="headerlink" title="Indexing Service"></a>Indexing Service</h2><p>索引服务负责<strong>实时</strong>和<strong>批量</strong>数据的导入、分析、索引、压缩，生成“segment”（数据段），存入Deep Storage（例如HDFS）。<br>实时数据通过<strong>Tranquility</strong>客户端，批量数据通过<strong>Batch Data Ingestion</strong>，将任务提交给overload，分配给Middle Manager创建Poen执行。  </p>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>索引服务是主从结构，由三个部分组成：</p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<p>a.peon组件：在一个单独的jvm中运行单个任务，通过单独的jvm对任务做资源隔离和日志隔离。<br>b.Middle Manager：用于创建和管理peon的中层管理组件<br>c.overlord组件：管理任务分配到Middle Manager<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8A3B9817DCAE4598A5D8582FB02E012E" alt="image"><br>综合Tranquility和整个系统之后：<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/26967A72BB75437786E663C1A91699D8" alt="image"> </p>
+<h3 id="流程："><a href="#流程：" class="headerlink" title="流程："></a>流程：</h3><ul>
+<li><p>用户的spec文件在Tranquility中定义，首先Tranquility通过spec初始化，获得zk中Overlord的地址，与Overlord通信。</p>
+</li>
+<li><p>Overlord得到新写入任务后，查询zk节点信息，选择一个Middle Manager节点启动来启动peon，并将信息写入到zk中。</p>
+</li>
+<li><p>Middle Manager一直监控zk，发现有新的任务分配后，启动一个Peon进程，并监控Peon进程的状态。</p>
+</li>
+<li><p>Peon与Realtime Node流程基本一致，所不同的是Peon使用的是HTTP接口来接收数据，RealTime Node更多的是内部的线程不断的拉取Kafka的数据。</p>
+</li>
+<li><p>Tranquility随后通过zk获取Peon机器地址和端口，将数据不断的发送到Peon中。</p>
+</li>
+<li><p>Peon根据spec规则，定时或者定量将数据build index，handoff到deep storage(HDFS)中。</p>
+</li>
+<li><p>Coordinator根据Peon在zk中信息，将元数据写入到mysql中，并分配Historical Node去deep storage拉取index数据。</p>
+</li>
+<li><p>Historical Node到deep storage拉取index数据到本地，重建index到内存中，至此数据流入完成。</p>
+</li>
+</ul>
+<h3 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h3><p>overload节点配置时<br>druid.indexer.runner.type=local表示overload以本地模式运行，overload同时负责Middle Manager的作用，创建poen和分配任务。local模式下，overload配置需要对poen进行配置。</p>
+<h2 id="real-time-node"><a href="#real-time-node" class="headerlink" title="real-time node"></a>real-time node</h2><p>实时节点是进行存储和查询实时数据的工作区。在Zookeeper中通告它们的在线状态和为哪些数据提供服务。</p>
+<p>存储：metadata(元数据)写入MySQL，在ZooKeeper中新增一条记录<br>    Segment定期会转存到DeepStorage<br>查询：提供实时查询索引，响应broker的查询   </p>
+<p>下图中的master即为coordinator：<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/5D9BEA80D1E642C88D707A330CC9D618" alt="image"><br>具体存储过程：</p>
+<ul>
+<li>实时节点缓存事件数据到内存中的索引上，然后有规律的持久化到磁盘上。在转移之前，持久化的索引会周期性地合并在一起。（查询会同时命中内存中的和已持久化的索引。）  </li>
+<li>实时节点周期性的启动后台的计划任务搜索本地的持久化索引，后台计划任务将这些持久化的索引合并到一起并生成一块不可变的数据，这些数据块包含了  </li>
+<li>一段时间内的所有已经由实时节点导入的事件数据，称这些数据块为”Segment”。  </li>
+<li>在传送阶段，实时节点将这些segment上传到一个永久持久化的备份存储中,即Deep Storage  </li>
+</ul>
+<h3 id="realtime-node与indexing-service导入数据的区别"><a href="#realtime-node与indexing-service导入数据的区别" class="headerlink" title="realtime node与indexing service导入数据的区别"></a>realtime node与indexing service导入数据的区别</h3><table>
+<thead>
+<tr>
+<th>比较项</th>
+<th>RealTime Node</th>
+<th>Realtime Indexing Service</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>角色</td>
+<td>RealTime Node</td>
+<td>Overloard Nodes，Middle Manager Nodes，Poens</td>
+</tr>
+<tr>
+<td>部署方式</td>
+<td>多台服务器或单台服务器上多个RTN，每个RTN指定不同的spec文件启动</td>
+<td>仅部署Overloard Nodes和Middle Manager。Middle Manager创建poen去接收不同的realtime日志，不需要指定spec文件，由Tranquility客户端提供</td>
+</tr>
+<tr>
+<td>使用方式</td>
+<td>RTN通过spec文件指定消费的Kafka topic，不断的pull</td>
+<td>Poen接收Tranquility客户端push过来的数据</td>
+</tr>
+<tr>
+<td>可扩展性与易用性</td>
+<td>通过加机器，启动更多的RealTime Nodes进行扩展，但是需要管理所有的RTN的spec文件，消费的各种属性信息，运维复杂</td>
+<td>通过加机器，启动更多的Middle Managers来进行扩展，所有的日志消费属性信息都是通过Tranquility自己指定，运维简单</td>
+</tr>
+</tbody>
+</table>
+<p>随着Druid业务增多，规模扩大，对Realtime Node的管理变成了非常繁琐的事情，使用Realtime Index Service是必须的</p>
+<h2 id="Coordinator-Node"><a href="#Coordinator-Node" class="headerlink" title="Coordinator Node"></a>Coordinator Node</h2><p>协调节点可以认为是Druid中的master，通过Zookeeper管理历史节的segment放置策略，且通过Mysql中的metadata管理数据段。主要作用：</p>
+<ul>
+<li>通过从元数据存储（MySQL）读取数据段的元数据信息，来决定哪些Segments应该在集群中被加载。</li>
+<li>使用ZK来确定哪个Historical节点存在</li>
+<li>创建ZK条目告诉Historical节点管理Segments：加载新的Segments,删除旧的Segments,或者移动Segments进行负载均衡。  </li>
+</ul>
+<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><p>协调节点每次运行时，</p>
+<p>计算每一个historical tier（节点层）利用率最高的和最低的差异值。  </p>
+<p>如果差异超过某个阈值,部分segment将从最高的节点迁移到最低的节点，并且移动的segment是随机选择的。</p>
+<p>每次协调节点运行时，能够迁移的segment的数量是可配置的。</p>
+<h4 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h4><p>在实际生产过程中，hot节点层本身只有两台机器，增加hot层到5台。负载最高的机器数据会往低的迁移。到最后每台机器上的数据大致相等。</p>
+<h2 id="Historical-Node"><a href="#Historical-Node" class="headerlink" title="Historical Node"></a>Historical Node</h2><p>历史节点负责加载历史Segment并且提供针对这些历史Segment的查询。Historical Nodes可分为多个tier， 比如热数据放在一个tier， 冷数据放到另外一个tier，以达到冷热数据分开处理的目的。</p>
+<h3 id="Historical节点segment创建流程"><a href="#Historical节点segment创建流程" class="headerlink" title="Historical节点segment创建流程"></a>Historical节点segment创建流程</h3><ul>
+<li><p>Coordinator在ZK下与Historical节点相关联的加载队列路径下创建一个临时记录。</p>
+</li>
+<li><p>每个历史节点与ZK保持一个长连接监测ZK。</p>
+</li>
+<li><p>当一个历史节点发现在Zookeeper中与它关联的加载队列目录下有一个新的加载记录时。</p>
+</li>
+<li><p>它首先检查本地磁盘目录（缓存）中关于新的Segment的信息。如果缓存中没有关于新的Segment的信息，历史节点将下载新的Segment的元数据信息并告知Zookeeper。元数据包含新的Segment在“Deep Storage”中的存储位置，怎样去解压缩和处理新的Segment的信息。</p>
+</li>
+<li><p>一旦一个历史节点处理完成一个Segment，该Segment在Zoookeeper与该节点关联的服务Segments路径中公布可以提供服务。</p>
+</li>
+<li><p>此刻，这个Segment可以用于查询。</p>
+</li>
+</ul>
+<h3 id="提高查询速度"><a href="#提高查询速度" class="headerlink" title="提高查询速度"></a>提高查询速度</h3><ul>
+<li><p>broker 节点：缓存配置加大，或者从local替换成memcached。</p>
+</li>
+<li><p>historycal集群：查询为CPU密集型，通过数据分配策略，使数据尽量分散在不同的历史节点。</p>
+<ul>
+<li><p>集群分片，例如：根据冷热数据分成hot和_default_tier，近30天的数据在hot片上和default片上都有，永久的数据在default片，根据数据使用频率配置不同的机器数。  </p>
+</li>
+<li><p>增加节点数，节点存储空间尽量一致，使segment均匀分散在节点间，降低查询时每个historical节点的负载。例如：default分片增加到2-3台，hot分片增加到5-10台机器，热数据分散到更多台。 </p>
+</li>
+<li><p>调整druid.server.priority配置，默认为0。broker节点中，druid.broker.select.tier的配置默认为highestPriority，表示如果有重复的数据样本，优先查询优先级高的。例如：hot分片的机器druid.server.priority设置为100，default分片的默认0，则查询热数据时，不会查询default，只会去查询hot，而hot集群机器比较多，每台机器压力小。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Broker-Node"><a href="#Broker-Node" class="headerlink" title="Broker Node"></a>Broker Node</h2><p>broker（代理）提供针对segment的路由查询，代理节点从Zookeeper获取Segments存储在哪些节点和怎样找到正确的节点的元数据。将查询转发到Realtime和Historical节点。把来自于所有单个节点的结果合并在一起。  </p>
+<h3 id="转发查询"><a href="#转发查询" class="headerlink" title="转发查询"></a>转发查询</h3><p>Zookeeper维护有关历史和实时的节点信息和他们所能提供服务的Segment。  </p>
+<p>在Zookeeper的每一个数据源，代理节点建立相关Segments的时间轴和为这些Segments提供服务的节点。</p>
+<p>当收到一个特定数据源和时间间隔的查询请求，代理节点执行查找与查询数据源时间间隔相关的时间轴和检索包含数据查询的节点。代理节点然后将查询转发到所选节点。</p>
+<h3 id="缓存策略"><a href="#缓存策略" class="headerlink" title="缓存策略"></a>缓存策略</h3><p>Broker节点包含一个支持LRU失效策略的缓存。</p>
+<ul>
+<li><p>首先将这个查询映射到一组Segments，这些Segment结果的子集可能在缓存中已经存在，在缓存中已经存在的结果可以被直接拉取。  </p>
+</li>
+<li><p>对于一些缓存中不存在的结果。代理节点会转发查询到历史节点。一旦历史节点返回其结果，代理节点将结果存储到缓存中。  </p>
+</li>
+<li><p>实时节点返回的结果将永远不会被缓存，因此实时节点的查询请求将永远被转发到实时节点。实时节点的数据是不断变化的，缓存实时节点的结果是不可靠的。</p>
+</li>
+</ul>
+<h2 id="外部依赖"><a href="#外部依赖" class="headerlink" title="外部依赖"></a>外部依赖</h2><p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0E59F34342744B8ABBDCE92DA750B186" alt="image"></p>
+<h3 id="Metadata-Storage（Mysql）"><a href="#Metadata-Storage（Mysql）" class="headerlink" title="Metadata Storage（Mysql）"></a>Metadata Storage（Mysql）</h3><p>存储segments的元数据和配置，而不是存储实际数据，包含3张表：<br>“druid_config”（通常是空的）,<br>“druid_rules”（协作节点使用的一些规则信息，比如哪个segment从哪个node去load）<br>“druid_segments”（存储 每个segment的metadata信息） </p>
+<h3 id="Deep-storage"><a href="#Deep-storage" class="headerlink" title="Deep storage"></a>Deep storage</h3><p>segments的永久备份，Druid目前已经支持本地磁盘、NFS挂载磁盘、HDFS、S3等。<br>创建segments的服务上传segments到Deep storage,然后historical节点下载。  </p>
+<h3 id="ZooKeeper"><a href="#ZooKeeper" class="headerlink" title="ZooKeeper"></a>ZooKeeper</h3><p>管理当前集群状态, 发现和维持当前的数据拓扑。（节点状态、数据操作、数据同步） </p>
+<ul>
+<li>realtime-node和historical-node在Zookeeper中通告它们的在线状态和为哪些数据提供服务。 </li>
+<li>管理当前cluster的状态，比如记录哪些segments从实时节点移到了历史节点  </li>
+</ul>
+<p>主要发生：</p>
+<ul>
+<li>协调节点的leader选举</li>
+<li>历史和实时节点发布segment协议</li>
+<li>协调节点和历史节点之间的segment Load/Drop协议</li>
+<li>overlord的leader选举</li>
+<li>索引服务任务管理</li>
+</ul>
+<h2 id="数据流过程"><a href="#数据流过程" class="headerlink" title="数据流过程"></a>数据流过程</h2><p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/69D6BCF5B4A3476898CF5599ED461232" alt="image">  </p>
+<p>1）实时数据写入到实时节点,会创建索引结构的Segment<br>2）实时节点的Segment经过一段时间会转存到DeepStorage<br>3）元数据写入MySQL; 实时节点转存的Segment会在ZooKeeper中新增一条记录<br>4）协调节点从MySQL获取元数据,比如schema信息(维度列和指标列)<br>5）协调节点监测ZK中有新分配/要删除的Segment,写入ZooKeeper信息:历史节点需要加载/删除Segment<br>6）历史节点监测ZK, 从ZooKeeper中得到要执行任务的Segment<br>7）历史节点从DeepStorage下载Segment并加载到内存/或者将已经保存的Segment删除掉<br>8）历史节点的Segment可以用于Broker的查询路由  </p>
+<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><p>上述流程中的实时节点，换成indexing service，流程基本一致。</p>
+<h2 id="容错性"><a href="#容错性" class="headerlink" title="容错性"></a>容错性</h2><h3 id="历史节点挂掉"><a href="#历史节点挂掉" class="headerlink" title="历史节点挂掉"></a>历史节点挂掉</h3><p>该节点就不会服务这个节点上的Segments。<br>但是只要这些Segments仍然存在于DeepStorage,其他节点就会下载它们并服务这些Segments。   </p>
+<p>可以从集群中移除所有的历史节点,并且重新发布它们,也不会有任何的数据损失(因为数据最终都保存到DeepStorage中)</p>
+<h3 id="DeepStorage不可用"><a href="#DeepStorage不可用" class="headerlink" title="DeepStorage不可用"></a>DeepStorage不可用</h3><p>历史节点上已经加载了DeepStorage的Segments,仍然可用于查询。<br>但是新进来的数据无法进入到集群中(DS挂掉)。</p>
+<h3 id="协调节点挂掉"><a href="#协调节点挂掉" class="headerlink" title="协调节点挂掉"></a>协调节点挂掉</h3><p>数据的拓扑(data topology)停止服务,就不会有新的数据以及数据的负载均衡。因为协调节点会通知历史节点下载新数据。   </p>
+<p>如果实时节点将Segment转存到DeepStorage,而没有历史节点去下载这些数据,会导致实时节点最终会丢弃这份过期的数据。</p>
+<h3 id="Broker挂掉"><a href="#Broker挂掉" class="headerlink" title="Broker挂掉"></a>Broker挂掉</h3><p>还会有其他的Broker接管请求,但是要至少保证有多余的Broker。<br>当然如果不向Broker发送请求,而只关心最新的实时数据,可以直接访问实时节点. 不过这种情况是很少见的.</p>
+<h3 id="实时节点"><a href="#实时节点" class="headerlink" title="实时节点"></a>实时节点</h3><p>根据发送流的语义,可以有多个实时节点同时运行,处理同一个输入流. 每个实时节点分担输入流的一部分数据.</p>
+<h3 id="元数据存储挂掉"><a href="#元数据存储挂掉" class="headerlink" title="元数据存储挂掉"></a>元数据存储挂掉</h3><p>协调节点就无法找到集群中新的Segments(因为新的Segment一定会写入记录到元数据存储中)。但仍然可以提供当前集群的数据视图.</p>
+<h3 id="ZooKeeper挂掉"><a href="#ZooKeeper挂掉" class="headerlink" title="ZooKeeper挂掉"></a>ZooKeeper挂掉</h3><p>数据拓扑不会被更新(同协调节点挂掉),但是Broker仍然可以维护最近的数据拓扑,并继续提供查询的服务。</p>
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a></p>
+<p><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a></p>
+<p><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a></p>
+<p><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a>  </p>
+<p><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
+</the></excerpt>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[druid.io学习2---druid数据]]></title>
+      <url>https://fangyeqing.github.io/2016/10/28/druid.io%E5%AD%A6%E4%B9%A02---druid%E6%95%B0%E6%8D%AE/</url>
+      <content type="html"><![CDATA[<p><excerpt in="" index="" |="" 首页摘要="">   </excerpt></p>
+<h1 id="druid数据"><a href="#druid数据" class="headerlink" title="druid数据"></a>druid数据</h1><h2 id="数据格式："><a href="#数据格式：" class="headerlink" title="数据格式："></a>数据格式：</h2><ul>
+<li><strong>Timestamp列</strong>: 所有的查询都以时间为中心。  </li>
+<li><strong>Dimension列（维度）</strong>: Dimensions对应事件的维度,通常用于筛选过滤数据。</li>
+<li><strong>Metric列（度量）</strong>: Metrics是用于聚合和计算的列。通常是数字,并且支持count、sum、mean等聚合操作。<br>线上广告的例子：</li>
+</ul>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">timestamp             publisher          advertiser  gender  country  click  price</div><div class="line">2011-01-01T01:01:35Z  bieberfever.com    google.com  Male    USA      0      0.65</div><div class="line">2011-01-01T01:03:63Z  bieberfever.com    google.com  Male    USA      0      0.62</div><div class="line">2011-01-01T01:04:51Z  bieberfever.com    google.com  Male    USA      1      0.45</div><div class="line">2011-01-01T01:00:00Z  ultratrimfast.com  google.com  Female  UK       0      0.87</div><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Female  UK       0      0.99</div><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Female  UK       1      1.53</div></pre></td></tr></table></figure>
+<p>dimensions: publisher, advertiser, gender, and country。<br>metrics: click和price</p>
+<h2 id="预聚合roll-up"><a href="#预聚合roll-up" class="headerlink" title="预聚合roll up"></a>预聚合roll up</h2><p>Roll-up是在一系列维度选定后的数据之上做的初始聚合，一般发生在push/pull数据流阶段，通过realtime node或者tranquility+indexing service的方式。    </p>
+<p>通过queryGranularity定义数据roll up的粒度。  </p>
+<p>这种预聚合的方式可以很显著的减少数据的存储(可减少100倍)。 Druid也是通过这种方式来减少数据的存储。 这种减少存储的方式也会带来副作用,比如我们没有办法再查询到每条数据具体的明细。换句话说,数据聚合的粒度是我们能查询数据的最小粒度。  </p>
+<p>例如定义粒度为HOUR<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GROUP BY timestamp, publisher, advertiser, gender, country</div><div class="line">  :: impressions = COUNT(1),  clicks = SUM(click),  revenue = SUM(price)</div></pre></td></tr></table></figure></p>
+<p>上述例子聚合之后为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">timestamp             publisher          advertiser  gender country impressions clicks revenue</div><div class="line">2011-01-01T01:00:00Z  ultratrimfast.com  google.com  Male   USA     1800        25     15.70</div><div class="line">2011-01-01T01:00:00Z  bieberfever.com    google.com  Male   USA     2912        42     29.18</div><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Male   UK      1953        17     17.31</div><div class="line">2011-01-01T02:00:00Z  bieberfever.com    google.com  Male   UK      3194        170    34.01</div></pre></td></tr></table></figure></p>
+<p>也可以将过久时间的历史数据进行自定义的roll up操作，例如近90天的数据按小时进行roll up预处理，然后将90天之后的数据提交batch indexing任务按天roll up。</p>
+<h2 id="数据分片"><a href="#数据分片" class="headerlink" title="数据分片"></a>数据分片</h2><p>以segments(段)的形式就行分片,并且以时间作为第一级分片。  </p>
+<p>Segments是自包含容器,包含着一个时间段内的数据，通过segmentGranularity定义segments的分片时间粒度。<br>Segments包括基于列的压缩,以及这些列的索引。Druid只需要清楚如何扫描这些segments就可以查询。</p>
+<p>Segments通过datasource, interval, version, 和一个可选的partition number来区分。   </p>
+<blockquote>
+<p>dataSource_interval_version_partitionNumber。</p>
+</blockquote>
+<p>例如：<br>Segment sampleData_2011-01-01T01:00:00:00Z_2011-01-01T02:00:00:00Z_v1_0 包含<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2011-01-01T01:00:00Z  ultratrimfast.com  google.com  Male   USA     1800        25     15.70</div><div class="line">2011-01-01T01:00:00Z  bieberfever.com    google.com  Male   USA     2912        42     29.18</div></pre></td></tr></table></figure></p>
+<p>Segment sampleData_2011-01-01T02:00:00:00Z_2011-01-01T03:00:00:00Z_v1_0 包含<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Male   UK      1953        17     17.31</div><div class="line">2011-01-01T02:00:00Z  bieberfever.com    google.com  Male   UK      3194        170    34.01</div></pre></td></tr></table></figure></p>
+<h2 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h2><p><strong>MVCC</strong>：多版本控制，以HDFS作为DeepStorage为例，HDFS上会保存每次修改的版本，history节点只load最新的数据，即用最新的版本来表示数据。</p>
+<p>druid在0.9版本之后，HDFS上存储格式如下:</p>
+<p><strong>hdfs://nn1:port/…/ sampleData / startTime_endTime / updateTime / shard / index.zip</strong><br><strong>hdfs://nn1:port/…/ sampleData / startTime_endTime / updateTime / shard / descriptor.json</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">startTime_endTime:看聚合粒度，可能是1个小时之内，可能是1天之内</div><div class="line">updateTime：修改时间，即版本号。取最新的一个版本</div><div class="line">shard:分片，数据比较多，一个分片放不下</div></pre></td></tr></table></figure></p>
+<h3 id="HDFS存储举例"><a href="#HDFS存储举例" class="headerlink" title="HDFS存储举例"></a>HDFS存储举例</h3><p><strong>hdfs://nn1:port/…/sampleData/20160801T120000.000+0800_20160801T130000.000+0800/</strong><br>目录下有如下两个版本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2016-08-01T12_07_40.483+08_00/	rwxr-xr-x	root/supergroup	    2016-08-01 13:15:12</div><div class="line">2016-08-01T13_17_06.199+08_00/	rwxr-xr-x	root/supergroup	    2016-08-01 13:23:40</div></pre></td></tr></table></figure></p>
+<p><strong>2016-08-01T13_17_06.199+08_00</strong>目录下有3个分片：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">0/	rwxr-xr-x	root/supergroup	2016-08-01 13:23:05</div><div class="line">1/	rwxr-xr-x	root/supergroup	2016-08-01 13:23:11</div><div class="line">2/	rwxr-xr-x	root/supergroup	2016-08-01 13:23:46</div></pre></td></tr></table></figure></p>
+<p><strong>0/</strong>目录下有两个文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">descriptor.json	rw-r--r--	eadata/supergroup	766 B	128 mb	3	2016-08-01 13:23:05</div><div class="line">index.zip	rw-r--r--	eadata/supergroup	5.56 mb	128 mb	3	2016-08-01 13:23:04</div></pre></td></tr></table></figure></p>
+<p>descriptor.json保存的信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;dataSource&quot;: &quot;sampleData&quot;,//数据源</div><div class="line">    &quot;interval&quot;: &quot;2016-08-01T12:00:00.000+08:00/2016-08-01T13:00:00.000+08:00&quot;,//时间区间</div><div class="line">    &quot;version&quot;: &quot;2016-08-01T13:17:06.199+08:00&quot;,//版本号，即修改时间</div><div class="line">    &quot;loadSpec&quot;: &#123;//存储路径</div><div class="line">        &quot;type&quot;: &quot;hdfs&quot;,</div><div class="line">        &quot;path&quot;: &quot;hdfs://nn1:port/..../sampleData/20160801T120000.000+0800_20160801T130000.000+0800/2016-08-01T13_17_06.199+08_00/0/index.zip&quot;</div><div class="line">    &#125;,</div><div class="line">    &quot;dimensions&quot;: &quot;publisher,advertiser,gender,country&quot;,</div><div class="line">    &quot;metrics&quot;: &quot;click,price&quot;,</div><div class="line">    &quot;shardSpec&quot;: &#123;//分片信息</div><div class="line">        &quot;type&quot;: &quot;hashed&quot;,</div><div class="line">        &quot;partitionNum&quot;: 0,</div><div class="line">        &quot;partitions&quot;: 3,</div><div class="line">        &quot;partitionDimensions&quot;: []</div><div class="line">    &#125;,</div><div class="line">    &quot;binaryVersion&quot;: 9,</div><div class="line">    &quot;size&quot;: 8959843,//index.zip解压后的大小</div><div class="line">    &quot;identifier&quot;: &quot;sampleData_2016-08-01T12:00:00.000+08:00_2016-08-01T13:00:00.000+08:00_2016-08-01T13:17:06.199+08:00&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当historical节点加载HDFS中的segment到本地存储时，会解压index.zip，解压出00000.smoosh、meta.smoosh、version.bin三个文件。保存在本地路径:</p>
+<blockquote>
+<p>druid.segmentCache.locations / sampleData / startTime_endTime / updateTime / shard   </p>
+</blockquote>
+<p>descriptor.json保存在本地路径：</p>
+<blockquote>
+<p>druid.segmentCache.locations / info_dir / sampleData / startTime_endTime / updateTime / shard</p>
+</blockquote>
+<p>druid.segmentCache.locations在historical节点配置中配置。</p>
+<p><del>druid在0.9版本之前，realtime index放在上述路径中，batch（批量）任务会放在：<br>datasource / datasource / startTime_endTime / updateTime /shard / index.zip</del></p>
+<h2 id="数据索引"><a href="#数据索引" class="headerlink" title="数据索引"></a>数据索引</h2><p>Druid是列式存储,每一个列都是单独存储,在查询的过程中只扫描查询所需的列即可。不同的列可以采用不同的压缩方式,也可以关联不同的索引。  </p>
+<p>Druid的索引是基于每一个分片(即segment)上的。</p>
+<h2 id="数据加载"><a href="#数据加载" class="headerlink" title="数据加载"></a>数据加载</h2><p>Druid使用的通常情况是,联合使用批量和实时数据流的加载方法。近期的数据通过实时方式处理,离线批量处理来来提高精度。 </p>
+<p>在一些网络抖动延迟的非正常场景中，实时数据流加载方式有可能出现消息丢失或者消息重复，因此批量再加载方式消除了这种历史数据的潜在错误。或者由于某种原因，需要修改数据，批量再加载方式也提供给你再加载数据的选项。</p>
+<h4 id="实时方式"><a href="#实时方式" class="headerlink" title="实时方式"></a>实时方式</h4><ul>
+<li><p>Stream push </p>
+<ul>
+<li><strong>Tranquility+indexing service</strong>，数据来自于一个数据流系统，如Kafka、Storm、Spark Streaming。Tranquility：一个发送数据流到Druid的http客户端。</li>
+</ul>
+</li>
+<li><p>Stream pull </p>
+<ul>
+<li><strong>Realtime Node</strong>，直接从外部数据源拉数据流进入Druid。  <h4 id="离线批处理方式"><a href="#离线批处理方式" class="headerlink" title="离线批处理方式"></a>离线批处理方式</h4></li>
+</ul>
+</li>
+<li>Files <ul>
+<li><strong>Batch Data Ingestion+indexing service</strong>，从HDFS、S3、本地文件、或者其他支持批处理的Hadoop文件系统加载数据。如果在平面文件中你的数据集已经准备好，我们建议使用这种方法。例如：利用camus从kafka拉取数据到hdfs，再利用批处理从hdfs。  </li>
+</ul>
+</li>
+</ul>
+<p>下图中，上面的indexing service为realtime，下面的为Batch Data Ingestion<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/D6B38A53DFD740328C51FD6093A90BE7" alt="image"></p>
+<h2 id="数据查询"><a href="#数据查询" class="headerlink" title="数据查询"></a>数据查询</h2><p>Druid原生的查询方式是通过http发送json,但是社区已经贡献出多种查询库,包括SQL方式的plyql。</p>
+<p>Druid被设计为执行单表操作,不支持join操纵(实际上可以做join)。 生产环境需要在ETL阶段进行join,因为数据在加载进Druid之前必须规范化。</p>
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a></p>
+<p><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a></p>
+<p><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a></p>
+<p><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a>  </p>
+<p><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
+</the>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[druid.io学习1---概念]]></title>
+      <url>https://fangyeqing.github.io/2016/10/28/druid.io%E5%AD%A6%E4%B9%A01---%E6%A6%82%E5%BF%B5/</url>
+      <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
+
+<h1 id="OLAP"><a href="#OLAP" class="headerlink" title="OLAP"></a>OLAP</h1><ul>
+<li>OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用户组建多维的数据模型。  </li>
+<li>维指的是用户的分析角度，例如对销售数据的分析，时间周期是一个维度，产品类别、分销渠道、地理分布、客户群类也分别是不同的维度。  </li>
+<li>一旦多维数据模型建立完成，用户可以快速地从各个分析角度获取数据，也能动态地在各个角度之间切换数据或者进行多角度综合分析，具有极大的分析灵活性。</li>
+</ul>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<h2 id="主要名词"><a href="#主要名词" class="headerlink" title="主要名词"></a>主要名词</h2><ul>
+<li>维(Dimension)：是用户观察数据的特定角度，是问题的一类属性，属性集合构成一个维(时间维、地理维等)。</li>
+<li>维的层次(Level)：用户观察数据的某个特定角度(即某个维)还可能存在细节程度不同的各个描述方面(时间维包括日期、月份、季度、年)。  </li>
+<li>维的成员(Member)：即维的一个取值，是数据项在某个维中位置的描述，如“某年某月某日”是在时间维上的位置描述。  </li>
+<li>度量(Measure)：多维数组的取值。  </li>
+</ul>
+<h2 id="多维分析操作"><a href="#多维分析操作" class="headerlink" title="多维分析操作"></a>多维分析操作</h2><ul>
+<li>钻取（Drill-up和Drill-down）：改变维的层次，变换分析的粒度。它包括向下钻取(Drill-down)和向上钻取(Drill-up)/上滚(Roll-up)。向上钻取是在某一维上将低层次的细节数据概括到高层次的汇总数据，或者减少维数;而向下钻取则相反，从汇总数据深入到细节数据进行观察或增加新维。  </li>
+<li>切片和切块（Slice&amp;Dice）：在一部分维上选定值后，关心度量数据在剩余维上的分布。如果剩余的维只有两个，则是切片;如果有三个或以上，则是切块。  </li>
+<li>旋转（Pivot）：变换维的方向，即在表格中重新安排维的放置(如行列互换)。</li>
+</ul>
+<h2 id="与OLTP区别"><a href="#与OLTP区别" class="headerlink" title="与OLTP区别"></a>与OLTP区别</h2><ul>
+<li>联机事务处理OLTP（on-line transaction processing）：<br>传统的关系型数据库的主要应用，主要是基本的、日常的事务处理，例如银行交易。  </li>
+<li>联机分析处理OLAP（On-Line Analytical Processing）：<br>数据仓库系统的主要应用，支持复杂的分析操作，侧重决策支持，并且提供直观易懂的查询结果。   </li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>比较</th>
+<th>OLTP</th>
+<th>OLAP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>用户</td>
+<td>操作人员,低层管理人员</td>
+<td>决策人员,高级管理人员</td>
+</tr>
+<tr>
+<td>功能</td>
+<td>日常操作处理</td>
+<td>分析决策</td>
+</tr>
+<tr>
+<td>DB设计</td>
+<td>面向应用</td>
+<td>面向主题</td>
+</tr>
+<tr>
+<td>数据</td>
+<td>当前的, 最新的细节的,二维的分立的</td>
+<td>历史的, 聚集的, 多维的集成的, 统一的</td>
+</tr>
+<tr>
+<td>存</td>
+<td>简单快速的insert和update</td>
+<td>定期批量任务更新</td>
+</tr>
+<tr>
+<td>取</td>
+<td>简单的读取少量结果</td>
+<td>读取大量结果并做聚合操作</td>
+</tr>
+<tr>
+<td>工作单位</td>
+<td>简单的事务</td>
+<td>复杂的查询</td>
+</tr>
+<tr>
+<td>用户数</td>
+<td>上千个</td>
+<td>上百个</td>
+</tr>
+<tr>
+<td>DB 大小</td>
+<td>100MB-GB</td>
+<td>100GB-TB</td>
+</tr>
+<tr>
+<td>主要应用</td>
+<td>数据库</td>
+<td>数据仓库</td>
+</tr>
+</tbody>
+</table>
+<h1 id="druid概念"><a href="#druid概念" class="headerlink" title="druid概念"></a>druid概念</h1><p>Druid：海量数据实时OLAP分析系统  </p>
+<p>Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。<br>Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。</p>
+<p>优势：  </p>
+<ul>
+<li>设计时充分考虑到了高可用性，各种节点挂掉都不会使得druid停止工作（但是状态会无法更新）；  </li>
+<li>各个组成部分之间耦合性低，如果不需要实时数据完全可以忽略实时节点；  </li>
+<li>使用Bitmap indexing加速列存储的查询速度，并使用CONCISE算法来对bitmap indexing进行压缩，使得生成的segments比原始文本文件小很多  </li>
+</ul>
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a></p>
+<p><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a></p>
+<p><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a></p>
+<p><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a>  </p>
+<p><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
+</the></excerpt>]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[Samza学习5---Samza API]]></title>
       <url>https://fangyeqing.github.io/2016/10/28/Samza%E5%AD%A6%E4%B9%A05---Samza_API/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   

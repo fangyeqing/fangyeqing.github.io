@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="小懒" />
+
+
+
+<meta name="description" content="druid集群Indexing Service索引服务负责实时和批量数据的导入、分析、索引、压缩，生成“segment”（数据段），存入Deep Storage（例如HDFS）。实时数据通过Tranquility客户端，批量数据通过Batch Data Ingestion，将任务提交给overload，分配给Middle Manager创建Poen执行。  
+结构索引服务是主从结构，由三">
+<meta property="og:type" content="article">
+<meta property="og:title" content="druid.io学习3---druid集群">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/druid.io学习3---druid集群/index.html">
+<meta property="og:site_name" content="小懒的博客">
+<meta property="og:description" content="druid集群Indexing Service索引服务负责实时和批量数据的导入、分析、索引、压缩，生成“segment”（数据段），存入Deep Storage（例如HDFS）。实时数据通过Tranquility客户端，批量数据通过Batch Data Ingestion，将任务提交给overload，分配给Middle Manager创建Poen执行。  
+结构索引服务是主从结构，由三">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8A3B9817DCAE4598A5D8582FB02E012E">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/26967A72BB75437786E663C1A91699D8">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/5D9BEA80D1E642C88D707A330CC9D618">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0E59F34342744B8ABBDCE92DA750B186">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/69D6BCF5B4A3476898CF5599ED461232">
+<meta property="og:updated_time" content="2016-10-28T15:52:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="druid.io学习3---druid集群">
+<meta name="twitter:description" content="druid集群Indexing Service索引服务负责实时和批量数据的导入、分析、索引、压缩，生成“segment”（数据段），存入Deep Storage（例如HDFS）。实时数据通过Tranquility客户端，批量数据通过Batch Data Ingestion，将任务提交给overload，分配给Middle Manager创建Poen执行。  
+结构索引服务是主从结构，由三">
+<meta name="twitter:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8A3B9817DCAE4598A5D8582FB02E012E">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="小懒的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/xiaolan.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>druid.io学习3---druid集群 | 小懒的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">小懒</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="true" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">小懒</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">小懒</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-druid.io学习3---druid集群" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/28/druid.io学习3---druid集群/" class="article-date">
+      <time datetime="2016-10-28T13:43:00.000Z" itemprop="datePublished">2016-10-28</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      druid.io学习3---druid集群
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    </div>
+
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <excerpt in="" index="" |="" 首页摘要="">   
+
+<h1 id="druid集群"><a href="#druid集群" class="headerlink" title="druid集群"></a>druid集群</h1><h2 id="Indexing-Service"><a href="#Indexing-Service" class="headerlink" title="Indexing Service"></a>Indexing Service</h2><p>索引服务负责<strong>实时</strong>和<strong>批量</strong>数据的导入、分析、索引、压缩，生成“segment”（数据段），存入Deep Storage（例如HDFS）。<br>实时数据通过<strong>Tranquility</strong>客户端，批量数据通过<strong>Batch Data Ingestion</strong>，将任务提交给overload，分配给Middle Manager创建Poen执行。  </p>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>索引服务是主从结构，由三个部分组成：</p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<p>a.peon组件：在一个单独的jvm中运行单个任务，通过单独的jvm对任务做资源隔离和日志隔离。<br>b.Middle Manager：用于创建和管理peon的中层管理组件<br>c.overlord组件：管理任务分配到Middle Manager<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8A3B9817DCAE4598A5D8582FB02E012E" alt="image"><br>综合Tranquility和整个系统之后：<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/26967A72BB75437786E663C1A91699D8" alt="image"> </p>
+<h3 id="流程："><a href="#流程：" class="headerlink" title="流程："></a>流程：</h3><ul>
+<li><p>用户的spec文件在Tranquility中定义，首先Tranquility通过spec初始化，获得zk中Overlord的地址，与Overlord通信。</p>
+</li>
+<li><p>Overlord得到新写入任务后，查询zk节点信息，选择一个Middle Manager节点启动来启动peon，并将信息写入到zk中。</p>
+</li>
+<li><p>Middle Manager一直监控zk，发现有新的任务分配后，启动一个Peon进程，并监控Peon进程的状态。</p>
+</li>
+<li><p>Peon与Realtime Node流程基本一致，所不同的是Peon使用的是HTTP接口来接收数据，RealTime Node更多的是内部的线程不断的拉取Kafka的数据。</p>
+</li>
+<li><p>Tranquility随后通过zk获取Peon机器地址和端口，将数据不断的发送到Peon中。</p>
+</li>
+<li><p>Peon根据spec规则，定时或者定量将数据build index，handoff到deep storage(HDFS)中。</p>
+</li>
+<li><p>Coordinator根据Peon在zk中信息，将元数据写入到mysql中，并分配Historical Node去deep storage拉取index数据。</p>
+</li>
+<li><p>Historical Node到deep storage拉取index数据到本地，重建index到内存中，至此数据流入完成。</p>
+</li>
+</ul>
+<h3 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h3><p>overload节点配置时<br>druid.indexer.runner.type=local表示overload以本地模式运行，overload同时负责Middle Manager的作用，创建poen和分配任务。local模式下，overload配置需要对poen进行配置。</p>
+<h2 id="real-time-node"><a href="#real-time-node" class="headerlink" title="real-time node"></a>real-time node</h2><p>实时节点是进行存储和查询实时数据的工作区。在Zookeeper中通告它们的在线状态和为哪些数据提供服务。</p>
+<p>存储：metadata(元数据)写入MySQL，在ZooKeeper中新增一条记录<br>    Segment定期会转存到DeepStorage<br>查询：提供实时查询索引，响应broker的查询   </p>
+<p>下图中的master即为coordinator：<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/5D9BEA80D1E642C88D707A330CC9D618" alt="image"><br>具体存储过程：</p>
+<ul>
+<li>实时节点缓存事件数据到内存中的索引上，然后有规律的持久化到磁盘上。在转移之前，持久化的索引会周期性地合并在一起。（查询会同时命中内存中的和已持久化的索引。）  </li>
+<li>实时节点周期性的启动后台的计划任务搜索本地的持久化索引，后台计划任务将这些持久化的索引合并到一起并生成一块不可变的数据，这些数据块包含了  </li>
+<li>一段时间内的所有已经由实时节点导入的事件数据，称这些数据块为”Segment”。  </li>
+<li>在传送阶段，实时节点将这些segment上传到一个永久持久化的备份存储中,即Deep Storage  </li>
+</ul>
+<h3 id="realtime-node与indexing-service导入数据的区别"><a href="#realtime-node与indexing-service导入数据的区别" class="headerlink" title="realtime node与indexing service导入数据的区别"></a>realtime node与indexing service导入数据的区别</h3><table>
+<thead>
+<tr>
+<th>比较项</th>
+<th>RealTime Node</th>
+<th>Realtime Indexing Service</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>角色</td>
+<td>RealTime Node</td>
+<td>Overloard Nodes，Middle Manager Nodes，Poens</td>
+</tr>
+<tr>
+<td>部署方式</td>
+<td>多台服务器或单台服务器上多个RTN，每个RTN指定不同的spec文件启动</td>
+<td>仅部署Overloard Nodes和Middle Manager。Middle Manager创建poen去接收不同的realtime日志，不需要指定spec文件，由Tranquility客户端提供</td>
+</tr>
+<tr>
+<td>使用方式</td>
+<td>RTN通过spec文件指定消费的Kafka topic，不断的pull</td>
+<td>Poen接收Tranquility客户端push过来的数据</td>
+</tr>
+<tr>
+<td>可扩展性与易用性</td>
+<td>通过加机器，启动更多的RealTime Nodes进行扩展，但是需要管理所有的RTN的spec文件，消费的各种属性信息，运维复杂</td>
+<td>通过加机器，启动更多的Middle Managers来进行扩展，所有的日志消费属性信息都是通过Tranquility自己指定，运维简单</td>
+</tr>
+</tbody>
+</table>
+<p>随着Druid业务增多，规模扩大，对Realtime Node的管理变成了非常繁琐的事情，使用Realtime Index Service是必须的</p>
+<h2 id="Coordinator-Node"><a href="#Coordinator-Node" class="headerlink" title="Coordinator Node"></a>Coordinator Node</h2><p>协调节点可以认为是Druid中的master，通过Zookeeper管理历史节的segment放置策略，且通过Mysql中的metadata管理数据段。主要作用：</p>
+<ul>
+<li>通过从元数据存储（MySQL）读取数据段的元数据信息，来决定哪些Segments应该在集群中被加载。</li>
+<li>使用ZK来确定哪个Historical节点存在</li>
+<li>创建ZK条目告诉Historical节点管理Segments：加载新的Segments,删除旧的Segments,或者移动Segments进行负载均衡。  </li>
+</ul>
+<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><p>协调节点每次运行时，</p>
+<p>计算每一个historical tier（节点层）利用率最高的和最低的差异值。  </p>
+<p>如果差异超过某个阈值,部分segment将从最高的节点迁移到最低的节点，并且移动的segment是随机选择的。</p>
+<p>每次协调节点运行时，能够迁移的segment的数量是可配置的。</p>
+<h4 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h4><p>在实际生产过程中，hot节点层本身只有两台机器，增加hot层到5台。负载最高的机器数据会往低的迁移。到最后每台机器上的数据大致相等。</p>
+<h2 id="Historical-Node"><a href="#Historical-Node" class="headerlink" title="Historical Node"></a>Historical Node</h2><p>历史节点负责加载历史Segment并且提供针对这些历史Segment的查询。Historical Nodes可分为多个tier， 比如热数据放在一个tier， 冷数据放到另外一个tier，以达到冷热数据分开处理的目的。</p>
+<h3 id="Historical节点segment创建流程"><a href="#Historical节点segment创建流程" class="headerlink" title="Historical节点segment创建流程"></a>Historical节点segment创建流程</h3><ul>
+<li><p>Coordinator在ZK下与Historical节点相关联的加载队列路径下创建一个临时记录。</p>
+</li>
+<li><p>每个历史节点与ZK保持一个长连接监测ZK。</p>
+</li>
+<li><p>当一个历史节点发现在Zookeeper中与它关联的加载队列目录下有一个新的加载记录时。</p>
+</li>
+<li><p>它首先检查本地磁盘目录（缓存）中关于新的Segment的信息。如果缓存中没有关于新的Segment的信息，历史节点将下载新的Segment的元数据信息并告知Zookeeper。元数据包含新的Segment在“Deep Storage”中的存储位置，怎样去解压缩和处理新的Segment的信息。</p>
+</li>
+<li><p>一旦一个历史节点处理完成一个Segment，该Segment在Zoookeeper与该节点关联的服务Segments路径中公布可以提供服务。</p>
+</li>
+<li><p>此刻，这个Segment可以用于查询。</p>
+</li>
+</ul>
+<h3 id="提高查询速度"><a href="#提高查询速度" class="headerlink" title="提高查询速度"></a>提高查询速度</h3><ul>
+<li><p>broker 节点：缓存配置加大，或者从local替换成memcached。</p>
+</li>
+<li><p>historycal集群：查询为CPU密集型，通过数据分配策略，使数据尽量分散在不同的历史节点。</p>
+<ul>
+<li><p>集群分片，例如：根据冷热数据分成hot和_default_tier，近30天的数据在hot片上和default片上都有，永久的数据在default片，根据数据使用频率配置不同的机器数。  </p>
+</li>
+<li><p>增加节点数，节点存储空间尽量一致，使segment均匀分散在节点间，降低查询时每个historical节点的负载。例如：default分片增加到2-3台，hot分片增加到5-10台机器，热数据分散到更多台。 </p>
+</li>
+<li><p>调整druid.server.priority配置，默认为0。broker节点中，druid.broker.select.tier的配置默认为highestPriority，表示如果有重复的数据样本，优先查询优先级高的。例如：hot分片的机器druid.server.priority设置为100，default分片的默认0，则查询热数据时，不会查询default，只会去查询hot，而hot集群机器比较多，每台机器压力小。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Broker-Node"><a href="#Broker-Node" class="headerlink" title="Broker Node"></a>Broker Node</h2><p>broker（代理）提供针对segment的路由查询，代理节点从Zookeeper获取Segments存储在哪些节点和怎样找到正确的节点的元数据。将查询转发到Realtime和Historical节点。把来自于所有单个节点的结果合并在一起。  </p>
+<h3 id="转发查询"><a href="#转发查询" class="headerlink" title="转发查询"></a>转发查询</h3><p>Zookeeper维护有关历史和实时的节点信息和他们所能提供服务的Segment。  </p>
+<p>在Zookeeper的每一个数据源，代理节点建立相关Segments的时间轴和为这些Segments提供服务的节点。</p>
+<p>当收到一个特定数据源和时间间隔的查询请求，代理节点执行查找与查询数据源时间间隔相关的时间轴和检索包含数据查询的节点。代理节点然后将查询转发到所选节点。</p>
+<h3 id="缓存策略"><a href="#缓存策略" class="headerlink" title="缓存策略"></a>缓存策略</h3><p>Broker节点包含一个支持LRU失效策略的缓存。</p>
+<ul>
+<li><p>首先将这个查询映射到一组Segments，这些Segment结果的子集可能在缓存中已经存在，在缓存中已经存在的结果可以被直接拉取。  </p>
+</li>
+<li><p>对于一些缓存中不存在的结果。代理节点会转发查询到历史节点。一旦历史节点返回其结果，代理节点将结果存储到缓存中。  </p>
+</li>
+<li><p>实时节点返回的结果将永远不会被缓存，因此实时节点的查询请求将永远被转发到实时节点。实时节点的数据是不断变化的，缓存实时节点的结果是不可靠的。</p>
+</li>
+</ul>
+<h2 id="外部依赖"><a href="#外部依赖" class="headerlink" title="外部依赖"></a>外部依赖</h2><p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0E59F34342744B8ABBDCE92DA750B186" alt="image"></p>
+<h3 id="Metadata-Storage（Mysql）"><a href="#Metadata-Storage（Mysql）" class="headerlink" title="Metadata Storage（Mysql）"></a>Metadata Storage（Mysql）</h3><p>存储segments的元数据和配置，而不是存储实际数据，包含3张表：<br>“druid_config”（通常是空的）,<br>“druid_rules”（协作节点使用的一些规则信息，比如哪个segment从哪个node去load）<br>“druid_segments”（存储 每个segment的metadata信息） </p>
+<h3 id="Deep-storage"><a href="#Deep-storage" class="headerlink" title="Deep storage"></a>Deep storage</h3><p>segments的永久备份，Druid目前已经支持本地磁盘、NFS挂载磁盘、HDFS、S3等。<br>创建segments的服务上传segments到Deep storage,然后historical节点下载。  </p>
+<h3 id="ZooKeeper"><a href="#ZooKeeper" class="headerlink" title="ZooKeeper"></a>ZooKeeper</h3><p>管理当前集群状态, 发现和维持当前的数据拓扑。（节点状态、数据操作、数据同步） </p>
+<ul>
+<li>realtime-node和historical-node在Zookeeper中通告它们的在线状态和为哪些数据提供服务。 </li>
+<li>管理当前cluster的状态，比如记录哪些segments从实时节点移到了历史节点  </li>
+</ul>
+<p>主要发生：</p>
+<ul>
+<li>协调节点的leader选举</li>
+<li>历史和实时节点发布segment协议</li>
+<li>协调节点和历史节点之间的segment Load/Drop协议</li>
+<li>overlord的leader选举</li>
+<li>索引服务任务管理</li>
+</ul>
+<h2 id="数据流过程"><a href="#数据流过程" class="headerlink" title="数据流过程"></a>数据流过程</h2><p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/69D6BCF5B4A3476898CF5599ED461232" alt="image">  </p>
+<p>1）实时数据写入到实时节点,会创建索引结构的Segment<br>2）实时节点的Segment经过一段时间会转存到DeepStorage<br>3）元数据写入MySQL; 实时节点转存的Segment会在ZooKeeper中新增一条记录<br>4）协调节点从MySQL获取元数据,比如schema信息(维度列和指标列)<br>5）协调节点监测ZK中有新分配/要删除的Segment,写入ZooKeeper信息:历史节点需要加载/删除Segment<br>6）历史节点监测ZK, 从ZooKeeper中得到要执行任务的Segment<br>7）历史节点从DeepStorage下载Segment并加载到内存/或者将已经保存的Segment删除掉<br>8）历史节点的Segment可以用于Broker的查询路由  </p>
+<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><p>上述流程中的实时节点，换成indexing service，流程基本一致。</p>
+<h2 id="容错性"><a href="#容错性" class="headerlink" title="容错性"></a>容错性</h2><h3 id="历史节点挂掉"><a href="#历史节点挂掉" class="headerlink" title="历史节点挂掉"></a>历史节点挂掉</h3><p>该节点就不会服务这个节点上的Segments。<br>但是只要这些Segments仍然存在于DeepStorage,其他节点就会下载它们并服务这些Segments。   </p>
+<p>可以从集群中移除所有的历史节点,并且重新发布它们,也不会有任何的数据损失(因为数据最终都保存到DeepStorage中)</p>
+<h3 id="DeepStorage不可用"><a href="#DeepStorage不可用" class="headerlink" title="DeepStorage不可用"></a>DeepStorage不可用</h3><p>历史节点上已经加载了DeepStorage的Segments,仍然可用于查询。<br>但是新进来的数据无法进入到集群中(DS挂掉)。</p>
+<h3 id="协调节点挂掉"><a href="#协调节点挂掉" class="headerlink" title="协调节点挂掉"></a>协调节点挂掉</h3><p>数据的拓扑(data topology)停止服务,就不会有新的数据以及数据的负载均衡。因为协调节点会通知历史节点下载新数据。   </p>
+<p>如果实时节点将Segment转存到DeepStorage,而没有历史节点去下载这些数据,会导致实时节点最终会丢弃这份过期的数据。</p>
+<h3 id="Broker挂掉"><a href="#Broker挂掉" class="headerlink" title="Broker挂掉"></a>Broker挂掉</h3><p>还会有其他的Broker接管请求,但是要至少保证有多余的Broker。<br>当然如果不向Broker发送请求,而只关心最新的实时数据,可以直接访问实时节点. 不过这种情况是很少见的.</p>
+<h3 id="实时节点"><a href="#实时节点" class="headerlink" title="实时节点"></a>实时节点</h3><p>根据发送流的语义,可以有多个实时节点同时运行,处理同一个输入流. 每个实时节点分担输入流的一部分数据.</p>
+<h3 id="元数据存储挂掉"><a href="#元数据存储挂掉" class="headerlink" title="元数据存储挂掉"></a>元数据存储挂掉</h3><p>协调节点就无法找到集群中新的Segments(因为新的Segment一定会写入记录到元数据存储中)。但仍然可以提供当前集群的数据视图.</p>
+<h3 id="ZooKeeper挂掉"><a href="#ZooKeeper挂掉" class="headerlink" title="ZooKeeper挂掉"></a>ZooKeeper挂掉</h3><p>数据拓扑不会被更新(同协调节点挂掉),但是Broker仍然可以维护最近的数据拓扑,并继续提供查询的服务。</p>
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a></p>
+<p><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a></p>
+<p><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a></p>
+<p><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a>  </p>
+<p><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
+</the></excerpt>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/10/28/druid.io学习3---druid集群/">druid.io学习3---druid集群</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
+        <p><span>发布时间:</span>2016-10-28, 21:43:00</p>
+        <p><span>最后更新:</span>2016-10-28, 23:52:12</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/28/druid.io学习3---druid集群/" title="druid.io学习3---druid集群">https://fangyeqing.github.io/2016/10/28/druid.io学习3---druid集群/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/druid.io学习3---druid集群/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/10/28/druid.io学习2---druid数据/">
+                    druid.io学习2---druid数据
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#druid集群"><span class="toc-number">1.</span> <span class="toc-text">druid集群</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Indexing-Service"><span class="toc-number">1.1.</span> <span class="toc-text">Indexing Service</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#结构"><span class="toc-number">1.1.1.</span> <span class="toc-text">结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#流程："><span class="toc-number">1.1.2.</span> <span class="toc-text">流程：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置说明"><span class="toc-number">1.1.3.</span> <span class="toc-text">配置说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#real-time-node"><span class="toc-number">1.2.</span> <span class="toc-text">real-time node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#realtime-node与indexing-service导入数据的区别"><span class="toc-number">1.2.1.</span> <span class="toc-text">realtime node与indexing service导入数据的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Coordinator-Node"><span class="toc-number">1.3.</span> <span class="toc-text">Coordinator Node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#负载均衡"><span class="toc-number">1.3.1.</span> <span class="toc-text">负载均衡</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#例子："><span class="toc-number">1.3.1.1.</span> <span class="toc-text">例子：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Historical-Node"><span class="toc-number">1.4.</span> <span class="toc-text">Historical Node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Historical节点segment创建流程"><span class="toc-number">1.4.1.</span> <span class="toc-text">Historical节点segment创建流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#提高查询速度"><span class="toc-number">1.4.2.</span> <span class="toc-text">提高查询速度</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Broker-Node"><span class="toc-number">1.5.</span> <span class="toc-text">Broker Node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#转发查询"><span class="toc-number">1.5.1.</span> <span class="toc-text">转发查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缓存策略"><span class="toc-number">1.5.2.</span> <span class="toc-text">缓存策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#外部依赖"><span class="toc-number">1.6.</span> <span class="toc-text">外部依赖</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Metadata-Storage（Mysql）"><span class="toc-number">1.6.1.</span> <span class="toc-text">Metadata Storage（Mysql）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deep-storage"><span class="toc-number">1.6.2.</span> <span class="toc-text">Deep storage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZooKeeper"><span class="toc-number">1.6.3.</span> <span class="toc-text">ZooKeeper</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据流过程"><span class="toc-number">1.7.</span> <span class="toc-text">数据流过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#说明"><span class="toc-number">1.7.0.1.</span> <span class="toc-text">说明</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#容错性"><span class="toc-number">1.8.</span> <span class="toc-text">容错性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#历史节点挂掉"><span class="toc-number">1.8.1.</span> <span class="toc-text">历史节点挂掉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DeepStorage不可用"><span class="toc-number">1.8.2.</span> <span class="toc-text">DeepStorage不可用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#协调节点挂掉"><span class="toc-number">1.8.3.</span> <span class="toc-text">协调节点挂掉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Broker挂掉"><span class="toc-number">1.8.4.</span> <span class="toc-text">Broker挂掉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实时节点"><span class="toc-number">1.8.5.</span> <span class="toc-text">实时节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#元数据存储挂掉"><span class="toc-number">1.8.6.</span> <span class="toc-text">元数据存储挂掉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZooKeeper挂掉"><span class="toc-number">1.8.7.</span> <span class="toc-text">ZooKeeper挂掉</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考："><span class="toc-number">2.</span> <span class="toc-text">参考：</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"druid.io学习3---druid集群　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/druid.io学习3---druid集群/" data-title="druid.io学习3---druid集群" data-url="https://fangyeqing.github.io/2016/10/28/druid.io学习3---druid集群/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/10/28/druid.io学习2---druid数据/" title="下一篇: druid.io学习2---druid数据">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io学习3---druid集群/">druid.io学习3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io学习2---druid数据/">druid.io学习2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io学习1---概念/">druid.io学习1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习5---Samza_API/">Samza学习5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习4---核心部件/">Samza学习4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习3---架构/">Samza学习3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习2---基本概念/">Samza学习2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习1---Hello_Samza/">Samza学习1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hello-world/">Hello World</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">hexo+github page搭建博客</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016 小懒
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
