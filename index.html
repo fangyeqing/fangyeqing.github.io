@@ -32,7 +32,7 @@
 
 
 
-    <link rel="shortcut icon" href="/favicon.png">
+    <link rel="shortcut icon" href="/xiaolan.ico">
 
 
 
@@ -73,7 +73,7 @@
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
-        search: undefined
+        search: true
     }
 </script>
 
@@ -97,7 +97,7 @@
 <div class="intrude-less">
     <header id="header" class="inner">
         <a href="/" class="profilepic">
-            <img src="/img/avatar.png" class="animated zoomIn">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
         </a>
         <hgroup>
           <h1 class="header-author"><a href="/">fangyeqing</a></h1>
@@ -105,6 +105,13 @@
 
         
 
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
         
 
 
@@ -169,11 +176,9 @@
                     <nav class="header-nav">
                         <ul class="social">
                             
-                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
                             
-                                <a class="fa GitHub" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
                             
                         </ul>
                     </nav>
@@ -205,7 +210,7 @@
                 
                 <section class="switch-part switch-part4">
                 
-                    <div id="js-aboutme">专注于前端</div>
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
                 </section>
                 
             </div>
@@ -222,7 +227,7 @@
     <div class="intrude-less">
         <header id="header" class="inner">
             <a href="/" class="profilepic">
-                <img src="/img/avatar.png" class="animated zoomIn">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
             </a>
             <hgroup>
               <h1 class="header-author"><a href="/" title="回到主页">fangyeqing</a></h1>
@@ -245,11 +250,9 @@
             <nav class="header-nav">
                         <ul class="social">
                             
-                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
                             
-                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
                             
                         </ul>
             </nav>
@@ -259,10 +262,10 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-Samza学习（四）---Samza_API" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Samza学习5---Samza_API" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/Samza学习（四）---Samza_API/" class="article-date">
+      <a href="/2016/10/28/Samza学习5---Samza_API/" class="article-date">
       <time datetime="2016-10-28T09:44:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
@@ -278,7 +281,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/28/Samza学习（四）---Samza_API/">Samza学习（四）---Samza API</a>
+      <a class="article-title" href="/2016/10/28/Samza学习5---Samza_API/">Samza学习5---Samza API</a>
     </h1>
   
 
@@ -288,31 +291,10 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
-<h1 id="Samza-API"><a href="#Samza-API" class="headerlink" title="Samza API"></a>Samza API</h1><p>任务类必须实现StreamTask,可选 InitableTask, ClosableTask,WindowableTask<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class xxxxTask implements StreamTask, InitableTask, ClosableTask,WindowableTask &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="StreamTask"><a href="#StreamTask" class="headerlink" title="StreamTask"></a>StreamTask</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public interface StreamTask &#123;</div><div class="line">    void process(IncomingMessageEnvelope var1, //接收到的消息封装</div><div class="line">                MessageCollector var2,//用来发送其他消息</div><div class="line">                TaskCoordinator var3) </div><div class="line">    throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="IncomingMessageEnvelop"><a href="#IncomingMessageEnvelop" class="headerlink" title="IncomingMessageEnvelop"></a>IncomingMessageEnvelop</h3><p>代表接收到的消息的封装,表示StreamTask收到一个分区的一个特定的输入流。包括：</p>
-<ul>
-<li>message</li>
-<li>key</li>
-<li>消息来源（system+stream+partition）<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class IncomingMessageEnvelope &#123;</div><div class="line">  /** A deserialized message. */</div><div class="line">  Object getMessage() &#123; ... &#125;</div><div class="line"></div><div class="line">  /** A deserialized key. */</div><div class="line">  Object getKey() &#123; ... &#125;</div><div class="line"></div><div class="line">  /** The stream and partition that this message came from. */</div><div class="line">  SystemStreamPartition getSystemStreamPartition() &#123; ... &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h4 id="SystemStreamPartition"><a href="#SystemStreamPartition" class="headerlink" title="SystemStreamPartition"></a>SystemStreamPartition</h4><p>消息来源包括：</p>
-<ul>
-<li>消息来源system名</li>
-<li>消息来源stream/topic/queue名</li>
-<li>消息流的分区<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">/** A triple of system name, stream name and partition. */</div><div class="line">public class SystemStreamPartition extends SystemStream &#123;</div><div class="line"></div><div class="line">  /** The name of the system which provides this stream. It is</div><div class="line">      defined in the Samza job&apos;s configuration. */</div><div class="line">  public String getSystem() &#123; ... &#125;</div><div class="line"></div><div class="line">  /** The name of the stream/topic/queue within the system. */</div><div class="line">  public String getStream() &#123; ... &#125;</div><div class="line"></div><div class="line">  /** The partition within the stream. */</div><div class="line">  public Partition getPartition() &#123; ... &#125;</div><div class="line">  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="MessageCollector"><a href="#MessageCollector" class="headerlink" title="MessageCollector"></a>MessageCollector</h3><p> 为了发送一个消息， 你会创建一个OutgoingMessageEnvelop对象并且把它传递给消息收集器。它至少会确定你想要发送的消息、系统和数据流名字再发送出去。你也可以确定分区的key和另一些参数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public interface MessageCollector &#123;</div><div class="line">  void send(OutgoingMessageEnvelope envelope);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>注意：<br>请只在process()方法里使用MessageCollector对象。如果你保持住一个MessageCollector实例并且之后再次使用它，你的消息可能会错误地发送出去。</p>
-<h4 id="OutgoingMessageEnvelope"><a href="#OutgoingMessageEnvelope" class="headerlink" title="OutgoingMessageEnvelope"></a>OutgoingMessageEnvelope</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">public class OutgoingMessageEnvelope &#123;</div><div class="line">    private final SystemStream systemStream;</div><div class="line">    private final String keySerializerName;</div><div class="line">    private final String messageSerializerName;</div><div class="line">    private final Object partitionKey;</div><div class="line">    private final Object key;</div><div class="line">    private final Object message;</div><div class="line">    </div><div class="line">    public OutgoingMessageEnvelope(SystemStream systemStream, String keySerializerName, String messageSerializerName, Object partitionKey, Object key, Object message) &#123; ... &#125;</div><div class="line">    </div><div class="line">     public OutgoingMessageEnvelope(SystemStream systemStream, Object partitionKey, Object key, Object message) &#123; ... &#125;</div><div class="line"></div><div class="line">    public OutgoingMessageEnvelope(SystemStream systemStream, Object key, Object message) &#123; ... &#125;</div><div class="line">    </div><div class="line">    public OutgoingMessageEnvelope(SystemStream systemStream, Object message) &#123; ... &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="InitableTask"><a href="#InitableTask" class="headerlink" title="InitableTask"></a>InitableTask</h2><p>用来处理初始化工作，init 函数会首先被调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public interface InitableTask &#123;</div><div class="line">    void init(Config var1, TaskContext var2) throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="ClosableTask"><a href="#ClosableTask" class="headerlink" title="ClosableTask"></a>ClosableTask</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public interface ClosableTask &#123;</div><div class="line">    void close() throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="WindowableTask"><a href="#WindowableTask" class="headerlink" title="WindowableTask"></a>WindowableTask</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public interface WindowableTask &#123;</div><div class="line">    void window(MessageCollector var1, </div><div class="line">                TaskCoordinator var2) throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>有一个简单的任务，它把每个输入的消息拆成单词，并且发送每一个单词作为一个消息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"> public class SplitStringIntoWords implements StreamTask, InitableTask, ClosableTask &#123;</div><div class="line"></div><div class="line">    private String outputSystem;</div><div class="line">    </div><div class="line">    //官网教程中直接使用固定的SystemStream,稍加改造</div><div class="line">    //private final SystemStream output_stream = new SystemStream(&quot;kafka&quot;, &quot;words&quot;);</div><div class="line">    </div><div class="line">    @Override</div><div class="line">    public void close() throws Exception &#123;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    @Override</div><div class="line">    public void init(Config config, TaskContext context) throws Exception &#123;//初始化时从配置文件读output system</div><div class="line">        outputSystem = config.get(&quot;task.output.system&quot;);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    public void process(IncomingMessageEnvelope envelope,</div><div class="line">                      MessageCollector collector,</div><div class="line">                      TaskCoordinator coordinator) &#123;</div><div class="line">        String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();</div><div class="line">        </div><div class="line">        topic=topic+&quot;_split&quot;;//获取输入消息的topic，加上后缀</div><div class="line">        </div><div class="line">        SystemStream output_stream=new SystemStream(outputSystem, topic);//构造新的发送消息的System+Stream</div><div class="line">        </div><div class="line">        String message = (String) envelope.getMessage();//接收到的消息</div><div class="line">        </div><div class="line">        for (String word : message.split(&quot; &quot;)) &#123;</div><div class="line">          //单词作为key，1作为value，后续任务可以将1相加计数</div><div class="line">          collector.send(new OutgoingMessageEnvelope(output_stream, word, 1));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+              <Excerpt in index | 首页摘要>   
 
+<h1 id="Samza-API"><a href="#Samza-API" class="headerlink" title="Samza API"></a>Samza API</h1><p>任务类必须实现StreamTask,可选 InitableTask, ClosableTask,WindowableTask<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class xxxxTask implements StreamTask, InitableTask, ClosableTask,WindowableTask &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+          
       
     </div>
     
@@ -325,6 +307,10 @@
 
 
       
+      
+        <p class="article-more-link">
+          <a href="/2016/10/28/Samza学习5---Samza_API/#more">阅读全文 >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>
@@ -342,10 +328,10 @@
 
 
   
-    <article id="post-Samza学习（三）---核心部件" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Samza学习4---核心部件" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/Samza学习（三）---核心部件/" class="article-date">
+      <a href="/2016/10/28/Samza学习4---核心部件/" class="article-date">
       <time datetime="2016-10-28T09:43:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
@@ -361,7 +347,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/28/Samza学习（三）---核心部件/">Samza学习（三）---核心部件</a>
+      <a class="article-title" href="/2016/10/28/Samza学习4---核心部件/">Samza学习4---核心部件</a>
     </h1>
   
 
@@ -371,201 +357,11 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
-<h1 id="核心部件"><a href="#核心部件" class="headerlink" title="核心部件"></a>核心部件</h1><h2 id="SamzaContainer"><a href="#SamzaContainer" class="headerlink" title="SamzaContainer"></a>SamzaContainer</h2><p>SamzaContainer负责管理一个或多个StreamTask实例的启动，执行和关闭。每个SamzaContainer通常在独立的Java虚拟机上运行。一个Samza job可以由几个SamzaContainers组成，并可以在在不同的机器上运行。</p>
-<p>当SamzaContainer启动时，它按照顺序执行以下操作：</p>
-<ul>
-<li>获取每个输入流的分区的最后一个checkpoint记录的偏移量，并从此位置开始处理消息  </li>
-<li>作为消费者，对于每一个输入流分区创建一个“reader”线程</li>
-<li>启动度量监控器（metrics reporters），监控度量指标</li>
-<li>启动定时器检查站（checkpoint timer），每隔一段时间，保存任务的输入流中的偏移量</li>
-<li>如果定义了任务的windows方法，将启动一个窗口定时器（window timer），触发任务的windows方法</li>
-<li>为每个kafka输入流的分区实例化和初始化StreamTask（即调用InitableTask的init方法）</li>
-<li>启动事件循环（event loop），从reader线程读取消息，传递到StreamTask</li>
-</ul>
-<h5 id="Event-Loop"><a href="#Event-Loop" class="headerlink" title="Event Loop"></a>Event Loop</h5><p>事件循环是container的一个单线程，负责读写消息,传递指标（metrix）、checkpoint周期执行和window周期执行。事件循环的工作原理如下:</p>
-<ul>
-<li>从传入消息队列获取消息;</li>
-<li>通过调用process()给适当的任务实例传递信息;</li>
-<li>如果任务实例实现WindowableTask并且窗口周期时间到了,在该任务实例上调用window();</li>
-<li>从process()和window()调用适当的SystemProducers输出消息;</li>
-<li>时间间隔到了，写checkpoint</li>
-</ul>
-<h3 id="任务与分区-Tasks-and-Partitions"><a href="#任务与分区-Tasks-and-Partitions" class="headerlink" title="任务与分区(Tasks and Partitions)"></a>任务与分区(Tasks and Partitions)</h3><p>通过前面的介绍可以得知，samza job划分为task，samza stream划分为partition。单个task消费并处理stream中单个partition的消息。</p>
-<p>因此，samza job的input stream有多少个partition，就会创建多少个samza task 的实例。</p>
-<p><img src="http://samza.apache.org/img/0.8/learn/documentation/container/tasks-and-partitions.svg" alt="image"></p>
-<p>samza stream的partition数量，取决于消费的系统。</p>
-<p>例如，如果的数据流是通过kafka系统来实现的，那么数据流的partition数量是kafka的topic的分区数。是你创建kafka队列的时候的cmd决定的。如果cmd中没有指定，那么默认是通过 kafka的服务器端配置中的num.partitions这个阐述。</p>
-<p>如果samza job多于一个input stream，那么，对应到Samza job 的task实例，将是所有input stream中partition的最大值。例如：如果一个Samza job从PageViewEvent（12 partition）和ServiceMetricEvent（14 partition），那么，将会产生14个task实例（从0到13）。task实例12和13将只用来读取和ServiceMetricEvent事件，因为PageViewEvent没有对应的partition。</p>
-<h3 id="容器和资源分配"><a href="#容器和资源分配" class="headerlink" title="容器和资源分配"></a>容器和资源分配</h3><p>task实例的数量由input stream的partition数决定。</p>
-<p>SamzaContainer数，是否什么决定的呢?如果使用yarn，容器的数量是由分配给你的CPU和内存资源决定的。</p>
-<p>每一个SamzaContainer被设计成只是用一个CPU，因此他用了单线程事件循环的模式。因此，你在开发程序的时候，不要再SamzaContainer创建自己的多线程。如果你需要进行并行，你需要配置一下你的job利用多SamzaContainer。</p>
-<h3 id="多个输入流"><a href="#多个输入流" class="headerlink" title="多个输入流 　　 　　"></a>多个输入流 　　 　　</h3><p>如果你的工作有多个输入流,Samza提供了一个简单但强大的机制来加入数据从不同的来源:每个任务实例接收消息从一个分区的每个输入流。例如,假设您有两个输入流,A和B,每四个分区。Samza创建了四个任务实例流程,分配分区如下:<br>Task instance|Consumes stream partitions<br>—|—<br>0|stream A partition 0, stream B partition 0<br>1|stream A partition 1, stream B partition 1<br>2|stream A partition 2, stream B partition 2<br>3|stream A partition 3, stream B partition 3</p>
-<p>因此,如果想要两个在不同的流中的事件被同样的任务实例处理,需要确保它们被发送到相同的分区号，即使用相同的key发送消息。</p>
-<h2 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h2><p>SamzaContainer 是通过 SystemConsumer 与 SystemProducer 接口进行消息得读取与写入。你可以通过这两个接口实现对任何消息系统得整合。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">public interface SystemConsumer &#123;</div><div class="line">  void start();</div><div class="line">  void stop();</div><div class="line">  void register(SystemStreamPartition systemStreamPartition, String lastReadOffset);</div><div class="line"></div><div class="line">  List&lt;IncomingMessageEnvelope&gt; poll(</div><div class="line">      Map&lt;SystemStreamPartition, Integer&gt; systemStreamPartitions,</div><div class="line">      long timeout)</div><div class="line">    throws InterruptedException;</div><div class="line">&#125;</div><div class="line"></div><div class="line">public interface SystemProducer &#123;</div><div class="line">  void start();</div><div class="line">  void stop();</div><div class="line">  void register(String source);</div><div class="line"></div><div class="line">  void send(String source, OutgoingMessageEnvelope envelope);</div><div class="line">  void flush(String source);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>特点：</p>
-<ul>
-<li><p>插件式：开箱即用，Samza实现了对kafka的支持（KafkaSystemConsumer和KafkaSystemProducer）。然而，任何消息总线系统都可以被整合，只要它能提供由Samza所需的接口。</p>
-</li>
-<li><p>消息类型多样：SystemConsumers和SystemProducers可以读取和写入任何数据类型的消息。<br>  Samza没有规定任何具体的数据模型或序列化格式，具体形式可以由开发人员实现。如果他们只支持byte数组也没有关系——Samza有一个独立的串行化层,将之转化为应用程序代码可以使用对象。</p>
-</li>
-</ul>
-<h3 id="流处理"><a href="#流处理" class="headerlink" title="流处理"></a>流处理</h3><p>如果job从多个输入数据流处处理消息，并且所有输入流消息可用，缺省情况下将在一个循环赛的方式逐个处理。</p>
-<p>例如，如果一个job需要处理AdImpressionEvent和AdClickEvent的消息，任务实例的process（）方法被调用，来处理AdImpressionEvent消息，再处理AdClickEvent消息，然后从AdImpressionEvent处理另一个消息，…，并继续在这两者之间交替处理。</p>
-<p>如果流处理系统处理中如果一个输入流没有消息，那么流处理系统将跳过这个输入流进行处理另外一个输入流。同时，还会继续检查空输入流是否有新的消息进来。</p>
-<h3 id="MessageChooser"><a href="#MessageChooser" class="headerlink" title="MessageChooser"></a>MessageChooser</h3><p>当Samza容器对不同的流分区传入的消息进行处理的时候，它是如何决定要首先处理拿一个？该行为是由一个MessageChooser决定。默认选择器是RoundRobinChooser，但你可以自己实现自定义选择器覆盖它。</p>
-<p>实现自己的MessageChooser，你需要实现MessageChooserFactory接口，并在配置文件中设置“task.chooser.class”，并配置您实现的完全类名：</p>
-<p>task.chooser.class=com.example.samza.YourMessageChooserFactory</p>
-<h3 id="优先输入流"><a href="#优先输入流" class="headerlink" title="优先输入流"></a>优先输入流</h3><p>在一定得时间窗口内，可以让一个输入流得处理比另一个输入流得处理有更高得优先级别，我们可以通过设置输入流得优先级别。例如：samza得job需要处理2个输入流，其中一个输入流由实时系统提供消息，另外一个由批处理系统提供处理消息。在这个案例中，我们将给实时输入流提供更高得优先级。可以使实时输入数据流系统不会产生突然变慢得情况。</p>
-<p>例如，我们可以再配置文件中设置如下：</p>
-<p>systems.kafka.streams.my-real-time-stream.samza.priority=2<br>systems.kafka.streams.my-batch-stream.samza.priority=1</p>
-<h3 id="引导顺序"><a href="#引导顺序" class="headerlink" title="引导顺序"></a>引导顺序</h3><p>略</p>
-<h3 id="批处理"><a href="#批处理" class="headerlink" title="批处理"></a>批处理</h3><p>在某些情况下，可以提高每次从多个分区消费多个消息，从而提高消息得处理能力。 Samza支持这种操作模式，被称为批处理。</p>
-<p>例如，如果你想读的100条信息从每个流分区行，你可以使用这个配置参数：</p>
-<p>task.consumer.batch.size=100</p>
-<h2 id="Serialization"><a href="#Serialization" class="headerlink" title="Serialization"></a>Serialization</h2><p>任何消息最终都需要被序列化成字节（通过网络发送或写到本地磁盘），包括读取或写入的流数据或者持久化状态信息存储。序列化和反序列化可能发生在各种地方：</p>
-<ol>
-<li>在客户端lib库中：例如，从kafka进行生产或者消费支持可插入的序列化。</li>
-<li>在任务的执行中：你的process程序将原始字节作为inputs与outputs，并进行任何解析和序列化。</li>
-<li>在两者之间: Samza 提供了一层专门进行序列化与反序列化，叫做SERDE层。 </li>
-</ol>
-<p>你可以使用任何方式做这块工作;samza不会强加任何特定的数据模型或序列化模式。然而，<strong>最合理的做法，通常是使用Samza的SERDE层</strong>。</p>
-<h3 id="Serde层类型"><a href="#Serde层类型" class="headerlink" title="Serde层类型"></a>Serde层类型</h3><p>每个serde通过一个工厂类定义。可以通过实现SerdeFactory接口创建自己的序列化器。以下是Samza自带的serde类型的列表：</p>
-<table>
-<thead>
-<tr>
-<th>Serde Name</th>
-<th>Data Handled</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>string</td>
-<td>UTF-8 strings</td>
-</tr>
-<tr>
-<td>integer</td>
-<td>binary-encoded integers</td>
-</tr>
-<tr>
-<td>serializable</td>
-<td>Serializable Object Type</td>
-</tr>
-<tr>
-<td>long</td>
-<td>long data type</td>
-</tr>
-<tr>
-<td>json</td>
-<td>JSON formatted data</td>
-</tr>
-<tr>
-<td>byte</td>
-<td>Plain Bytes (effectively no-op) - Useful for Binary Messages</td>
-</tr>
-<tr>
-<td>bytebuffer</td>
-<td>Byte Buffer</td>
-</tr>
-</tbody>
-</table>
-<p>例如：在配置文件中，定义名为“string”的serde。将用于名为“kafka”的system中对输入流中的key反序列化,并序列化输出流中的key<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">serializers.registry.byte.class=org.apache.samza.serializers.ByteSerdeFactory</div><div class="line">serializers.registry.string.class=org.apache.samza.serializers.StringSerdeFactory</div><div class="line"></div><div class="line">systems.kafka.samza.msg.serde=byte</div><div class="line">systems.kafka.samza.key.serde=string</div></pre></td></tr></table></figure></p>
-<h2 id="Checkpointing"><a href="#Checkpointing" class="headerlink" title="Checkpointing"></a>Checkpointing</h2><p>Samza提供对流的容错性处理：Samza保证信息不会丢失，即使你的job崩溃，或者是一台机器down掉了，再或是网络故障，还是其他什么地方出了问题。为了提供这种保障，Samza期望的输入流系统，要能以满足以下要求：</p>
-<ul>
-<li>该流可以分成一个或多个分区。每个分区是独立的，分区的副本在多台机器复制（即使一台机器出现故障，流仍然可用）。</li>
-<li>每个分区包含在一个固定的顺序的序列消息。每个消息都有一个偏移量，这表明其在该序列的位置。每个分区内消息总是按顺序消费</li>
-<li>一个Samza作业可以从消息序列的任何位置开始处理消息。</li>
-</ul>
-<p>kafka满足上面的要求。samza也可以整合其他的message broker系统。</p>
-<p>我们描述一下SamzaContainer的处理场景，每个task实例将会消费一个输入流的一个分区，每个task都会保存每个分区当前处理得offset值。每一次处理一个消息，offset将往前移动一位。</p>
-<p>如果SamzaContainer失败，需要重新启动能够恢复到处理失败的地方，为了能够做到这一点，需要SamzaContainer能够保存每个task实例当前处理的offset位置。</p>
-<p><img src="https://samza.apache.org/img/0.11/learn/documentation/container/checkpointing.svg" alt="image"></p>
-<p>Checkpoint源码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public interface CheckpointManager &#123;</div><div class="line">  void start();</div><div class="line">  void register(Partition partition);</div><div class="line">  void writeCheckpoint(Partition partition, Checkpoint checkpoint);</div><div class="line">  Checkpoint readLastCheckpoint(Partition partition);</div><div class="line">  void stop();</div><div class="line">&#125;</div><div class="line"></div><div class="line">public class Checkpoint &#123;</div><div class="line">    private final Map&lt;SystemStreamPartition, String&gt; offsets;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="at-least-once处理"><a href="#at-least-once处理" class="headerlink" title="at-least-once处理"></a>at-least-once处理</h3><p>通过event loop，container定期为每一个任务实例checkpoint——即：记录每个partition的当前offset。</p>
-<p>container启动时,它寻找最近的checkpoint,开始从该checkpoint记录的partion的offset处消费消息。如果前面的container 意外失败,checkpoint记录的offset不会移动，最近的checkpoint会落后当前topic的offset(即这个job下次再执行时，可能重复process了一些消息，但是不会错过任何消息)</p>
-<p>有些场景下，“at-least-once”这种策略满足不了要求。exact once在后续版本会开发。目前只能通过减少写checkpoint的时间间隔来减少这种影响,可能要以性能开销为代价。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">task.commit.ms</div></pre></td></tr></table></figure></p>
-<h3 id="配置checkpoint"><a href="#配置checkpoint" class="headerlink" title="配置checkpoint"></a>配置checkpoint</h3><p>提供两种：FileSystemCheckpointManager and KafkaCheckpointManager  </p>
-<p>分别将checkpoint存在本地文件中和kafka中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># The name of your job determines the name under which checkpoints will be stored</div><div class="line">job.name=example-job</div><div class="line"></div><div class="line"># Define a system called &quot;kafka&quot; for consuming and producing to a Kafka cluster</div><div class="line">systems.kafka.samza.factory=org.apache.samza.system.kafka.KafkaSystemFactory</div><div class="line"></div><div class="line"># Declare that we want our job&apos;s checkpoints to be written to Kafka</div><div class="line">task.checkpoint.factory=org.apache.samza.checkpoint.kafka.KafkaCheckpointManagerFactory</div><div class="line">task.checkpoint.system=kafka</div><div class="line"></div><div class="line"># By default, a checkpoint is written every 60 seconds. You can change this if you like.</div><div class="line">task.commit.ms=60000</div></pre></td></tr></table></figure></p>
-<p>samza会向kafka中写入单独的一个topic–<strong>__samza<em>checkpoint</em><job-name>_<job-id></job-id></job-name></strong><br>上述配置的叫：__samza_checkpoint_example-job_1</p>
-<h2 id="State-Management"><a href="#State-Management" class="headerlink" title="State Management"></a>State Management</h2><h3 id="状态管理的分类"><a href="#状态管理的分类" class="headerlink" title="状态管理的分类"></a>状态管理的分类</h3><table>
-<thead>
-<tr>
-<th>分类</th>
-<th>是否保留state</th>
-<th>场景</th>
-<th>类比sql</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>stateless</td>
-<td>不需要</td>
-<td>一次处理一条消息、基于某些条件过滤消息</td>
-<td>select … where…</td>
-</tr>
-<tr>
-<td>stateful</td>
-<td>需要</td>
-<td>Windowed aggregation(ranking, trend detection, count)、Join (Stream-table, Stream-stream)</td>
-<td>aggregation和join</td>
-</tr>
-</tbody>
-</table>
-<p>那么，问题来了, 如果保证临时state不丢失?</p>
-<h3 id="老的管理任务状态的方法"><a href="#老的管理任务状态的方法" class="headerlink" title="老的管理任务状态的方法"></a>老的管理任务状态的方法</h3><h4 id="In-memory-state-with-checkpointing"><a href="#In-memory-state-with-checkpointing" class="headerlink" title="In-memory state with checkpointing"></a>In-memory state with checkpointing</h4><p>周期性的把task在内存中的数据做checkpoint. S4的状态管理就是这样做的。<br>缺点是当作为state的数据量很大时，每次都完全dump所有数据不切实际，如果用diff又太复杂。</p>
-<h4 id="Using-an-external-store"><a href="#Using-an-external-store" class="headerlink" title="Using an external store"></a>Using an external store</h4><p>把状态写进一个外部的数据库或者key-value store中。</p>
-<p>这样数据是不会丢了, 但是明显效率会有问题<br>而且会产生对其他系统的依赖性<br>还会影响正确性, 比如当task失败了, 之前的state需要作废,   如何让外部存储上的数据回滚  </p>
-<h3 id="Samza管理任务的方法——Local-state-in-Samza"><a href="#Samza管理任务的方法——Local-state-in-Samza" class="headerlink" title="Samza管理任务的方法——Local state in Samza"></a>Samza管理任务的方法——Local state in Samza</h3><p>samza相当于结合上述两处的优点。   </p>
-<ul>
-<li><p>local：存整个state，但是存在硬盘上。采用Key-value数据库存储：RocksDB    </p>
-</li>
-<li><p>external：state的change会生成changelog stream放在kafka上,。<br>这样当有task failover的时候, 可以从kafka上读出change log, 并replay出local state</p>
-</li>
-</ul>
-<p><img src="http://samza.apache.org/img/0.10/learn/documentation/container/stateful_job.png" alt="image"></p>
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># Use the key-value store implementation for a store called &quot;my-store&quot;</div><div class="line">stores.my-store.factory=org.apache.samza.storage.kv.RocksDbKeyValueStorageEngineFactory</div><div class="line"></div><div class="line"># Use the Kafka topic &quot;my-store-changelog&quot; as the changelog stream for this store.</div><div class="line"># This enables automatic recovery of the store after a failure. If you don&apos;t</div><div class="line"># configure this, no changelog stream will be generated.</div><div class="line">stores.my-store.changelog=kafka.my-store-changelog</div><div class="line"></div><div class="line"># Encode keys and values in the store as UTF-8 strings.</div><div class="line">serializers.registry.string.class=org.apache.samza.serializers.StringSerdeFactory</div><div class="line">stores.my-store.key.serde=string</div><div class="line">stores.my-store.msg.serde=string</div></pre></td></tr></table></figure>
-<h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class MyStatefulTask implements StreamTask, InitableTask &#123;</div><div class="line">  private KeyValueStore&lt;String, String&gt; store;</div><div class="line"></div><div class="line">  public void init(Config config, TaskContext context) &#123;</div><div class="line">    this.store = (KeyValueStore&lt;String, String&gt;) context.getStore(&quot;my-store&quot;);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  public void process(IncomingMessageEnvelope envelope,</div><div class="line">                      MessageCollector collector,</div><div class="line">                      TaskCoordinator coordinator) &#123;</div><div class="line">    store.put((String) envelope.getKey(), (String) envelope.getMessage());</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Windowing"><a href="#Windowing" class="headerlink" title="Windowing"></a>Windowing</h2><p>有些流处理job需要周期执行。  </p>
-<h3 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># Call the window() method every 60 seconds</div><div class="line">task.window.ms=60000</div></pre></td></tr></table></figure>
-<h3 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h3><p>假设你想报告每分钟pv。每当你看到pv事件，需要增加一个计数。每到一分钟,你当前的计数器值发送到输出流，计数器重置为零。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">public class EventCounterTask implements StreamTask, WindowableTask &#123;</div><div class="line"></div><div class="line">  public static final SystemStream OUTPUT_STREAM =</div><div class="line">    new SystemStream(&quot;kafka&quot;, &quot;events-per-minute&quot;);</div><div class="line"></div><div class="line">  private int eventsSeen = 0;</div><div class="line"></div><div class="line">  public void process(IncomingMessageEnvelope envelope,</div><div class="line">                      MessageCollector collector,</div><div class="line">                      TaskCoordinator coordinator) &#123;</div><div class="line">    eventsSeen++;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  public void window(MessageCollector collector,</div><div class="line">                     TaskCoordinator coordinator) &#123;</div><div class="line">    collector.send(new OutgoingMessageEnvelope(OUTPUT_STREAM, eventsSeen));</div><div class="line">    eventsSeen = 0;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><ol>
-<li><p>与process一样，不要在windows()之外使用MessageCollector。</p>
-</li>
-<li><p>Samza使用单线程执行,所以window()调用不能和一个process()同时发生调用。</p>
-<ul>
-<li>优势：不需要担心线程安全的代码(没有需要同步)</li>
-<li>缺点:如果process()方法需要很长时间返回，window()调用可能推迟。</li>
-</ul>
-</li>
-</ol>
-<h2 id="Metrix"><a href="#Metrix" class="headerlink" title="Metrix"></a>Metrix</h2><p>当在生产中运行stream process过程,有合理的metrix（度量）来跟踪job的运行是很重要的。Samza提供封装好的metrix库。Samza本身生成消息吞吐量等标准指标,也可以自定义指标。</p>
-<h3 id="metrix上报方式"><a href="#metrix上报方式" class="headerlink" title="metrix上报方式"></a>metrix上报方式</h3><ul>
-<li><p>JmxReporterFactory方式（jvm）：<br>每个容器的指标作为JMX mbean，即通过jmx可以监控，见下节。</p>
-</li>
-<li><p>MetricsSnapshotReporterFactory方式（kafka）：<br>reporter每分钟将指标作为消息发送到kafka输出流。输出流用metrics.reporter.*.stream配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># Define a metrics reporter called &quot;snapshot&quot;, which publishes metrics every 60 seconds.</div><div class="line">metrics.reporters=snapshot</div><div class="line">metrics.reporter.snapshot.class=org.apache.samza.metrics.reporter.MetricsSnapshotReporterFactory</div><div class="line"></div><div class="line"># Tell the snapshot reporter to publish to a topic called &quot;metrics&quot;in the &quot;kafka&quot; system.</div><div class="line">metrics.reporter.snapshot.stream=kafka.metrics</div><div class="line"></div><div class="line"># Encode metrics data as JSON.</div><div class="line">serializers.registry.metrics.class=org.apache.samza.serializers.MetricsSnapshotSerdeFactory</div><div class="line">systems.kafka.streams.metrics.samza.msg.serde=metrics</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="默认metrix内容"><a href="#默认metrix内容" class="headerlink" title="默认metrix内容"></a>默认metrix内容</h3><p>这个配置,job每隔60秒自动发送几个json编码的消息到kafka的“metrics”话题。像这样的消息:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;header&quot;: &#123;</div><div class="line">    &quot;container-name&quot;: &quot;samza-container-0&quot;,</div><div class="line">    &quot;host&quot;: &quot;samza-grid-1234.example.com&quot;,</div><div class="line">    &quot;job-id&quot;: &quot;1&quot;,</div><div class="line">    &quot;job-name&quot;: &quot;my-samza-job&quot;,</div><div class="line">    &quot;reset-time&quot;: 1401729000347,</div><div class="line">    &quot;samza-version&quot;: &quot;0.0.1&quot;,</div><div class="line">    &quot;source&quot;: &quot;Partition-2&quot;,</div><div class="line">    &quot;time&quot;: 1401729420566,</div><div class="line">    &quot;version&quot;: &quot;0.0.1&quot;</div><div class="line">  &#125;,</div><div class="line">  &quot;metrics&quot;: &#123;</div><div class="line">    &quot;org.apache.samza.container.TaskInstanceMetrics&quot;: &#123;</div><div class="line">      &quot;commit-calls&quot;: 7,</div><div class="line">      &quot;commit-skipped&quot;: 77948,</div><div class="line">      &quot;kafka-input-topic-offset&quot;: &quot;1606&quot;,</div><div class="line">      &quot;messages-sent&quot;: 985,</div><div class="line">      &quot;process-calls&quot;: 1093,</div><div class="line">      &quot;send-calls&quot;: 985,</div><div class="line">      &quot;send-skipped&quot;: 76970,</div><div class="line">      &quot;window-calls&quot;: 0,</div><div class="line">      &quot;window-skipped&quot;: 77955</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>每个任务实例有一个单独的消息。</p>
-<ul>
-<li>header包括：job名称、job的ID、task分区。</li>
-<li>metrics包括：已处理和发送消息的数量、当前输入流的分区的offset、其他细节。还有上述没有展示出来的：JVM信息(堆大小、垃圾收集信息、线程等),kafka的生产者和消费者的内部指标等</li>
-</ul>
-<h3 id="自定义metrix内容"><a href="#自定义metrix内容" class="headerlink" title="自定义metrix内容"></a>自定义metrix内容</h3><p>你可以通过MetricsRegistry注册您的自定义指标。需要实现InitableTask流任务,从TaskContext注册表得到指标。  </p>
-<p><strong>自定义metrix种类</strong>:  </p>
-<ul>
-<li>counters（计数器）：当想要跟踪事物发生的频率</li>
-<li>仪表(guages)：当想要报告事物的level,比如一个缓冲区的大小</li>
-<li>定时器(timer)：当你想要知道代码块花多少时间</li>
-</ul>
-<p>counter源码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public class Counter implements Metric &#123;</div><div class="line">    private final String name;</div><div class="line">    private final AtomicLong count;</div><div class="line"></div><div class="line">    public Counter(String name) &#123;</div><div class="line">        this.name = name;</div><div class="line">        this.count = new AtomicLong(0L);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public long inc() &#123;</div><div class="line">        return this.inc(1L);</div><div class="line">    &#125;</div><div class="line">    .....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这个简单的例子显示了如何计算你的任务处理的消息数量:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public class MyJavaStreamTask implements StreamTask, InitableTask &#123;</div><div class="line">  private Counter messageCount;</div><div class="line"></div><div class="line">  public void init(Config config, TaskContext context) &#123;</div><div class="line">    this.messageCount = context</div><div class="line">      .getMetricsRegistry()</div><div class="line">      .newCounter(getClass().getName(), &quot;message-count&quot;);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  public void process(IncomingMessageEnvelope envelope,</div><div class="line">                      MessageCollector collector,</div><div class="line">                      TaskCoordinator coordinator) &#123;</div><div class="line">    messageCount.inc();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="JMX"><a href="#JMX" class="headerlink" title="JMX"></a>JMX</h2><p>Samza容器和YARN ApplicationMaster默认支持JMX。可以使用JMX管理JVM;例如,可以使用包含在JDK中的jconsole连接到它。</p>
-<p>可以告诉Samza发布其内部指标,你和任何自定义指标定义,作为JMX mbean。需要设置以下属性:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># Define a Samza metrics reporter called &quot;jmx&quot;, which publishes to JMX</div><div class="line">metrics.reporter.jmx.class=org.apache.samza.metrics.reporter.JmxReporterFactory</div><div class="line"></div><div class="line"># Use it (if you have multiple reporters defined, separate them with commas)</div><div class="line">metrics.reporters=jmx</div></pre></td></tr></table></figure></p>
-<p>JMX需要配置为使用一个特定的端口,但是在分布式环境中,没有办法提前知道哪些端口可用的机器运行您的容器。因此Samza JMX端口随机选择。如果你需要连接到它,你可以通过容器的日志找到port,报告JMX服务器详细信息如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">2014-06-02 21:50:17 JmxServer [INFO] According to InetAddress.getLocalHost.getHostName we are samza-grid-1234.example.com</div><div class="line">2014-06-02 21:50:17 JmxServer [INFO] Started JmxServer registry port=50214 server port=50215 url=service:jmx:rmi://localhost:50215/jndi/rmi://localhost:50214/jmxrmi</div><div class="line">2014-06-02 21:50:17 JmxServer [INFO] If you are tunneling, you might want to try JmxServer registry port=50214 server port=50215 url=service:jmx:rmi://samza-grid-1234.example.com:50215/jndi/rmi://samza-grid-1234.example.com:50214/jmxrmi</div></pre></td></tr></table></figure></p>
+              <Excerpt in index | 首页摘要>   
 
+<h1 id="核心部件"><a href="#核心部件" class="headerlink" title="核心部件"></a>核心部件</h1><h2 id="SamzaContainer"><a href="#SamzaContainer" class="headerlink" title="SamzaContainer"></a>SamzaContainer</h2><p>SamzaContainer负责管理一个或多个StreamTask实例的启动，执行和关闭。每个SamzaContainer通常在独立的Java虚拟机上运行。一个Samza job可以由几个SamzaContainers组成，并可以在在不同的机器上运行。</p>
+<p>当SamzaContainer启动时，它按照顺序执行以下操作：  </p>
+          
       
     </div>
     
@@ -578,6 +374,10 @@
 
 
       
+      
+        <p class="article-more-link">
+          <a href="/2016/10/28/Samza学习4---核心部件/#more">阅读全文 >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>
@@ -595,10 +395,10 @@
 
 
   
-    <article id="post-Samza学习（二）---架构" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Samza学习3---架构" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/Samza学习（二）---架构/" class="article-date">
+      <a href="/2016/10/28/Samza学习3---架构/" class="article-date">
       <time datetime="2016-10-28T09:42:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
@@ -614,7 +414,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/28/Samza学习（二）---架构/">Samza学习（二）---架构</a>
+      <a class="article-title" href="/2016/10/28/Samza学习3---架构/">Samza学习3---架构</a>
     </h1>
   
 
@@ -624,7 +424,8 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+              <Excerpt in index | 首页摘要>   
+
 <h1 id="Samza架构"><a href="#Samza架构" class="headerlink" title="Samza架构"></a>Samza架构</h1><p>Samza是由以下三层构成：  </p>
 <ul>
 <li>数据流层（A streaming layer）：分布式消息中间件Kafka  </li>
@@ -632,25 +433,7 @@
 <li>处理层（A progressing layer）：Samza API   </li>
 </ul>
 <p><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-ecosystem.png" alt="image"></p>
-<h2 id="kafka"><a href="#kafka" class="headerlink" title="kafka"></a>kafka</h2><p>Kafka是一个分布式发布/订阅消息队列系统，它支持<strong>at-least once</strong>通信保障（即系统保证没有信息丢失，但是在某些故障情况下，消费者可能收到超过一条同样的信息）和<strong>高度可用的分区</strong>特性（即使一台机器宕机了，分区依然是可用的）。</p>
-<p>每一条数据流被称为一个topic。每一个话题都在多台被称作broker的机器上进行分区和复制。当一个生产者发送一条消息给一个话题，它会提供一个key，这个key被用来决定这条消息应该被发送到哪一个分区。生产者发送信息而Kafka的broker则接收和存储它们。Kafka的消费者能通过在一个话题的所有分区上订阅消息来读取消息。</p>
-<p>Kafka有一些有趣的特点：</p>
-<ul>
-<li>同一个key的所有消息都被划分到同一个分区，这就意味着如果你想要读到一个特定用户的所有消息，你只要从包含这个用户id的分区读取即可，而不是整个topic（假设把用户id用作key）</li>
-<li>一个topic的分区是按顺序到达的一序列消息，所以你可以通过单调递增偏移量offset来引用任何消息（就好比放一个索引到一个数组里）；这也意味着broker不需要跟踪被一个特定的消费者读取的消息，为什么呢？因为消费者保存了消息的偏移量offset能够跟踪到它。然后我们知道的是带着一个比当前偏移量小的消息是已经被处理过的，而每一个带着更大偏移量的消息还没有被处理过。</li>
-</ul>
-<h2 id="YARN"><a href="#YARN" class="headerlink" title="YARN"></a>YARN</h2><p>YARN有三个组成部分：资源管理器（ResourceManager）、节点管理器（NodeManager）和应用管理器（ApplicationMaster）。</p>
-<ul>
-<li>NodeManager：在一个YARN网格里，每一台机器上都跑着NodeManager，它负责在所在的机器上启动进程。</li>
-<li>ResourceManager与所有的NodeMananger交互告诉它们跑什么应用，反过来NodeManager也会告诉ResourceManager它们希望什么时间在集群里跑这些东东。</li>
-<li>ApplicationMaster让特定应用的代码跑在YARN集群上，它负责管理应用的负载、容器（通常是UNIX进程），并且当其中一个容器失败时发出通知。</li>
-</ul>
-<p>Samza提供了一个YARN ApplicationMaster和一个开箱即用的YARN Job运行器。如图所示（不同的颜色表示不同的机器）</p>
-<p><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-yarn-kafka-integration.png" alt="image"></p>
-<p>Samza的客户端告诉YARN的RM（ResourceManager，以下简称RM）运行一个新的Job，RM会告诉YARN的一个NodeManager（简称NM）为Samza的ApplicationMaster（AM）在集群里分配空间。一旦NM分配了空间，就会启动这个Samza的AM。AM开始后，它会向RM请求运行SamzaContainers所需的YARN containers。RM和NMs一起为containers分配空间。一旦空间被分配，NMs就会开启Samza containers。  </p>
-<p>YARN启动并且监控一个或者多个SamzaContainers，并且你的处理逻辑代码（使用StreamTask API）在这些容器里运行。这些Samza 流任务的输入和输出都来自Kafka的Brokers（通常他们都是作为YARN NMs位于同台机器）</p>
-<p>通过对topic的分区，将数据流处理拆解到任务中以及在多台机器上并行执行任务，使得Samza具有很高的消息吞吐量。通过结合YARN和Kafka，Samza实现了高容错：如果一个进程或者机器失败，它会自动在另一台机器上重启它并且继续从消息终端的地方开始处理，这些都是自动化的。</p>
-
+          
       
     </div>
     
@@ -663,6 +446,10 @@
 
 
       
+      
+        <p class="article-more-link">
+          <a href="/2016/10/28/Samza学习3---架构/#more">阅读全文 >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>
@@ -680,10 +467,10 @@
 
 
   
-    <article id="post-Samza学习（一）---基本概念" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Samza学习2---基本概念" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/Samza学习（一）---基本概念/" class="article-date">
+      <a href="/2016/10/28/Samza学习2---基本概念/" class="article-date">
       <time datetime="2016-10-28T09:41:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
@@ -699,7 +486,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/28/Samza学习（一）---基本概念/">Samza学习（一）---基本概念</a>
+      <a class="article-title" href="/2016/10/28/Samza学习2---基本概念/">Samza学习2---基本概念</a>
     </h1>
   
 
@@ -709,60 +496,12 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+              <Excerpt in index | 首页摘要>   
+
 <h1 id="Samza"><a href="#Samza" class="headerlink" title="Samza"></a>Samza</h1><p>samza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。</p>
 <h2 id="为什么需要samza"><a href="#为什么需要samza" class="headerlink" title="为什么需要samza"></a>为什么需要samza</h2><p>kafka作为一个分布式的消息队列系统，已经实现了流式处理框架底层的许多核心基础架构，把消息串联流动起来就是Streaming了。</p>
-<p>但是要构建一个可用的流式数据处理框架，还是有许多事情要做。例如生产者和消费者进程的管理，作业调度和容错处理，辅助工具和监控管理手段，更友好方便的用户接口等等，本质上说，Samza是在消息队列系统上的更高层的抽象，是一种应用流式处理框架在消息队列系统上的一种应用模式的实现。</p>
-<h3 id="需要解决的问题"><a href="#需要解决的问题" class="headerlink" title="需要解决的问题"></a>需要解决的问题</h3><p>比如分区：如何划分流？如何划分处理器？如何管理状态，其中状态本质上是指在处理器中维护的介于消息之间的东西，或者如果每次有消息到达的时候，计数器就会加1，那么它也可以是像总数这样的东西。如何重新处理？</p>
-<p>至于失败语义，我们会得到至少一次，或者至多一次，或者恰好一次消息，也有不确定性。如果流处理器与另一个系统交互，无论它是个数据库，还是依赖于时间或者消息的顺序，如何处理那些真正决定最终输出结果的数据？</p>
-<h2 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h2><p>Samza的一个job的基本处理流程是一个用户任务从一个或多个输入流中读取数据，再输出到一个或多个输出流中，具体映射到kafka上就是从一个或多个topic读入数据，再写出到另一个或多个topic中去。多个job串联起来就完成了流式的数据处理流程。</p>
-<p>这种模式其实有点像MapReduce的过程，stream输入部分由kafka的partition决定了分区和task数目，类似于一个Map过程，输出时由用户task指定topic和分区（或者框架自动由Key决定分区），这相当于一次shuffle的过程，下一个job读取新的stream时，可以认为是一个reduce，也可以认为是下一个map过程的开始。</p>
-<p>不同之处在于job之间的串联无需等待上一个job的结束，类实时的消息分发机制决定了整个串联的job是连续不间断的，亦即流式的。</p>
-<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><p>Samza是一个流式计算框架，它有以下特性：</p>
-<ul>
-<li>简单的API：和绝大多数低层次消息系统API不同，相比MapReduce，Samza提供了一个非常简单的“基于回调（callback-based）”的消息处理API</li>
-<li>管理状态：Samza管理快照和流处理器的状态恢复。当处理器重启，Samza恢复其状态一致的快照。Samza的建立是为了处理大量的状态</li>
-<li>容错性：当集群中有一台机器宕机了，基于Yarn管理的Samza会立即将你的任务导向另一台机器；</li>
-<li>持久性：Samza通过Kafka保证消息按顺序写入对应分区，并且不会丢失消息；</li>
-<li>扩展性：Samza在每一层都做了分区和分布。Kafka提供了顺序的、分区、可复制的、容错的流。YARN则为Samza的运行提供了一个分布式环境</li>
-<li>可插拔：虽然Samza在Kafka和YARN的外部工作，但是Samza提供了可以让你在其它消息系统和执行环境里运行的可插拔的API</li>
-<li>处理器隔离：运行在YARN上的Samza同样支持Hadoop安全模型以及通过linux CGroups进行资源隔离</li>
-</ul>
-<p>Samza区别于其他框架的几个方面：</p>
-<ul>
-<li>Samza支持局部状态的容错。状态自己作为一个流被构造。如果因为机器宕机本地状态丢失，那么状态流会回放重新存储它</li>
-<li>流是有序、分区的、可回放的并且是容错的</li>
-<li>YARN用来处理隔离、安全和容错</li>
-<li>任务之间是解耦的：如果有一个任务慢了并且造成了消息的积压，系统其它部分不会受到影响；</li>
-</ul>
-<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="流（Streams）"><a href="#流（Streams）" class="headerlink" title="流（Streams）"></a>流（Streams）</h3><p>Samza处理流。流是由一定数量的类型或类别相似的不可变消息组成。  </p>
-<ul>
-<li>kafka里，流是一个topic（话题） </li>
-<li>数据库里，我们可以通过消费从一个表里更新操作读取一个流  </li>
-<li>hadoop里，我们可能跟踪在hdfs上的一个目录下的文件</li>
-</ul>
-<h3 id="作业（job）"><a href="#作业（job）" class="headerlink" title="作业（job）"></a>作业（job）</h3><p>Samza的jobs 是将输入流进行逻辑处理，然后转化成输出流的程序。</p>
-<p>为了扩展流处理器的吞吐量，stream拆分成：分区Partitions<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">Streams--&gt;Partitions</div></pre></td></tr></table></figure></p>
-<p>job拆分更小的并行单元：任务Tasks</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">job--&gt;tasks</div></pre></td></tr></table></figure>
-<h3 id="分区（Partitions）"><a href="#分区（Partitions）" class="headerlink" title="分区（Partitions）"></a>分区（Partitions）</h3><p>每个流都被分割成一个或多个分区，并且在流里的每一个分区都总是一个有序的消息序列。每个消息在这个序列里有一个被叫做offset（中文称它为偏移量），它在每一个分区里都是唯一的。这个偏移量可以是一个连续的整数、字节偏移量或者字符串，这取决于底层的系统实现了。</p>
-<p>当有一个消息加入到流中，它只会追加到流的分区中的一个。这个消息通过写入者带着一个被选择的key分配到它对应的分区中。举个例子，如果用户id被用作key，那么所有和用户id相关的消息都应该追加到这个分区中。<br><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/stream.png" alt="image"></p>
-<h3 id="任务（task）"><a href="#任务（task）" class="headerlink" title="任务（task）"></a>任务（task）</h3><p>一个Job通过把他分割成多个任务Task进行扩展。每个任务Task消费来自一个Partitions的数据。</p>
-<p>按照消息的偏移，一个任务按序处理来自它的输入分区的消息。分区之间没有定义顺序，这就允许每一个任务独立执行。YARN调度器负责分发任务给一台机器，所以作为一个整体的工作Job可以分配到多个机器并行执行。</p>
-<p>在一个Job中任务Task的数量是由输入分区决定的（也就是说任务数目不能超过分区数目，否则就会存在没有输入的任务）。可是，你能改变分配给Job的计算资源（比如内存、cpu核数等）去满足job的需要，可以参考下面关于container的介绍。</p>
-<p>另外一个值得注意的是分配给task的分区的任务绝不会改变：如果有一个任务在一台失效的机器上，这个task会被在其它地方重启，仍然会消费同一个流的分区。</p>
-<p><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/job_detail.png" alt="image"></p>
-<h3 id="Dataflow-Graphs"><a href="#Dataflow-Graphs" class="headerlink" title="Dataflow Graphs"></a>Dataflow Graphs</h3><p>我们能组合多个Jobs去创建一个数据流图（DAG 有向无环图），其中节点表示包含数据的流，而边则是进行数据传输。这个组合纯粹是通过Jobs作为输入和输出的流来完成。这些Jobs也是解耦的：他们不需要基于相同的代码库，并且添加、删除或者重启一个下游任务不会影响上游的任务。<br><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/dag.png" alt="image"></p>
-<h3 id="Containers"><a href="#Containers" class="headerlink" title="Containers"></a>Containers</h3><p>分区Partitions和任务Tasks都是并行的逻辑单元。</p>
-<p>Containers是物理的并行单元，并且一个容器本质上是一个Unix进程（或者Linux cgroup）。</p>
-<p>每个容器跑着一个或多个Tasks。Tasks的数量是从输入的分区数自动确定和固定下来的，但是容器的数量（CPU、内存资源）是在运行时用户设定的并且能在任何时刻改变。</p>
-<h3 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h3><ul>
-<li>容器——分区和任务是逻辑并行单元，而容器是物理并行单元。每个容器是一个运行一个或多个任务的Unix进程（或者Linux cgroup）。</li>
-<li>TaskRunner——TaskRunner是Samza的流处理容器。它负责启动、执行以及关闭一个或多个StreamTask实例。</li>
-<li>“检查点（Checkpointing）”——检查点通常用于故障恢复。如果一个taskrunner由于某种原因宕掉了（比如，硬件故障），当重新启动时，它应该使用最后离开时的消息——这是通过检查点实现的。</li>
-<li>状态管理——需要在不同的消息处理之间传递的数据称之为状态——它可以是保存一个总数那样简单的东西，也可以是复杂得多的东西。Samza允许任务维持一种持久可变且可查询的状态，而且，它与每个任务在物理上处于同一位置。状态需要具备高可用性：如果出现任务失败的情况，它可以在任务故障转移到另一台机器时还原。</li>
-</ul>
-
+<p>但是要构建一个可用的流式数据处理框架，还是有许多事情要做。例如生产者和消费者进程的管理，作业调度和容错处理，辅助工具和监控管理手段，更友好方便的用户接口等等，本质上说，Samza是在消息队列系统上的更高层的抽象，是一种应用流式处理框架在消息队列系统上的一种应用模式的实现。  </p>
+          
       
     </div>
     
@@ -775,6 +514,10 @@
 
 
       
+      
+        <p class="article-more-link">
+          <a href="/2016/10/28/Samza学习2---基本概念/#more">阅读全文 >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>
@@ -792,10 +535,10 @@
 
 
   
-    <article id="post-Samza学习（零）---hello_Samza" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Samza学习1---Hello_Samza" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/Samza学习（零）---hello_Samza/" class="article-date">
+      <a href="/2016/10/28/Samza学习1---Hello_Samza/" class="article-date">
       <time datetime="2016-10-28T09:40:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
@@ -811,7 +554,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/28/Samza学习（零）---hello_Samza/">Samza学习（零）---hello Samza</a>
+      <a class="article-title" href="/2016/10/28/Samza学习1---Hello_Samza/">Samza学习1---Hello Samza</a>
     </h1>
   
 
@@ -821,56 +564,11 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="hello-Samza"><a href="#hello-Samza" class="headerlink" title="hello Samza"></a>hello Samza</h1><p>参考：<a href="http://blog.jassassin.com/2015/04/30/samza/hello-samza/" target="_blank" rel="external">http://blog.jassassin.com/2015/04/30/samza/hello-samza/</a><br>安装和配置Apache-Samza，需要jdk1.7+、maven2的环境</p>
-<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>官方给的<a href="https://git.apache.org/samza-hello-samza.git可能连接不上，换了一个" target="_blank" rel="external">https://git.apache.org/samza-hello-samza.git可能连接不上，换了一个</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/apache/samza-hello-samza.git hello-samza</div><div class="line">cd hello-samza/</div></pre></td></tr></table></figure></p>
-<h2 id="运行grid"><a href="#运行grid" class="headerlink" title="运行grid"></a>运行grid</h2><p>下载、安装相关系统<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/grid bootstrap</div></pre></td></tr></table></figure></p>
-<p>虽然只有一句话，但是会执行如下，会下载并安装samza，zookeeper，yarn，kafka<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">stop all           #停止yarn|kafka|zookeeper</div><div class="line">install all        #安装</div><div class="line">start all          #启动</div></pre></td></tr></table></figure></p>
-<p>可能出现很多问题</p>
-<h4 id="出现问题："><a href="#出现问题：" class="headerlink" title="出现问题："></a>出现问题：</h4><ol>
-<li>公司开发机，没有root权限，会有错误：  <blockquote>
-<p>Caused by: java.io.IOException: No locks available</p>
-</blockquote>
-</li>
-</ol>
-<p>gradle的默认本地仓库是home下的 如~/.gradle<br>需要修改gradle和samza目录，在用户的home目录下建立软连接：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ln -s /disk1/fangyq/gradle ~/.gradle</div><div class="line">ln -s /disk1/fangyq/samza ~/.samza</div></pre></td></tr></table></figure></p>
-<ol>
-<li>改完继续执行bin/grid bootstrap,会出现超时，</li>
-</ol>
-<blockquote>
-<p>fatal: unable to connect to git.apache.org:<br>git.apache.org[0: 54.84.58.65]: errno=Connection timed out</p>
-</blockquote>
-<p>修改bin/grid文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git clone git://git.apache.org/samza.git                 #原地址</div><div class="line">git clone https://github.com/apache/samza.git            #现地址</div></pre></td></tr></table></figure></p>
-<p>继续执行bin/grid bootstrap，下载、安装持续了很久。<br>再给我一次机会，肯定会改下载地址，下面自带的地址太慢了，hadoop的用了一个多小时。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">DOWNLOAD_KAFKA=http://www.us.apache.org/dist/kafka/0.8.2.1/kafka_2.10-0.8.2.1.tgz</div><div class="line">DOWNLOAD_YARN=https://archive.apache.org/dist/hadoop/common/hadoop-2.6.1/hadoop-2.6.1.tar.gz</div><div class="line">DOWNLOAD_ZOOKEEPER=http://archive.apache.org/dist/zookeeper/zookeeper-3.4.3/zookeeper-3.4.3.tar.gz</div></pre></td></tr></table></figure></p>
-<p>安装完后，在deploy目录下有kafka，yarn，zookeeper的系统。<br>在自己建立软连接的目录下有samza。</p>
-<p>查看是否安装成功：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">jps</div><div class="line"></div><div class="line">50500 NodeManager</div><div class="line">43877 Kafka</div><div class="line">56215 Jps</div><div class="line">50439 ResourceManager</div><div class="line">43721 QuorumPeerMain</div></pre></td></tr></table></figure></p>
-<p>还可以通过浏览器访问来查看YARN UI：<br><a href="http://localhost:8088" target="_blank" rel="external">http://localhost:8088</a>   </p>
-<h2 id="利用maven打包并解压"><a href="#利用maven打包并解压" class="headerlink" title="利用maven打包并解压"></a>利用maven打包并解压</h2><p>打包，要等很久。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn clean package</div></pre></td></tr></table></figure></p>
-<h4 id="出现问题：-1"><a href="#出现问题：-1" class="headerlink" title="出现问题："></a>出现问题：</h4><blockquote>
-<p>Too many files with unapproved license samza</p>
-</blockquote>
-<p>修改之后继续打包：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn -Drat.ignoreErrors=true  clean package</div></pre></td></tr></table></figure></p>
-<p>解压：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdir -p deploy/samza</div><div class="line">tar -xvf target/hello-samza-0.10.1-dist.tar.gz -C deploy/samza</div></pre></td></tr></table></figure></p>
-<h2 id="运行samza-job："><a href="#运行samza-job：" class="headerlink" title="运行samza job："></a>运行samza job：</h2><h3 id="数据获取job"><a href="#数据获取job" class="headerlink" title="数据获取job"></a>数据获取job</h3><p>该job是从在线的wikimedia实时消费数据，作为kafka的wikipedia-raw这个topic的producer。  </p>
-<p>先看下将要运行的示例的input<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">less deploy/samza/config/wikipedia-feed.properties</div></pre></td></tr></table></figure></p>
-<p>测试一下是否能连接上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">telnet irc.wikimedia.org 6667</div></pre></td></tr></table></figure></p>
-<ul>
-<li><p>如果有响应</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">deploy/samza/bin/run-job.sh --config-factory=org.apache.samza.config.factories.PropertiesConfigFactory --config-path=file://$PWD/deploy/samza/config/wikipedia-feed.properties</div></pre></td></tr></table></figure>
-</li>
-<li><p>如果没有响应。只能使用本地的数据，作为kafka的producer：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">bin/produce-wikipedia-raw-data.sh</div><div class="line"></div><div class="line">#或者可以修改kafka-broker地址和zookeeper地址</div><div class="line">bin/produce-wikipedia-raw-data.sh -b yourKafkaBrokerAddress -z yourZookeeperAddress</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>测试是否成功，开一个消费者实时消费wikipedia-raw<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-raw</div></pre></td></tr></table></figure></p>
-<p>将会有实时的消息输出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;raw&quot;:&quot;[[Paul Henreid]]  http://en.wikipedia.org/w/index.php?diff=606587718&amp;oldid=603654278 * .48.142.193 * (-1) original name Wasel, not Wassel - see ref &amp; ext link&quot;,&quot;time&quot;:1398926962623,&quot;source&quot;:&quot;rc-pmtpa&quot;,&quot;channel&quot;:&quot;#en.wikipedia&quot;&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="数据统计job"><a href="#数据统计job" class="headerlink" title="数据统计job"></a>数据统计job</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">deploy/samza/bin/run-job.sh --config-factory=org.apache.samza.config.factories.PropertiesConfigFactory --config-path=file://$PWD/deploy/samza/config/wikipedia-parser.properties</div><div class="line"></div><div class="line">deploy/samza/bin/run-job.sh --config-factory=org.apache.samza.config.factories.PropertiesConfigFactory --config-path=file://$PWD/deploy/samza/config/wikipedia-stats.properties</div></pre></td></tr></table></figure>
-<p>前面的wikipedia-parser负责解析wikipedia-raw中消息，从而抽取edit的大小,修改者等信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">wikipedia-raw--&gt;wikipedia-edits</div></pre></td></tr></table></figure></p>
-<p>后面的wikipedia-stats负责统计来自wikipedia-edits中的消息，计算消息的个数。而后通过一个10秒钟长的滑动时间窗口将统计个数发送到kafka的wikipedia-statstopic中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">wikipedia-edits--&gt;wikipedia-statstopic</div></pre></td></tr></table></figure></p>
-<p>可以查看结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-edits</div><div class="line"></div><div class="line">deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-stats</div></pre></td></tr></table></figure></p>
-<p>最后的输出结果类似：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;is-minor&quot;:948,&quot;unique-titles&quot;:763,&quot;is-talk&quot;:90,&quot;is-bot-edit&quot;:513,&quot;bytes-added&quot;:350253,&quot;edits&quot;:2790,&quot;is-new&quot;:135,&quot;edits-all-time&quot;:3720,&quot;is-unpatrolled&quot;:78&#125;</div><div class="line">&#123;&quot;is-minor&quot;:632,&quot;unique-titles&quot;:763,&quot;is-talk&quot;:60,&quot;is-bot-edit&quot;:342,&quot;bytes-added&quot;:233502,&quot;edits&quot;:1860,&quot;is-new&quot;:90,&quot;edits-all-time&quot;:5580,&quot;is-unpatrolled&quot;:52&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="关闭samza"><a href="#关闭samza" class="headerlink" title="关闭samza"></a>关闭samza</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/grid stop all</div></pre></td></tr></table></figure>
-<h2 id="开启samza"><a href="#开启samza" class="headerlink" title="开启samza"></a>开启samza</h2><p>如果不是首次，则通过之前的bootstrap已经下载了相应的东西，只需要start<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/grid start all</div></pre></td></tr></table></figure></p>
+              <Excerpt in index | 首页摘要>   
 
+
+<h1 id="hello-Samza"><a href="#hello-Samza" class="headerlink" title="hello Samza"></a>hello Samza</h1><p><a href="http://samza.apache.org/startup/hello-samza/0.10/">hello-samza</a>是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！<br>
+          
       
     </div>
     
@@ -883,6 +581,10 @@
 
 
       
+      
+        <p class="article-more-link">
+          <a href="/2016/10/28/Samza学习1---Hello_Samza/#more">阅读全文 >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>

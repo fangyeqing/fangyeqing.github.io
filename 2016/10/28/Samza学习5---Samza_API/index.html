@@ -15,16 +15,16 @@
 
 
 
-<meta name="description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta name="description" content="Samza API任务类必须实现StreamTask,可选 InitableTask, ClosableTask,WindowableTask123public class xxxxTask implements StreamTask, InitableTask, ClosableTask,WindowableTask &amp;#123;&amp;#125;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Samza学习（四）---Samza API">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza学习（四）---Samza_API/index.html">
+<meta property="og:title" content="Samza学习5---Samza API">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza学习5---Samza_API/index.html">
 <meta property="og:site_name" content="方叶青的博客">
-<meta property="og:description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
-<meta property="og:updated_time" content="2016-10-28T10:04:59.000Z">
+<meta property="og:description" content="Samza API任务类必须实现StreamTask,可选 InitableTask, ClosableTask,WindowableTask123public class xxxxTask implements StreamTask, InitableTask, ClosableTask,WindowableTask &amp;#123;&amp;#125;">
+<meta property="og:updated_time" content="2016-10-28T13:30:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Samza学习（四）---Samza API">
-<meta name="twitter:description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta name="twitter:title" content="Samza学习5---Samza API">
+<meta name="twitter:description" content="Samza API任务类必须实现StreamTask,可选 InitableTask, ClosableTask,WindowableTask123public class xxxxTask implements StreamTask, InitableTask, ClosableTask,WindowableTask &amp;#123;&amp;#125;">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -33,7 +33,7 @@
 
 
 
-    <link rel="shortcut icon" href="/favicon.png">
+    <link rel="shortcut icon" href="/xiaolan.ico">
 
 
 
@@ -56,7 +56,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Samza学习（四）---Samza API | 方叶青的博客</title>
+<title>Samza学习5---Samza API | 方叶青的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -72,7 +72,7 @@
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
-        search: undefined
+        search: true
     }
 </script>
 
@@ -96,7 +96,7 @@
 <div class="intrude-less">
     <header id="header" class="inner">
         <a href="/" class="profilepic">
-            <img src="/img/avatar.png" class="animated zoomIn">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
         </a>
         <hgroup>
           <h1 class="header-author"><a href="/">fangyeqing</a></h1>
@@ -104,6 +104,13 @@
 
         
 
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
         
 
 
@@ -168,11 +175,9 @@
                     <nav class="header-nav">
                         <ul class="social">
                             
-                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
                             
-                                <a class="fa GitHub" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
                             
                         </ul>
                     </nav>
@@ -204,7 +209,7 @@
                 
                 <section class="switch-part switch-part4">
                 
-                    <div id="js-aboutme">专注于前端</div>
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
                 </section>
                 
             </div>
@@ -221,7 +226,7 @@
     <div class="intrude-less">
         <header id="header" class="inner">
             <a href="/" class="profilepic">
-                <img src="/img/avatar.png" class="animated zoomIn">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
             </a>
             <hgroup>
               <h1 class="header-author"><a href="/" title="回到主页">fangyeqing</a></h1>
@@ -244,11 +249,9 @@
             <nav class="header-nav">
                         <ul class="social">
                             
-                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
                             
-                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
                             
                         </ul>
             </nav>
@@ -256,10 +259,10 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-Samza学习（四）---Samza_API" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Samza学习5---Samza_API" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/Samza学习（四）---Samza_API/" class="article-date">
+      <a href="/2016/10/28/Samza学习5---Samza_API/" class="article-date">
       <time datetime="2016-10-28T09:44:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
@@ -275,7 +278,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Samza学习（四）---Samza API
+      Samza学习5---Samza API
     </h1>
   
 
@@ -296,8 +299,11 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+        <excerpt in="" index="" |="" 首页摘要="">   
+
 <h1 id="Samza-API"><a href="#Samza-API" class="headerlink" title="Samza API"></a>Samza API</h1><p>任务类必须实现StreamTask,可选 InitableTask, ClosableTask,WindowableTask<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class xxxxTask implements StreamTask, InitableTask, ClosableTask,WindowableTask &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<a id="more"></a>  
+<p><the rest="" of="" contents="" |="" 余下全文="">   </the></p>
 <h2 id="StreamTask"><a href="#StreamTask" class="headerlink" title="StreamTask"></a>StreamTask</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public interface StreamTask &#123;</div><div class="line">    void process(IncomingMessageEnvelope var1, //接收到的消息封装</div><div class="line">                MessageCollector var2,//用来发送其他消息</div><div class="line">                TaskCoordinator var3) </div><div class="line">    throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="IncomingMessageEnvelop"><a href="#IncomingMessageEnvelop" class="headerlink" title="IncomingMessageEnvelop"></a>IncomingMessageEnvelop</h3><p>代表接收到的消息的封装,表示StreamTask收到一个分区的一个特定的输入流。包括：</p>
 <ul>
@@ -320,7 +326,8 @@
 <h2 id="ClosableTask"><a href="#ClosableTask" class="headerlink" title="ClosableTask"></a>ClosableTask</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public interface ClosableTask &#123;</div><div class="line">    void close() throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="WindowableTask"><a href="#WindowableTask" class="headerlink" title="WindowableTask"></a>WindowableTask</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public interface WindowableTask &#123;</div><div class="line">    void window(MessageCollector var1, </div><div class="line">                TaskCoordinator var2) throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>有一个简单的任务，它把每个输入的消息拆成单词，并且发送每一个单词作为一个消息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"> public class SplitStringIntoWords implements StreamTask, InitableTask, ClosableTask &#123;</div><div class="line"></div><div class="line">    private String outputSystem;</div><div class="line">    </div><div class="line">    //官网教程中直接使用固定的SystemStream,稍加改造</div><div class="line">    //private final SystemStream output_stream = new SystemStream(&quot;kafka&quot;, &quot;words&quot;);</div><div class="line">    </div><div class="line">    @Override</div><div class="line">    public void close() throws Exception &#123;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    @Override</div><div class="line">    public void init(Config config, TaskContext context) throws Exception &#123;//初始化时从配置文件读output system</div><div class="line">        outputSystem = config.get(&quot;task.output.system&quot;);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    public void process(IncomingMessageEnvelope envelope,</div><div class="line">                      MessageCollector collector,</div><div class="line">                      TaskCoordinator coordinator) &#123;</div><div class="line">        String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();</div><div class="line">        </div><div class="line">        topic=topic+&quot;_split&quot;;//获取输入消息的topic，加上后缀</div><div class="line">        </div><div class="line">        SystemStream output_stream=new SystemStream(outputSystem, topic);//构造新的发送消息的System+Stream</div><div class="line">        </div><div class="line">        String message = (String) envelope.getMessage();//接收到的消息</div><div class="line">        </div><div class="line">        for (String word : message.split(&quot; &quot;)) &#123;</div><div class="line">          //单词作为key，1作为value，后续任务可以将1相加计数</div><div class="line">          collector.send(new OutgoingMessageEnvelope(output_stream, word, 1));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+</excerpt>
       
     </div>
     
@@ -328,13 +335,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/28/Samza学习（四）---Samza_API/">Samza学习（四）---Samza API</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/28/Samza学习5---Samza_API/">Samza学习5---Samza API</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">fangyeqing</a></p>
         <p><span>发布时间:</span>2016-10-28, 17:44:00</p>
-        <p><span>最后更新:</span>2016-10-28, 18:04:59</p>
+        <p><span>最后更新:</span>2016-10-28, 21:30:17</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/28/Samza学习（四）---Samza_API/" title="Samza学习（四）---Samza API">https://fangyeqing.github.io/2016/10/28/Samza学习（四）---Samza_API/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/Samza学习（四）---Samza_API/　　作者: fangyeqing" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/28/Samza学习5---Samza_API/" title="Samza学习5---Samza API">https://fangyeqing.github.io/2016/10/28/Samza学习5---Samza_API/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/Samza学习5---Samza_API/　　作者: fangyeqing" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -348,8 +355,8 @@
         
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/28/Samza学习（三）---核心部件/">
-                    Samza学习（三）---核心部件
+                <a href="/2016/10/28/Samza学习4---核心部件/">
+                    Samza学习4---核心部件
                 </a>
             </div>
         
@@ -361,7 +368,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#参考："><span class="toc-number">1.</span> <span class="toc-text">参考：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Samza-API"><span class="toc-number">2.</span> <span class="toc-text">Samza API</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#StreamTask"><span class="toc-number">2.1.</span> <span class="toc-text">StreamTask</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IncomingMessageEnvelop"><span class="toc-number">2.1.1.</span> <span class="toc-text">IncomingMessageEnvelop</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SystemStreamPartition"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">SystemStreamPartition</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MessageCollector"><span class="toc-number">2.1.2.</span> <span class="toc-text">MessageCollector</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#OutgoingMessageEnvelope"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">OutgoingMessageEnvelope</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#InitableTask"><span class="toc-number">2.2.</span> <span class="toc-text">InitableTask</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ClosableTask"><span class="toc-number">2.3.</span> <span class="toc-text">ClosableTask</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WindowableTask"><span class="toc-number">2.4.</span> <span class="toc-text">WindowableTask</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实例"><span class="toc-number">2.5.</span> <span class="toc-text">实例</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Samza-API"><span class="toc-number">1.</span> <span class="toc-text">Samza API</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#StreamTask"><span class="toc-number">1.1.</span> <span class="toc-text">StreamTask</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IncomingMessageEnvelop"><span class="toc-number">1.1.1.</span> <span class="toc-text">IncomingMessageEnvelop</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SystemStreamPartition"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">SystemStreamPartition</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MessageCollector"><span class="toc-number">1.1.2.</span> <span class="toc-text">MessageCollector</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#OutgoingMessageEnvelope"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">OutgoingMessageEnvelope</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#InitableTask"><span class="toc-number">1.2.</span> <span class="toc-text">InitableTask</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ClosableTask"><span class="toc-number">1.3.</span> <span class="toc-text">ClosableTask</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WindowableTask"><span class="toc-number">1.4.</span> <span class="toc-text">WindowableTask</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实例"><span class="toc-number">1.5.</span> <span class="toc-text">实例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考："><span class="toc-number">2.</span> <span class="toc-text">参考：</span></a></li></ol>
         
     </div>
     <style>
@@ -397,7 +404,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"Samza学习（四）---Samza API　| 方叶青的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Samza学习5---Samza API　| 方叶青的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -411,6 +418,25 @@
 
 
     
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/Samza学习5---Samza_API/" data-title="Samza学习5---Samza API" data-url="https://fangyeqing.github.io/2016/10/28/Samza学习5---Samza_API/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
 
 
 
@@ -423,13 +449,13 @@
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/28/Samza学习（三）---核心部件/" title="下一篇: Samza学习（三）---核心部件">
+            <a href="/2016/10/28/Samza学习4---核心部件/" title="下一篇: Samza学习4---核心部件">
                 <i class="fa fa-angle-right"></i>
             </a>
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（四）---Samza_API/">Samza学习（四）---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（三）---核心部件/">Samza学习（三）---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（二）---架构/">Samza学习（二）---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（一）---基本概念/">Samza学习（一）---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（零）---hello_Samza/">Samza学习（零）---hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hello-world/">Hello World</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习5---Samza_API/">Samza学习5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习4---核心部件/">Samza学习4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习3---架构/">Samza学习3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习2---基本概念/">Samza学习2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习1---Hello_Samza/">Samza学习1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hello-world/">Hello World</a></li></ul>
 
 
 

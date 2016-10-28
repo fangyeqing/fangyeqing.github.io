@@ -15,19 +15,16 @@
 
 
 
-<meta name="description" content="hello Samza参考：http://blog.jassassin.com/2015/04/30/samza/hello-samza/安装和配置Apache-Samza，需要jdk1.7+、maven2的环境
-下载源码官方给的https://git.apache.org/samza-hello-samza.git可能连接不上，换了一个12git clone https://github.com">
+<meta name="description" content="hello Samzahello-samza是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Samza学习（零）---hello Samza">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza学习（零）---hello_Samza/index.html">
+<meta property="og:title" content="Samza学习1---Hello Samza">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza学习1---Hello_Samza/index.html">
 <meta property="og:site_name" content="方叶青的博客">
-<meta property="og:description" content="hello Samza参考：http://blog.jassassin.com/2015/04/30/samza/hello-samza/安装和配置Apache-Samza，需要jdk1.7+、maven2的环境
-下载源码官方给的https://git.apache.org/samza-hello-samza.git可能连接不上，换了一个12git clone https://github.com">
-<meta property="og:updated_time" content="2016-10-28T10:03:10.000Z">
+<meta property="og:description" content="hello Samzahello-samza是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！">
+<meta property="og:updated_time" content="2016-10-28T13:26:56.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Samza学习（零）---hello Samza">
-<meta name="twitter:description" content="hello Samza参考：http://blog.jassassin.com/2015/04/30/samza/hello-samza/安装和配置Apache-Samza，需要jdk1.7+、maven2的环境
-下载源码官方给的https://git.apache.org/samza-hello-samza.git可能连接不上，换了一个12git clone https://github.com">
+<meta name="twitter:title" content="Samza学习1---Hello Samza">
+<meta name="twitter:description" content="hello Samzahello-samza是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -36,7 +33,7 @@
 
 
 
-    <link rel="shortcut icon" href="/favicon.png">
+    <link rel="shortcut icon" href="/xiaolan.ico">
 
 
 
@@ -59,7 +56,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Samza学习（零）---hello Samza | 方叶青的博客</title>
+<title>Samza学习1---Hello Samza | 方叶青的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -75,7 +72,7 @@
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
-        search: undefined
+        search: true
     }
 </script>
 
@@ -99,7 +96,7 @@
 <div class="intrude-less">
     <header id="header" class="inner">
         <a href="/" class="profilepic">
-            <img src="/img/avatar.png" class="animated zoomIn">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
         </a>
         <hgroup>
           <h1 class="header-author"><a href="/">fangyeqing</a></h1>
@@ -107,6 +104,13 @@
 
         
 
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
         
 
 
@@ -171,11 +175,9 @@
                     <nav class="header-nav">
                         <ul class="social">
                             
-                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
                             
-                                <a class="fa GitHub" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
                             
                         </ul>
                     </nav>
@@ -207,7 +209,7 @@
                 
                 <section class="switch-part switch-part4">
                 
-                    <div id="js-aboutme">专注于前端</div>
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
                 </section>
                 
             </div>
@@ -224,7 +226,7 @@
     <div class="intrude-less">
         <header id="header" class="inner">
             <a href="/" class="profilepic">
-                <img src="/img/avatar.png" class="animated zoomIn">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
             </a>
             <hgroup>
               <h1 class="header-author"><a href="/" title="回到主页">fangyeqing</a></h1>
@@ -247,11 +249,9 @@
             <nav class="header-nav">
                         <ul class="social">
                             
-                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
                             
-                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
                             
                         </ul>
             </nav>
@@ -259,10 +259,10 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-Samza学习（零）---hello_Samza" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Samza学习1---Hello_Samza" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/Samza学习（零）---hello_Samza/" class="article-date">
+      <a href="/2016/10/28/Samza学习1---Hello_Samza/" class="article-date">
       <time datetime="2016-10-28T09:40:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
@@ -278,7 +278,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Samza学习（零）---hello Samza
+      Samza学习1---Hello Samza
     </h1>
   
 
@@ -299,7 +299,13 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="hello-Samza"><a href="#hello-Samza" class="headerlink" title="hello Samza"></a>hello Samza</h1><p>参考：<a href="http://blog.jassassin.com/2015/04/30/samza/hello-samza/" target="_blank" rel="external">http://blog.jassassin.com/2015/04/30/samza/hello-samza/</a><br>安装和配置Apache-Samza，需要jdk1.7+、maven2的环境</p>
+        <excerpt in="" index="" |="" 首页摘要="">   
+
+
+<h1 id="hello-Samza"><a href="#hello-Samza" class="headerlink" title="hello Samza"></a>hello Samza</h1><p><a href="http://samza.apache.org/startup/hello-samza/0.10/" target="_blank" rel="external">hello-samza</a>是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！<br><a id="more"></a>   </p>
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<p>安装和配置Apache-Samza，需要jdk1.7+、maven2的环境</p>
 <h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>官方给的<a href="https://git.apache.org/samza-hello-samza.git可能连接不上，换了一个" target="_blank" rel="external">https://git.apache.org/samza-hello-samza.git可能连接不上，换了一个</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/apache/samza-hello-samza.git hello-samza</div><div class="line">cd hello-samza/</div></pre></td></tr></table></figure></p>
 <h2 id="运行grid"><a href="#运行grid" class="headerlink" title="运行grid"></a>运行grid</h2><p>下载、安装相关系统<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/grid bootstrap</div></pre></td></tr></table></figure></p>
 <p>虽然只有一句话，但是会执行如下，会下载并安装samza，zookeeper，yarn，kafka<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">stop all           #停止yarn|kafka|zookeeper</div><div class="line">install all        #安装</div><div class="line">start all          #启动</div></pre></td></tr></table></figure></p>
@@ -348,7 +354,8 @@
 <p>最后的输出结果类似：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;is-minor&quot;:948,&quot;unique-titles&quot;:763,&quot;is-talk&quot;:90,&quot;is-bot-edit&quot;:513,&quot;bytes-added&quot;:350253,&quot;edits&quot;:2790,&quot;is-new&quot;:135,&quot;edits-all-time&quot;:3720,&quot;is-unpatrolled&quot;:78&#125;</div><div class="line">&#123;&quot;is-minor&quot;:632,&quot;unique-titles&quot;:763,&quot;is-talk&quot;:60,&quot;is-bot-edit&quot;:342,&quot;bytes-added&quot;:233502,&quot;edits&quot;:1860,&quot;is-new&quot;:90,&quot;edits-all-time&quot;:5580,&quot;is-unpatrolled&quot;:52&#125;</div></pre></td></tr></table></figure></p>
 <h2 id="关闭samza"><a href="#关闭samza" class="headerlink" title="关闭samza"></a>关闭samza</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/grid stop all</div></pre></td></tr></table></figure>
 <h2 id="开启samza"><a href="#开启samza" class="headerlink" title="开启samza"></a>开启samza</h2><p>如果不是首次，则通过之前的bootstrap已经下载了相应的东西，只需要start<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/grid start all</div></pre></td></tr></table></figure></p>
-
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.jassassin.com/2015/04/30/samza/hello-samza/" target="_blank" rel="external">http://blog.jassassin.com/2015/04/30/samza/hello-samza/</a><br><a href="http://samza.apache.org/startup/hello-samza/0.10/" target="_blank" rel="external">http://samza.apache.org/startup/hello-samza/0.10/</a></p>
+</the></excerpt>
       
     </div>
     
@@ -356,13 +363,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/28/Samza学习（零）---hello_Samza/">Samza学习（零）---hello Samza</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/28/Samza学习1---Hello_Samza/">Samza学习1---Hello Samza</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">fangyeqing</a></p>
         <p><span>发布时间:</span>2016-10-28, 17:40:00</p>
-        <p><span>最后更新:</span>2016-10-28, 18:03:10</p>
+        <p><span>最后更新:</span>2016-10-28, 21:26:56</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/28/Samza学习（零）---hello_Samza/" title="Samza学习（零）---hello Samza">https://fangyeqing.github.io/2016/10/28/Samza学习（零）---hello_Samza/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/Samza学习（零）---hello_Samza/　　作者: fangyeqing" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/28/Samza学习1---Hello_Samza/" title="Samza学习1---Hello Samza">https://fangyeqing.github.io/2016/10/28/Samza学习1---Hello_Samza/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/Samza学习1---Hello_Samza/　　作者: fangyeqing" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -375,8 +382,8 @@
     <nav id="article-nav">
         
             <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/10/28/Samza学习（一）---基本概念/">
-                    Samza学习（一）---基本概念
+                <a href="/2016/10/28/Samza学习2---基本概念/">
+                    Samza学习2---基本概念
                 </a>
             </div>
         
@@ -395,7 +402,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#hello-Samza"><span class="toc-number">1.</span> <span class="toc-text">hello Samza</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#下载源码"><span class="toc-number">1.1.</span> <span class="toc-text">下载源码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行grid"><span class="toc-number">1.2.</span> <span class="toc-text">运行grid</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#出现问题："><span class="toc-number">1.2.0.1.</span> <span class="toc-text">出现问题：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用maven打包并解压"><span class="toc-number">1.3.</span> <span class="toc-text">利用maven打包并解压</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#出现问题：-1"><span class="toc-number">1.3.0.1.</span> <span class="toc-text">出现问题：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行samza-job："><span class="toc-number">1.4.</span> <span class="toc-text">运行samza job：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据获取job"><span class="toc-number">1.4.1.</span> <span class="toc-text">数据获取job</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据统计job"><span class="toc-number">1.4.2.</span> <span class="toc-text">数据统计job</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关闭samza"><span class="toc-number">1.5.</span> <span class="toc-text">关闭samza</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开启samza"><span class="toc-number">1.6.</span> <span class="toc-text">开启samza</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#hello-Samza"><span class="toc-number">1.</span> <span class="toc-text">hello Samza</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#下载源码"><span class="toc-number">1.1.</span> <span class="toc-text">下载源码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行grid"><span class="toc-number">1.2.</span> <span class="toc-text">运行grid</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#出现问题："><span class="toc-number">1.2.0.1.</span> <span class="toc-text">出现问题：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用maven打包并解压"><span class="toc-number">1.3.</span> <span class="toc-text">利用maven打包并解压</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#出现问题：-1"><span class="toc-number">1.3.0.1.</span> <span class="toc-text">出现问题：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行samza-job："><span class="toc-number">1.4.</span> <span class="toc-text">运行samza job：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据获取job"><span class="toc-number">1.4.1.</span> <span class="toc-text">数据获取job</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据统计job"><span class="toc-number">1.4.2.</span> <span class="toc-text">数据统计job</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关闭samza"><span class="toc-number">1.5.</span> <span class="toc-text">关闭samza</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开启samza"><span class="toc-number">1.6.</span> <span class="toc-text">开启samza</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">1.7.</span> <span class="toc-text">参考</span></a></li></ol></li></ol>
         
     </div>
     <style>
@@ -431,7 +438,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"Samza学习（零）---hello Samza　| 方叶青的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Samza学习1---Hello Samza　| 方叶青的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -445,13 +452,32 @@
 
 
     
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/Samza学习1---Hello_Samza/" data-title="Samza学习1---Hello Samza" data-url="https://fangyeqing.github.io/2016/10/28/Samza学习1---Hello_Samza/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
 
 
 
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/10/28/Samza学习（一）---基本概念/" title="上一篇: Samza学习（一）---基本概念">
+            <a href="/2016/10/28/Samza学习2---基本概念/" title="上一篇: Samza学习2---基本概念">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -465,7 +491,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（四）---Samza_API/">Samza学习（四）---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（三）---核心部件/">Samza学习（三）---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（二）---架构/">Samza学习（二）---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（一）---基本概念/">Samza学习（一）---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（零）---hello_Samza/">Samza学习（零）---hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hello-world/">Hello World</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习5---Samza_API/">Samza学习5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习4---核心部件/">Samza学习4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习3---架构/">Samza学习3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习2---基本概念/">Samza学习2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习1---Hello_Samza/">Samza学习1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hello-world/">Hello World</a></li></ul>
 
 
 

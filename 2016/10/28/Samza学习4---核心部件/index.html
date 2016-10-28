@@ -15,19 +15,22 @@
 
 
 
-<meta name="description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta name="description" content="核心部件SamzaContainerSamzaContainer负责管理一个或多个StreamTask实例的启动，执行和关闭。每个SamzaContainer通常在独立的Java虚拟机上运行。一个Samza job可以由几个SamzaContainers组成，并可以在在不同的机器上运行。
+当SamzaContainer启动时，它按照顺序执行以下操作：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Samza学习（三）---核心部件">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza学习（三）---核心部件/index.html">
+<meta property="og:title" content="Samza学习4---核心部件">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza学习4---核心部件/index.html">
 <meta property="og:site_name" content="方叶青的博客">
-<meta property="og:description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta property="og:description" content="核心部件SamzaContainerSamzaContainer负责管理一个或多个StreamTask实例的启动，执行和关闭。每个SamzaContainer通常在独立的Java虚拟机上运行。一个Samza job可以由几个SamzaContainers组成，并可以在在不同的机器上运行。
+当SamzaContainer启动时，它按照顺序执行以下操作：">
 <meta property="og:image" content="http://samza.apache.org/img/0.8/learn/documentation/container/tasks-and-partitions.svg">
 <meta property="og:image" content="https://samza.apache.org/img/0.11/learn/documentation/container/checkpointing.svg">
 <meta property="og:image" content="http://samza.apache.org/img/0.10/learn/documentation/container/stateful_job.png">
-<meta property="og:updated_time" content="2016-10-28T10:04:43.000Z">
+<meta property="og:updated_time" content="2016-10-28T13:30:00.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Samza学习（三）---核心部件">
-<meta name="twitter:description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta name="twitter:title" content="Samza学习4---核心部件">
+<meta name="twitter:description" content="核心部件SamzaContainerSamzaContainer负责管理一个或多个StreamTask实例的启动，执行和关闭。每个SamzaContainer通常在独立的Java虚拟机上运行。一个Samza job可以由几个SamzaContainers组成，并可以在在不同的机器上运行。
+当SamzaContainer启动时，它按照顺序执行以下操作：">
 <meta name="twitter:image" content="http://samza.apache.org/img/0.8/learn/documentation/container/tasks-and-partitions.svg">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
@@ -37,7 +40,7 @@
 
 
 
-    <link rel="shortcut icon" href="/favicon.png">
+    <link rel="shortcut icon" href="/xiaolan.ico">
 
 
 
@@ -60,7 +63,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Samza学习（三）---核心部件 | 方叶青的博客</title>
+<title>Samza学习4---核心部件 | 方叶青的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -76,7 +79,7 @@
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
-        search: undefined
+        search: true
     }
 </script>
 
@@ -100,7 +103,7 @@
 <div class="intrude-less">
     <header id="header" class="inner">
         <a href="/" class="profilepic">
-            <img src="/img/avatar.png" class="animated zoomIn">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
         </a>
         <hgroup>
           <h1 class="header-author"><a href="/">fangyeqing</a></h1>
@@ -108,6 +111,13 @@
 
         
 
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
         
 
 
@@ -172,11 +182,9 @@
                     <nav class="header-nav">
                         <ul class="social">
                             
-                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
                             
-                                <a class="fa GitHub" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
                             
                         </ul>
                     </nav>
@@ -208,7 +216,7 @@
                 
                 <section class="switch-part switch-part4">
                 
-                    <div id="js-aboutme">专注于前端</div>
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
                 </section>
                 
             </div>
@@ -225,7 +233,7 @@
     <div class="intrude-less">
         <header id="header" class="inner">
             <a href="/" class="profilepic">
-                <img src="/img/avatar.png" class="animated zoomIn">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
             </a>
             <hgroup>
               <h1 class="header-author"><a href="/" title="回到主页">fangyeqing</a></h1>
@@ -248,11 +256,9 @@
             <nav class="header-nav">
                         <ul class="social">
                             
-                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
                             
-                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
                             
                         </ul>
             </nav>
@@ -260,10 +266,10 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-Samza学习（三）---核心部件" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Samza学习4---核心部件" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/Samza学习（三）---核心部件/" class="article-date">
+      <a href="/2016/10/28/Samza学习4---核心部件/" class="article-date">
       <time datetime="2016-10-28T09:43:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
@@ -279,7 +285,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Samza学习（三）---核心部件
+      Samza学习4---核心部件
     </h1>
   
 
@@ -300,9 +306,13 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+        <excerpt in="" index="" |="" 首页摘要="">   
+
 <h1 id="核心部件"><a href="#核心部件" class="headerlink" title="核心部件"></a>核心部件</h1><h2 id="SamzaContainer"><a href="#SamzaContainer" class="headerlink" title="SamzaContainer"></a>SamzaContainer</h2><p>SamzaContainer负责管理一个或多个StreamTask实例的启动，执行和关闭。每个SamzaContainer通常在独立的Java虚拟机上运行。一个Samza job可以由几个SamzaContainers组成，并可以在在不同的机器上运行。</p>
-<p>当SamzaContainer启动时，它按照顺序执行以下操作：</p>
+<p>当SamzaContainer启动时，它按照顺序执行以下操作：  </p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
 <ul>
 <li>获取每个输入流的分区的最后一个checkpoint记录的偏移量，并从此位置开始处理消息  </li>
 <li>作为消费者，对于每一个输入流分区创建一个“reader”线程</li>
@@ -494,7 +504,8 @@
 <h2 id="JMX"><a href="#JMX" class="headerlink" title="JMX"></a>JMX</h2><p>Samza容器和YARN ApplicationMaster默认支持JMX。可以使用JMX管理JVM;例如,可以使用包含在JDK中的jconsole连接到它。</p>
 <p>可以告诉Samza发布其内部指标,你和任何自定义指标定义,作为JMX mbean。需要设置以下属性:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># Define a Samza metrics reporter called &quot;jmx&quot;, which publishes to JMX</div><div class="line">metrics.reporter.jmx.class=org.apache.samza.metrics.reporter.JmxReporterFactory</div><div class="line"></div><div class="line"># Use it (if you have multiple reporters defined, separate them with commas)</div><div class="line">metrics.reporters=jmx</div></pre></td></tr></table></figure></p>
 <p>JMX需要配置为使用一个特定的端口,但是在分布式环境中,没有办法提前知道哪些端口可用的机器运行您的容器。因此Samza JMX端口随机选择。如果你需要连接到它,你可以通过容器的日志找到port,报告JMX服务器详细信息如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">2014-06-02 21:50:17 JmxServer [INFO] According to InetAddress.getLocalHost.getHostName we are samza-grid-1234.example.com</div><div class="line">2014-06-02 21:50:17 JmxServer [INFO] Started JmxServer registry port=50214 server port=50215 url=service:jmx:rmi://localhost:50215/jndi/rmi://localhost:50214/jmxrmi</div><div class="line">2014-06-02 21:50:17 JmxServer [INFO] If you are tunneling, you might want to try JmxServer registry port=50214 server port=50215 url=service:jmx:rmi://samza-grid-1234.example.com:50215/jndi/rmi://samza-grid-1234.example.com:50214/jmxrmi</div></pre></td></tr></table></figure></p>
-
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+</the></excerpt>
       
     </div>
     
@@ -502,13 +513,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/28/Samza学习（三）---核心部件/">Samza学习（三）---核心部件</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/28/Samza学习4---核心部件/">Samza学习4---核心部件</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">fangyeqing</a></p>
         <p><span>发布时间:</span>2016-10-28, 17:43:00</p>
-        <p><span>最后更新:</span>2016-10-28, 18:04:43</p>
+        <p><span>最后更新:</span>2016-10-28, 21:30:00</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/28/Samza学习（三）---核心部件/" title="Samza学习（三）---核心部件">https://fangyeqing.github.io/2016/10/28/Samza学习（三）---核心部件/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/Samza学习（三）---核心部件/　　作者: fangyeqing" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/28/Samza学习4---核心部件/" title="Samza学习4---核心部件">https://fangyeqing.github.io/2016/10/28/Samza学习4---核心部件/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/Samza学习4---核心部件/　　作者: fangyeqing" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -521,15 +532,15 @@
     <nav id="article-nav">
         
             <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/10/28/Samza学习（四）---Samza_API/">
-                    Samza学习（四）---Samza API
+                <a href="/2016/10/28/Samza学习5---Samza_API/">
+                    Samza学习5---Samza API
                 </a>
             </div>
         
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/28/Samza学习（二）---架构/">
-                    Samza学习（二）---架构
+                <a href="/2016/10/28/Samza学习3---架构/">
+                    Samza学习3---架构
                 </a>
             </div>
         
@@ -541,7 +552,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#参考："><span class="toc-number">1.</span> <span class="toc-text">参考：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#核心部件"><span class="toc-number">2.</span> <span class="toc-text">核心部件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#SamzaContainer"><span class="toc-number">2.1.</span> <span class="toc-text">SamzaContainer</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Event-Loop"><span class="toc-number">2.1.0.0.1.</span> <span class="toc-text">Event Loop</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#任务与分区-Tasks-and-Partitions"><span class="toc-number">2.1.1.</span> <span class="toc-text">任务与分区(Tasks and Partitions)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#容器和资源分配"><span class="toc-number">2.1.2.</span> <span class="toc-text">容器和资源分配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多个输入流"><span class="toc-number">2.1.3.</span> <span class="toc-text">多个输入流 　　 　　</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stream"><span class="toc-number">2.2.</span> <span class="toc-text">Stream</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#流处理"><span class="toc-number">2.2.1.</span> <span class="toc-text">流处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MessageChooser"><span class="toc-number">2.2.2.</span> <span class="toc-text">MessageChooser</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优先输入流"><span class="toc-number">2.2.3.</span> <span class="toc-text">优先输入流</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#引导顺序"><span class="toc-number">2.2.4.</span> <span class="toc-text">引导顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#批处理"><span class="toc-number">2.2.5.</span> <span class="toc-text">批处理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Serialization"><span class="toc-number">2.3.</span> <span class="toc-text">Serialization</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Serde层类型"><span class="toc-number">2.3.1.</span> <span class="toc-text">Serde层类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Checkpointing"><span class="toc-number">2.4.</span> <span class="toc-text">Checkpointing</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#at-least-once处理"><span class="toc-number">2.4.1.</span> <span class="toc-text">at-least-once处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置checkpoint"><span class="toc-number">2.4.2.</span> <span class="toc-text">配置checkpoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#State-Management"><span class="toc-number">2.5.</span> <span class="toc-text">State Management</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#状态管理的分类"><span class="toc-number">2.5.1.</span> <span class="toc-text">状态管理的分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#老的管理任务状态的方法"><span class="toc-number">2.5.2.</span> <span class="toc-text">老的管理任务状态的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#In-memory-state-with-checkpointing"><span class="toc-number">2.5.2.1.</span> <span class="toc-text">In-memory state with checkpointing</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Using-an-external-store"><span class="toc-number">2.5.2.2.</span> <span class="toc-text">Using an external store</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Samza管理任务的方法——Local-state-in-Samza"><span class="toc-number">2.5.3.</span> <span class="toc-text">Samza管理任务的方法——Local state in Samza</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置"><span class="toc-number">2.5.4.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#举例"><span class="toc-number">2.5.5.</span> <span class="toc-text">举例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windowing"><span class="toc-number">2.6.</span> <span class="toc-text">Windowing</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置-1"><span class="toc-number">2.6.1.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#举例-1"><span class="toc-number">2.6.2.</span> <span class="toc-text">举例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意"><span class="toc-number">2.6.3.</span> <span class="toc-text">注意</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Metrix"><span class="toc-number">2.7.</span> <span class="toc-text">Metrix</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#metrix上报方式"><span class="toc-number">2.7.1.</span> <span class="toc-text">metrix上报方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#默认metrix内容"><span class="toc-number">2.7.2.</span> <span class="toc-text">默认metrix内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义metrix内容"><span class="toc-number">2.7.3.</span> <span class="toc-text">自定义metrix内容</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JMX"><span class="toc-number">2.8.</span> <span class="toc-text">JMX</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#核心部件"><span class="toc-number">1.</span> <span class="toc-text">核心部件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#SamzaContainer"><span class="toc-number">1.1.</span> <span class="toc-text">SamzaContainer</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Event-Loop"><span class="toc-number">1.1.0.0.1.</span> <span class="toc-text">Event Loop</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#任务与分区-Tasks-and-Partitions"><span class="toc-number">1.1.1.</span> <span class="toc-text">任务与分区(Tasks and Partitions)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#容器和资源分配"><span class="toc-number">1.1.2.</span> <span class="toc-text">容器和资源分配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多个输入流"><span class="toc-number">1.1.3.</span> <span class="toc-text">多个输入流 　　 　　</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stream"><span class="toc-number">1.2.</span> <span class="toc-text">Stream</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#流处理"><span class="toc-number">1.2.1.</span> <span class="toc-text">流处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MessageChooser"><span class="toc-number">1.2.2.</span> <span class="toc-text">MessageChooser</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优先输入流"><span class="toc-number">1.2.3.</span> <span class="toc-text">优先输入流</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#引导顺序"><span class="toc-number">1.2.4.</span> <span class="toc-text">引导顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#批处理"><span class="toc-number">1.2.5.</span> <span class="toc-text">批处理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Serialization"><span class="toc-number">1.3.</span> <span class="toc-text">Serialization</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Serde层类型"><span class="toc-number">1.3.1.</span> <span class="toc-text">Serde层类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Checkpointing"><span class="toc-number">1.4.</span> <span class="toc-text">Checkpointing</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#at-least-once处理"><span class="toc-number">1.4.1.</span> <span class="toc-text">at-least-once处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置checkpoint"><span class="toc-number">1.4.2.</span> <span class="toc-text">配置checkpoint</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#State-Management"><span class="toc-number">1.5.</span> <span class="toc-text">State Management</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#状态管理的分类"><span class="toc-number">1.5.1.</span> <span class="toc-text">状态管理的分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#老的管理任务状态的方法"><span class="toc-number">1.5.2.</span> <span class="toc-text">老的管理任务状态的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#In-memory-state-with-checkpointing"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">In-memory state with checkpointing</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Using-an-external-store"><span class="toc-number">1.5.2.2.</span> <span class="toc-text">Using an external store</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Samza管理任务的方法——Local-state-in-Samza"><span class="toc-number">1.5.3.</span> <span class="toc-text">Samza管理任务的方法——Local state in Samza</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置"><span class="toc-number">1.5.4.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#举例"><span class="toc-number">1.5.5.</span> <span class="toc-text">举例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windowing"><span class="toc-number">1.6.</span> <span class="toc-text">Windowing</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置-1"><span class="toc-number">1.6.1.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#举例-1"><span class="toc-number">1.6.2.</span> <span class="toc-text">举例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意"><span class="toc-number">1.6.3.</span> <span class="toc-text">注意</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Metrix"><span class="toc-number">1.7.</span> <span class="toc-text">Metrix</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#metrix上报方式"><span class="toc-number">1.7.1.</span> <span class="toc-text">metrix上报方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#默认metrix内容"><span class="toc-number">1.7.2.</span> <span class="toc-text">默认metrix内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义metrix内容"><span class="toc-number">1.7.3.</span> <span class="toc-text">自定义metrix内容</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JMX"><span class="toc-number">1.8.</span> <span class="toc-text">JMX</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考："><span class="toc-number">2.</span> <span class="toc-text">参考：</span></a></li></ol>
         
     </div>
     <style>
@@ -577,7 +588,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"Samza学习（三）---核心部件　| 方叶青的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Samza学习4---核心部件　| 方叶青的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -591,13 +602,32 @@
 
 
     
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/Samza学习4---核心部件/" data-title="Samza学习4---核心部件" data-url="https://fangyeqing.github.io/2016/10/28/Samza学习4---核心部件/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
 
 
 
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/10/28/Samza学习（四）---Samza_API/" title="上一篇: Samza学习（四）---Samza API">
+            <a href="/2016/10/28/Samza学习5---Samza_API/" title="上一篇: Samza学习5---Samza API">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -605,13 +635,13 @@
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/28/Samza学习（二）---架构/" title="下一篇: Samza学习（二）---架构">
+            <a href="/2016/10/28/Samza学习3---架构/" title="下一篇: Samza学习3---架构">
                 <i class="fa fa-angle-right"></i>
             </a>
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（四）---Samza_API/">Samza学习（四）---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（三）---核心部件/">Samza学习（三）---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（二）---架构/">Samza学习（二）---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（一）---基本概念/">Samza学习（一）---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习（零）---hello_Samza/">Samza学习（零）---hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hello-world/">Hello World</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习5---Samza_API/">Samza学习5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习4---核心部件/">Samza学习4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习3---架构/">Samza学习3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习2---基本概念/">Samza学习2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza学习1---Hello_Samza/">Samza学习1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hello-world/">Hello World</a></li></ul>
 
 
 
