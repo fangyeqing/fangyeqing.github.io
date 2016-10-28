@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Samza学习（二）---架构 | 方叶青的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Samza学习（二）---架构">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza学习（二）---架构/index.html">
+<meta property="og:site_name" content="方叶青的博客">
+<meta property="og:description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta property="og:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-ecosystem.png">
+<meta property="og:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-yarn-kafka-integration.png">
+<meta property="og:updated_time" content="2016-10-28T10:04:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Samza学习（二）---架构">
+<meta name="twitter:description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta name="twitter:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-ecosystem.png">
+  
+    <link rel="alternate" href="/atom.xml" title="方叶青的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">方叶青的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://fangyeqing.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Samza学习（二）---架构" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/28/Samza学习（二）---架构/" class="article-date">
+  <time datetime="2016-10-28T09:42:00.000Z" itemprop="datePublished">2016-10-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/samza/">samza</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Samza学习（二）---架构
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+<h1 id="Samza架构"><a href="#Samza架构" class="headerlink" title="Samza架构"></a>Samza架构</h1><p>Samza是由以下三层构成：  </p>
+<ul>
+<li>数据流层（A streaming layer）：分布式消息中间件Kafka  </li>
+<li>执行层（An execution layer）：Hadoop资源调度管理系统YARN  </li>
+<li>处理层（A progressing layer）：Samza API   </li>
+</ul>
+<p><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-ecosystem.png" alt="image"></p>
+<h2 id="kafka"><a href="#kafka" class="headerlink" title="kafka"></a>kafka</h2><p>Kafka是一个分布式发布/订阅消息队列系统，它支持<strong>at-least once</strong>通信保障（即系统保证没有信息丢失，但是在某些故障情况下，消费者可能收到超过一条同样的信息）和<strong>高度可用的分区</strong>特性（即使一台机器宕机了，分区依然是可用的）。</p>
+<p>每一条数据流被称为一个topic。每一个话题都在多台被称作broker的机器上进行分区和复制。当一个生产者发送一条消息给一个话题，它会提供一个key，这个key被用来决定这条消息应该被发送到哪一个分区。生产者发送信息而Kafka的broker则接收和存储它们。Kafka的消费者能通过在一个话题的所有分区上订阅消息来读取消息。</p>
+<p>Kafka有一些有趣的特点：</p>
+<ul>
+<li>同一个key的所有消息都被划分到同一个分区，这就意味着如果你想要读到一个特定用户的所有消息，你只要从包含这个用户id的分区读取即可，而不是整个topic（假设把用户id用作key）</li>
+<li>一个topic的分区是按顺序到达的一序列消息，所以你可以通过单调递增偏移量offset来引用任何消息（就好比放一个索引到一个数组里）；这也意味着broker不需要跟踪被一个特定的消费者读取的消息，为什么呢？因为消费者保存了消息的偏移量offset能够跟踪到它。然后我们知道的是带着一个比当前偏移量小的消息是已经被处理过的，而每一个带着更大偏移量的消息还没有被处理过。</li>
+</ul>
+<h2 id="YARN"><a href="#YARN" class="headerlink" title="YARN"></a>YARN</h2><p>YARN有三个组成部分：资源管理器（ResourceManager）、节点管理器（NodeManager）和应用管理器（ApplicationMaster）。</p>
+<ul>
+<li>NodeManager：在一个YARN网格里，每一台机器上都跑着NodeManager，它负责在所在的机器上启动进程。</li>
+<li>ResourceManager与所有的NodeMananger交互告诉它们跑什么应用，反过来NodeManager也会告诉ResourceManager它们希望什么时间在集群里跑这些东东。</li>
+<li>ApplicationMaster让特定应用的代码跑在YARN集群上，它负责管理应用的负载、容器（通常是UNIX进程），并且当其中一个容器失败时发出通知。</li>
+</ul>
+<p>Samza提供了一个YARN ApplicationMaster和一个开箱即用的YARN Job运行器。如图所示（不同的颜色表示不同的机器）</p>
+<p><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-yarn-kafka-integration.png" alt="image"></p>
+<p>Samza的客户端告诉YARN的RM（ResourceManager，以下简称RM）运行一个新的Job，RM会告诉YARN的一个NodeManager（简称NM）为Samza的ApplicationMaster（AM）在集群里分配空间。一旦NM分配了空间，就会启动这个Samza的AM。AM开始后，它会向RM请求运行SamzaContainers所需的YARN containers。RM和NMs一起为containers分配空间。一旦空间被分配，NMs就会开启Samza containers。  </p>
+<p>YARN启动并且监控一个或者多个SamzaContainers，并且你的处理逻辑代码（使用StreamTask API）在这些容器里运行。这些Samza 流任务的输入和输出都来自Kafka的Brokers（通常他们都是作为YARN NMs位于同台机器）</p>
+<p>通过对topic的分区，将数据流处理拆解到任务中以及在多台机器上并行执行任务，使得Samza具有很高的消息吞吐量。通过结合YARN和Kafka，Samza实现了高容错：如果一个进程或者机器失败，它会自动在另一台机器上重启它并且继续从消息终端的地方开始处理，这些都是自动化的。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://fangyeqing.github.io/2016/10/28/Samza学习（二）---架构/" data-id="ciutm7vpg0002vpf8fmsbfu1q" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/10/28/Samza学习（三）---核心部件/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Samza学习（三）---核心部件
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/10/28/Samza学习（一）---基本概念/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Samza学习（一）---基本概念</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/samza/">samza</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（四）---Samza_API/">Samza学习（四）---Samza API</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（三）---核心部件/">Samza学习（三）---核心部件</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（二）---架构/">Samza学习（二）---架构</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（一）---基本概念/">Samza学习（一）---基本概念</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（零）---hello_Samza/">Samza学习（零）---hello Samza</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 fangyeqing<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Samza学习（一）---基本概念 | 方叶青的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Samza学习（一）---基本概念">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza学习（一）---基本概念/index.html">
+<meta property="og:site_name" content="方叶青的博客">
+<meta property="og:description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta property="og:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/stream.png">
+<meta property="og:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/job_detail.png">
+<meta property="og:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/dag.png">
+<meta property="og:updated_time" content="2016-10-28T10:03:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Samza学习（一）---基本概念">
+<meta name="twitter:description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta name="twitter:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/stream.png">
+  
+    <link rel="alternate" href="/atom.xml" title="方叶青的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">方叶青的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://fangyeqing.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Samza学习（一）---基本概念" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/28/Samza学习（一）---基本概念/" class="article-date">
+  <time datetime="2016-10-28T09:41:00.000Z" itemprop="datePublished">2016-10-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/samza/">samza</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Samza学习（一）---基本概念
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+<h1 id="Samza"><a href="#Samza" class="headerlink" title="Samza"></a>Samza</h1><p>samza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。</p>
+<h2 id="为什么需要samza"><a href="#为什么需要samza" class="headerlink" title="为什么需要samza"></a>为什么需要samza</h2><p>kafka作为一个分布式的消息队列系统，已经实现了流式处理框架底层的许多核心基础架构，把消息串联流动起来就是Streaming了。</p>
+<p>但是要构建一个可用的流式数据处理框架，还是有许多事情要做。例如生产者和消费者进程的管理，作业调度和容错处理，辅助工具和监控管理手段，更友好方便的用户接口等等，本质上说，Samza是在消息队列系统上的更高层的抽象，是一种应用流式处理框架在消息队列系统上的一种应用模式的实现。</p>
+<h3 id="需要解决的问题"><a href="#需要解决的问题" class="headerlink" title="需要解决的问题"></a>需要解决的问题</h3><p>比如分区：如何划分流？如何划分处理器？如何管理状态，其中状态本质上是指在处理器中维护的介于消息之间的东西，或者如果每次有消息到达的时候，计数器就会加1，那么它也可以是像总数这样的东西。如何重新处理？</p>
+<p>至于失败语义，我们会得到至少一次，或者至多一次，或者恰好一次消息，也有不确定性。如果流处理器与另一个系统交互，无论它是个数据库，还是依赖于时间或者消息的顺序，如何处理那些真正决定最终输出结果的数据？</p>
+<h2 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h2><p>Samza的一个job的基本处理流程是一个用户任务从一个或多个输入流中读取数据，再输出到一个或多个输出流中，具体映射到kafka上就是从一个或多个topic读入数据，再写出到另一个或多个topic中去。多个job串联起来就完成了流式的数据处理流程。</p>
+<p>这种模式其实有点像MapReduce的过程，stream输入部分由kafka的partition决定了分区和task数目，类似于一个Map过程，输出时由用户task指定topic和分区（或者框架自动由Key决定分区），这相当于一次shuffle的过程，下一个job读取新的stream时，可以认为是一个reduce，也可以认为是下一个map过程的开始。</p>
+<p>不同之处在于job之间的串联无需等待上一个job的结束，类实时的消息分发机制决定了整个串联的job是连续不间断的，亦即流式的。</p>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><p>Samza是一个流式计算框架，它有以下特性：</p>
+<ul>
+<li>简单的API：和绝大多数低层次消息系统API不同，相比MapReduce，Samza提供了一个非常简单的“基于回调（callback-based）”的消息处理API</li>
+<li>管理状态：Samza管理快照和流处理器的状态恢复。当处理器重启，Samza恢复其状态一致的快照。Samza的建立是为了处理大量的状态</li>
+<li>容错性：当集群中有一台机器宕机了，基于Yarn管理的Samza会立即将你的任务导向另一台机器；</li>
+<li>持久性：Samza通过Kafka保证消息按顺序写入对应分区，并且不会丢失消息；</li>
+<li>扩展性：Samza在每一层都做了分区和分布。Kafka提供了顺序的、分区、可复制的、容错的流。YARN则为Samza的运行提供了一个分布式环境</li>
+<li>可插拔：虽然Samza在Kafka和YARN的外部工作，但是Samza提供了可以让你在其它消息系统和执行环境里运行的可插拔的API</li>
+<li>处理器隔离：运行在YARN上的Samza同样支持Hadoop安全模型以及通过linux CGroups进行资源隔离</li>
+</ul>
+<p>Samza区别于其他框架的几个方面：</p>
+<ul>
+<li>Samza支持局部状态的容错。状态自己作为一个流被构造。如果因为机器宕机本地状态丢失，那么状态流会回放重新存储它</li>
+<li>流是有序、分区的、可回放的并且是容错的</li>
+<li>YARN用来处理隔离、安全和容错</li>
+<li>任务之间是解耦的：如果有一个任务慢了并且造成了消息的积压，系统其它部分不会受到影响；</li>
+</ul>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="流（Streams）"><a href="#流（Streams）" class="headerlink" title="流（Streams）"></a>流（Streams）</h3><p>Samza处理流。流是由一定数量的类型或类别相似的不可变消息组成。  </p>
+<ul>
+<li>kafka里，流是一个topic（话题） </li>
+<li>数据库里，我们可以通过消费从一个表里更新操作读取一个流  </li>
+<li>hadoop里，我们可能跟踪在hdfs上的一个目录下的文件</li>
+</ul>
+<h3 id="作业（job）"><a href="#作业（job）" class="headerlink" title="作业（job）"></a>作业（job）</h3><p>Samza的jobs 是将输入流进行逻辑处理，然后转化成输出流的程序。</p>
+<p>为了扩展流处理器的吞吐量，stream拆分成：分区Partitions<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">Streams--&gt;Partitions</div></pre></td></tr></table></figure></p>
+<p>job拆分更小的并行单元：任务Tasks</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">job--&gt;tasks</div></pre></td></tr></table></figure>
+<h3 id="分区（Partitions）"><a href="#分区（Partitions）" class="headerlink" title="分区（Partitions）"></a>分区（Partitions）</h3><p>每个流都被分割成一个或多个分区，并且在流里的每一个分区都总是一个有序的消息序列。每个消息在这个序列里有一个被叫做offset（中文称它为偏移量），它在每一个分区里都是唯一的。这个偏移量可以是一个连续的整数、字节偏移量或者字符串，这取决于底层的系统实现了。</p>
+<p>当有一个消息加入到流中，它只会追加到流的分区中的一个。这个消息通过写入者带着一个被选择的key分配到它对应的分区中。举个例子，如果用户id被用作key，那么所有和用户id相关的消息都应该追加到这个分区中。<br><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/stream.png" alt="image"></p>
+<h3 id="任务（task）"><a href="#任务（task）" class="headerlink" title="任务（task）"></a>任务（task）</h3><p>一个Job通过把他分割成多个任务Task进行扩展。每个任务Task消费来自一个Partitions的数据。</p>
+<p>按照消息的偏移，一个任务按序处理来自它的输入分区的消息。分区之间没有定义顺序，这就允许每一个任务独立执行。YARN调度器负责分发任务给一台机器，所以作为一个整体的工作Job可以分配到多个机器并行执行。</p>
+<p>在一个Job中任务Task的数量是由输入分区决定的（也就是说任务数目不能超过分区数目，否则就会存在没有输入的任务）。可是，你能改变分配给Job的计算资源（比如内存、cpu核数等）去满足job的需要，可以参考下面关于container的介绍。</p>
+<p>另外一个值得注意的是分配给task的分区的任务绝不会改变：如果有一个任务在一台失效的机器上，这个task会被在其它地方重启，仍然会消费同一个流的分区。</p>
+<p><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/job_detail.png" alt="image"></p>
+<h3 id="Dataflow-Graphs"><a href="#Dataflow-Graphs" class="headerlink" title="Dataflow Graphs"></a>Dataflow Graphs</h3><p>我们能组合多个Jobs去创建一个数据流图（DAG 有向无环图），其中节点表示包含数据的流，而边则是进行数据传输。这个组合纯粹是通过Jobs作为输入和输出的流来完成。这些Jobs也是解耦的：他们不需要基于相同的代码库，并且添加、删除或者重启一个下游任务不会影响上游的任务。<br><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/dag.png" alt="image"></p>
+<h3 id="Containers"><a href="#Containers" class="headerlink" title="Containers"></a>Containers</h3><p>分区Partitions和任务Tasks都是并行的逻辑单元。</p>
+<p>Containers是物理的并行单元，并且一个容器本质上是一个Unix进程（或者Linux cgroup）。</p>
+<p>每个容器跑着一个或多个Tasks。Tasks的数量是从输入的分区数自动确定和固定下来的，但是容器的数量（CPU、内存资源）是在运行时用户设定的并且能在任何时刻改变。</p>
+<h3 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h3><ul>
+<li>容器——分区和任务是逻辑并行单元，而容器是物理并行单元。每个容器是一个运行一个或多个任务的Unix进程（或者Linux cgroup）。</li>
+<li>TaskRunner——TaskRunner是Samza的流处理容器。它负责启动、执行以及关闭一个或多个StreamTask实例。</li>
+<li>“检查点（Checkpointing）”——检查点通常用于故障恢复。如果一个taskrunner由于某种原因宕掉了（比如，硬件故障），当重新启动时，它应该使用最后离开时的消息——这是通过检查点实现的。</li>
+<li>状态管理——需要在不同的消息处理之间传递的数据称之为状态——它可以是保存一个总数那样简单的东西，也可以是复杂得多的东西。Samza允许任务维持一种持久可变且可查询的状态，而且，它与每个任务在物理上处于同一位置。状态需要具备高可用性：如果出现任务失败的情况，它可以在任务故障转移到另一台机器时还原。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://fangyeqing.github.io/2016/10/28/Samza学习（一）---基本概念/" data-id="ciutm7vot0000vpf8lah9fkow" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/10/28/Samza学习（二）---架构/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Samza学习（二）---架构
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/10/28/Samza学习（零）---hello_Samza/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Samza学习（零）---hello Samza</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/samza/">samza</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（四）---Samza_API/">Samza学习（四）---Samza API</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（三）---核心部件/">Samza学习（三）---核心部件</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（二）---架构/">Samza学习（二）---架构</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（一）---基本概念/">Samza学习（一）---基本概念</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（零）---hello_Samza/">Samza学习（零）---hello Samza</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 fangyeqing<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

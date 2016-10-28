@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Samza学习（零）---hello Samza | 方叶青的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="hello Samza参考：http://blog.jassassin.com/2015/04/30/samza/hello-samza/安装和配置Apache-Samza，需要jdk1.7+、maven2的环境
+下载源码官方给的https://git.apache.org/samza-hello-samza.git可能连接不上，换了一个12git clone https://github.com">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Samza学习（零）---hello Samza">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza学习（零）---hello_Samza/index.html">
+<meta property="og:site_name" content="方叶青的博客">
+<meta property="og:description" content="hello Samza参考：http://blog.jassassin.com/2015/04/30/samza/hello-samza/安装和配置Apache-Samza，需要jdk1.7+、maven2的环境
+下载源码官方给的https://git.apache.org/samza-hello-samza.git可能连接不上，换了一个12git clone https://github.com">
+<meta property="og:updated_time" content="2016-10-28T10:03:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Samza学习（零）---hello Samza">
+<meta name="twitter:description" content="hello Samza参考：http://blog.jassassin.com/2015/04/30/samza/hello-samza/安装和配置Apache-Samza，需要jdk1.7+、maven2的环境
+下载源码官方给的https://git.apache.org/samza-hello-samza.git可能连接不上，换了一个12git clone https://github.com">
+  
+    <link rel="alternate" href="/atom.xml" title="方叶青的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">方叶青的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://fangyeqing.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Samza学习（零）---hello_Samza" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/28/Samza学习（零）---hello_Samza/" class="article-date">
+  <time datetime="2016-10-28T09:40:00.000Z" itemprop="datePublished">2016-10-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/samza/">samza</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Samza学习（零）---hello Samza
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="hello-Samza"><a href="#hello-Samza" class="headerlink" title="hello Samza"></a>hello Samza</h1><p>参考：<a href="http://blog.jassassin.com/2015/04/30/samza/hello-samza/" target="_blank" rel="external">http://blog.jassassin.com/2015/04/30/samza/hello-samza/</a><br>安装和配置Apache-Samza，需要jdk1.7+、maven2的环境</p>
+<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>官方给的<a href="https://git.apache.org/samza-hello-samza.git可能连接不上，换了一个" target="_blank" rel="external">https://git.apache.org/samza-hello-samza.git可能连接不上，换了一个</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/apache/samza-hello-samza.git hello-samza</div><div class="line">cd hello-samza/</div></pre></td></tr></table></figure></p>
+<h2 id="运行grid"><a href="#运行grid" class="headerlink" title="运行grid"></a>运行grid</h2><p>下载、安装相关系统<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/grid bootstrap</div></pre></td></tr></table></figure></p>
+<p>虽然只有一句话，但是会执行如下，会下载并安装samza，zookeeper，yarn，kafka<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">stop all           #停止yarn|kafka|zookeeper</div><div class="line">install all        #安装</div><div class="line">start all          #启动</div></pre></td></tr></table></figure></p>
+<p>可能出现很多问题</p>
+<h4 id="出现问题："><a href="#出现问题：" class="headerlink" title="出现问题："></a>出现问题：</h4><ol>
+<li>公司开发机，没有root权限，会有错误：  <blockquote>
+<p>Caused by: java.io.IOException: No locks available</p>
+</blockquote>
+</li>
+</ol>
+<p>gradle的默认本地仓库是home下的 如~/.gradle<br>需要修改gradle和samza目录，在用户的home目录下建立软连接：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ln -s /disk1/fangyq/gradle ~/.gradle</div><div class="line">ln -s /disk1/fangyq/samza ~/.samza</div></pre></td></tr></table></figure></p>
+<ol>
+<li>改完继续执行bin/grid bootstrap,会出现超时，</li>
+</ol>
+<blockquote>
+<p>fatal: unable to connect to git.apache.org:<br>git.apache.org[0: 54.84.58.65]: errno=Connection timed out</p>
+</blockquote>
+<p>修改bin/grid文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git clone git://git.apache.org/samza.git                 #原地址</div><div class="line">git clone https://github.com/apache/samza.git            #现地址</div></pre></td></tr></table></figure></p>
+<p>继续执行bin/grid bootstrap，下载、安装持续了很久。<br>再给我一次机会，肯定会改下载地址，下面自带的地址太慢了，hadoop的用了一个多小时。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">DOWNLOAD_KAFKA=http://www.us.apache.org/dist/kafka/0.8.2.1/kafka_2.10-0.8.2.1.tgz</div><div class="line">DOWNLOAD_YARN=https://archive.apache.org/dist/hadoop/common/hadoop-2.6.1/hadoop-2.6.1.tar.gz</div><div class="line">DOWNLOAD_ZOOKEEPER=http://archive.apache.org/dist/zookeeper/zookeeper-3.4.3/zookeeper-3.4.3.tar.gz</div></pre></td></tr></table></figure></p>
+<p>安装完后，在deploy目录下有kafka，yarn，zookeeper的系统。<br>在自己建立软连接的目录下有samza。</p>
+<p>查看是否安装成功：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">jps</div><div class="line"></div><div class="line">50500 NodeManager</div><div class="line">43877 Kafka</div><div class="line">56215 Jps</div><div class="line">50439 ResourceManager</div><div class="line">43721 QuorumPeerMain</div></pre></td></tr></table></figure></p>
+<p>还可以通过浏览器访问来查看YARN UI：<br><a href="http://localhost:8088" target="_blank" rel="external">http://localhost:8088</a>   </p>
+<h2 id="利用maven打包并解压"><a href="#利用maven打包并解压" class="headerlink" title="利用maven打包并解压"></a>利用maven打包并解压</h2><p>打包，要等很久。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn clean package</div></pre></td></tr></table></figure></p>
+<h4 id="出现问题：-1"><a href="#出现问题：-1" class="headerlink" title="出现问题："></a>出现问题：</h4><blockquote>
+<p>Too many files with unapproved license samza</p>
+</blockquote>
+<p>修改之后继续打包：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn -Drat.ignoreErrors=true  clean package</div></pre></td></tr></table></figure></p>
+<p>解压：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdir -p deploy/samza</div><div class="line">tar -xvf target/hello-samza-0.10.1-dist.tar.gz -C deploy/samza</div></pre></td></tr></table></figure></p>
+<h2 id="运行samza-job："><a href="#运行samza-job：" class="headerlink" title="运行samza job："></a>运行samza job：</h2><h3 id="数据获取job"><a href="#数据获取job" class="headerlink" title="数据获取job"></a>数据获取job</h3><p>该job是从在线的wikimedia实时消费数据，作为kafka的wikipedia-raw这个topic的producer。  </p>
+<p>先看下将要运行的示例的input<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">less deploy/samza/config/wikipedia-feed.properties</div></pre></td></tr></table></figure></p>
+<p>测试一下是否能连接上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">telnet irc.wikimedia.org 6667</div></pre></td></tr></table></figure></p>
+<ul>
+<li><p>如果有响应</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">deploy/samza/bin/run-job.sh --config-factory=org.apache.samza.config.factories.PropertiesConfigFactory --config-path=file://$PWD/deploy/samza/config/wikipedia-feed.properties</div></pre></td></tr></table></figure>
+</li>
+<li><p>如果没有响应。只能使用本地的数据，作为kafka的producer：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">bin/produce-wikipedia-raw-data.sh</div><div class="line"></div><div class="line">#或者可以修改kafka-broker地址和zookeeper地址</div><div class="line">bin/produce-wikipedia-raw-data.sh -b yourKafkaBrokerAddress -z yourZookeeperAddress</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>测试是否成功，开一个消费者实时消费wikipedia-raw<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-raw</div></pre></td></tr></table></figure></p>
+<p>将会有实时的消息输出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;raw&quot;:&quot;[[Paul Henreid]]  http://en.wikipedia.org/w/index.php?diff=606587718&amp;oldid=603654278 * .48.142.193 * (-1) original name Wasel, not Wassel - see ref &amp; ext link&quot;,&quot;time&quot;:1398926962623,&quot;source&quot;:&quot;rc-pmtpa&quot;,&quot;channel&quot;:&quot;#en.wikipedia&quot;&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="数据统计job"><a href="#数据统计job" class="headerlink" title="数据统计job"></a>数据统计job</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">deploy/samza/bin/run-job.sh --config-factory=org.apache.samza.config.factories.PropertiesConfigFactory --config-path=file://$PWD/deploy/samza/config/wikipedia-parser.properties</div><div class="line"></div><div class="line">deploy/samza/bin/run-job.sh --config-factory=org.apache.samza.config.factories.PropertiesConfigFactory --config-path=file://$PWD/deploy/samza/config/wikipedia-stats.properties</div></pre></td></tr></table></figure>
+<p>前面的wikipedia-parser负责解析wikipedia-raw中消息，从而抽取edit的大小,修改者等信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">wikipedia-raw--&gt;wikipedia-edits</div></pre></td></tr></table></figure></p>
+<p>后面的wikipedia-stats负责统计来自wikipedia-edits中的消息，计算消息的个数。而后通过一个10秒钟长的滑动时间窗口将统计个数发送到kafka的wikipedia-statstopic中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">wikipedia-edits--&gt;wikipedia-statstopic</div></pre></td></tr></table></figure></p>
+<p>可以查看结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-edits</div><div class="line"></div><div class="line">deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-stats</div></pre></td></tr></table></figure></p>
+<p>最后的输出结果类似：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;is-minor&quot;:948,&quot;unique-titles&quot;:763,&quot;is-talk&quot;:90,&quot;is-bot-edit&quot;:513,&quot;bytes-added&quot;:350253,&quot;edits&quot;:2790,&quot;is-new&quot;:135,&quot;edits-all-time&quot;:3720,&quot;is-unpatrolled&quot;:78&#125;</div><div class="line">&#123;&quot;is-minor&quot;:632,&quot;unique-titles&quot;:763,&quot;is-talk&quot;:60,&quot;is-bot-edit&quot;:342,&quot;bytes-added&quot;:233502,&quot;edits&quot;:1860,&quot;is-new&quot;:90,&quot;edits-all-time&quot;:5580,&quot;is-unpatrolled&quot;:52&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="关闭samza"><a href="#关闭samza" class="headerlink" title="关闭samza"></a>关闭samza</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/grid stop all</div></pre></td></tr></table></figure>
+<h2 id="开启samza"><a href="#开启samza" class="headerlink" title="开启samza"></a>开启samza</h2><p>如果不是首次，则通过之前的bootstrap已经下载了相应的东西，只需要start<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/grid start all</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://fangyeqing.github.io/2016/10/28/Samza学习（零）---hello_Samza/" data-id="ciutm7vpt0006vpf8d7a59g7b" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/10/28/Samza学习（一）---基本概念/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Samza学习（一）---基本概念
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/10/28/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/samza/">samza</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（四）---Samza_API/">Samza学习（四）---Samza API</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（三）---核心部件/">Samza学习（三）---核心部件</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（二）---架构/">Samza学习（二）---架构</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（一）---基本概念/">Samza学习（一）---基本概念</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（零）---hello_Samza/">Samza学习（零）---hello Samza</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 fangyeqing<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

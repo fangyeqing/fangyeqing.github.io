@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Samza学习（四）---Samza API | 方叶青的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Samza学习（四）---Samza API">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza学习（四）---Samza_API/index.html">
+<meta property="og:site_name" content="方叶青的博客">
+<meta property="og:description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+<meta property="og:updated_time" content="2016-10-28T10:04:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Samza学习（四）---Samza API">
+<meta name="twitter:description" content="参考：https://samza.apache.org/learn/documentation/0.10/https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.mdhttp://wdxtub.com/vault/cc-21.htmlhttp://www.infoq.com/cn/articles/linkedin-">
+  
+    <link rel="alternate" href="/atom.xml" title="方叶青的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">方叶青的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://fangyeqing.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Samza学习（四）---Samza_API" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/28/Samza学习（四）---Samza_API/" class="article-date">
+  <time datetime="2016-10-28T09:44:00.000Z" itemprop="datePublished">2016-10-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/samza/">samza</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Samza学习（四）---Samza API
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+<h1 id="Samza-API"><a href="#Samza-API" class="headerlink" title="Samza API"></a>Samza API</h1><p>任务类必须实现StreamTask,可选 InitableTask, ClosableTask,WindowableTask<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class xxxxTask implements StreamTask, InitableTask, ClosableTask,WindowableTask &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="StreamTask"><a href="#StreamTask" class="headerlink" title="StreamTask"></a>StreamTask</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public interface StreamTask &#123;</div><div class="line">    void process(IncomingMessageEnvelope var1, //接收到的消息封装</div><div class="line">                MessageCollector var2,//用来发送其他消息</div><div class="line">                TaskCoordinator var3) </div><div class="line">    throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="IncomingMessageEnvelop"><a href="#IncomingMessageEnvelop" class="headerlink" title="IncomingMessageEnvelop"></a>IncomingMessageEnvelop</h3><p>代表接收到的消息的封装,表示StreamTask收到一个分区的一个特定的输入流。包括：</p>
+<ul>
+<li>message</li>
+<li>key</li>
+<li>消息来源（system+stream+partition）<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class IncomingMessageEnvelope &#123;</div><div class="line">  /** A deserialized message. */</div><div class="line">  Object getMessage() &#123; ... &#125;</div><div class="line"></div><div class="line">  /** A deserialized key. */</div><div class="line">  Object getKey() &#123; ... &#125;</div><div class="line"></div><div class="line">  /** The stream and partition that this message came from. */</div><div class="line">  SystemStreamPartition getSystemStreamPartition() &#123; ... &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="SystemStreamPartition"><a href="#SystemStreamPartition" class="headerlink" title="SystemStreamPartition"></a>SystemStreamPartition</h4><p>消息来源包括：</p>
+<ul>
+<li>消息来源system名</li>
+<li>消息来源stream/topic/queue名</li>
+<li>消息流的分区<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">/** A triple of system name, stream name and partition. */</div><div class="line">public class SystemStreamPartition extends SystemStream &#123;</div><div class="line"></div><div class="line">  /** The name of the system which provides this stream. It is</div><div class="line">      defined in the Samza job&apos;s configuration. */</div><div class="line">  public String getSystem() &#123; ... &#125;</div><div class="line"></div><div class="line">  /** The name of the stream/topic/queue within the system. */</div><div class="line">  public String getStream() &#123; ... &#125;</div><div class="line"></div><div class="line">  /** The partition within the stream. */</div><div class="line">  public Partition getPartition() &#123; ... &#125;</div><div class="line">  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="MessageCollector"><a href="#MessageCollector" class="headerlink" title="MessageCollector"></a>MessageCollector</h3><p> 为了发送一个消息， 你会创建一个OutgoingMessageEnvelop对象并且把它传递给消息收集器。它至少会确定你想要发送的消息、系统和数据流名字再发送出去。你也可以确定分区的key和另一些参数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public interface MessageCollector &#123;</div><div class="line">  void send(OutgoingMessageEnvelope envelope);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>注意：<br>请只在process()方法里使用MessageCollector对象。如果你保持住一个MessageCollector实例并且之后再次使用它，你的消息可能会错误地发送出去。</p>
+<h4 id="OutgoingMessageEnvelope"><a href="#OutgoingMessageEnvelope" class="headerlink" title="OutgoingMessageEnvelope"></a>OutgoingMessageEnvelope</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">public class OutgoingMessageEnvelope &#123;</div><div class="line">    private final SystemStream systemStream;</div><div class="line">    private final String keySerializerName;</div><div class="line">    private final String messageSerializerName;</div><div class="line">    private final Object partitionKey;</div><div class="line">    private final Object key;</div><div class="line">    private final Object message;</div><div class="line">    </div><div class="line">    public OutgoingMessageEnvelope(SystemStream systemStream, String keySerializerName, String messageSerializerName, Object partitionKey, Object key, Object message) &#123; ... &#125;</div><div class="line">    </div><div class="line">     public OutgoingMessageEnvelope(SystemStream systemStream, Object partitionKey, Object key, Object message) &#123; ... &#125;</div><div class="line"></div><div class="line">    public OutgoingMessageEnvelope(SystemStream systemStream, Object key, Object message) &#123; ... &#125;</div><div class="line">    </div><div class="line">    public OutgoingMessageEnvelope(SystemStream systemStream, Object message) &#123; ... &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="InitableTask"><a href="#InitableTask" class="headerlink" title="InitableTask"></a>InitableTask</h2><p>用来处理初始化工作，init 函数会首先被调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public interface InitableTask &#123;</div><div class="line">    void init(Config var1, TaskContext var2) throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="ClosableTask"><a href="#ClosableTask" class="headerlink" title="ClosableTask"></a>ClosableTask</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public interface ClosableTask &#123;</div><div class="line">    void close() throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="WindowableTask"><a href="#WindowableTask" class="headerlink" title="WindowableTask"></a>WindowableTask</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public interface WindowableTask &#123;</div><div class="line">    void window(MessageCollector var1, </div><div class="line">                TaskCoordinator var2) throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>有一个简单的任务，它把每个输入的消息拆成单词，并且发送每一个单词作为一个消息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"> public class SplitStringIntoWords implements StreamTask, InitableTask, ClosableTask &#123;</div><div class="line"></div><div class="line">    private String outputSystem;</div><div class="line">    </div><div class="line">    //官网教程中直接使用固定的SystemStream,稍加改造</div><div class="line">    //private final SystemStream output_stream = new SystemStream(&quot;kafka&quot;, &quot;words&quot;);</div><div class="line">    </div><div class="line">    @Override</div><div class="line">    public void close() throws Exception &#123;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    @Override</div><div class="line">    public void init(Config config, TaskContext context) throws Exception &#123;//初始化时从配置文件读output system</div><div class="line">        outputSystem = config.get(&quot;task.output.system&quot;);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    public void process(IncomingMessageEnvelope envelope,</div><div class="line">                      MessageCollector collector,</div><div class="line">                      TaskCoordinator coordinator) &#123;</div><div class="line">        String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();</div><div class="line">        </div><div class="line">        topic=topic+&quot;_split&quot;;//获取输入消息的topic，加上后缀</div><div class="line">        </div><div class="line">        SystemStream output_stream=new SystemStream(outputSystem, topic);//构造新的发送消息的System+Stream</div><div class="line">        </div><div class="line">        String message = (String) envelope.getMessage();//接收到的消息</div><div class="line">        </div><div class="line">        for (String word : message.split(&quot; &quot;)) &#123;</div><div class="line">          //单词作为key，1作为value，后续任务可以将1相加计数</div><div class="line">          collector.send(new OutgoingMessageEnvelope(output_stream, word, 1));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://fangyeqing.github.io/2016/10/28/Samza学习（四）---Samza_API/" data-id="ciutm7vpk0004vpf82d4h61hk" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/10/28/Samza学习（三）---核心部件/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Samza学习（三）---核心部件</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/samza/">samza</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（四）---Samza_API/">Samza学习（四）---Samza API</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（三）---核心部件/">Samza学习（三）---核心部件</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（二）---架构/">Samza学习（二）---架构</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（一）---基本概念/">Samza学习（一）---基本概念</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/28/Samza学习（零）---hello_Samza/">Samza学习（零）---hello Samza</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 fangyeqing<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
