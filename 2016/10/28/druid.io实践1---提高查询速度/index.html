@@ -15,25 +15,16 @@
 
 
 
-<meta name="description" content="druid集群数据迁移背景交代druid数据存储采用hdfs。实时输入流通过tranquility从kafka消费topic进行realtime indexing。批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  
-数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。
-大体思路
-kafka镜像流：启动samza任务，从老的kafka">
+<meta name="description" content="提高查询速度当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="小懒的博客">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/29/druid.io实践2---集群数据迁移/index.html">
+<meta property="og:title" content="druid.io实践1---提高查询速度">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/druid.io实践1---提高查询速度/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="druid集群数据迁移背景交代druid数据存储采用hdfs。实时输入流通过tranquility从kafka消费topic进行realtime indexing。批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  
-数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。
-大体思路
-kafka镜像流：启动samza任务，从老的kafka">
-<meta property="og:updated_time" content="2016-10-28T16:37:30.000Z">
+<meta property="og:description" content="提高查询速度当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：">
+<meta property="og:updated_time" content="2016-10-28T16:47:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="小懒的博客">
-<meta name="twitter:description" content="druid集群数据迁移背景交代druid数据存储采用hdfs。实时输入流通过tranquility从kafka消费topic进行realtime indexing。批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  
-数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。
-大体思路
-kafka镜像流：启动samza任务，从老的kafka">
+<meta name="twitter:title" content="druid.io实践1---提高查询速度">
+<meta name="twitter:description" content="提高查询速度当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -65,7 +56,7 @@ kafka镜像流：启动samza任务，从老的kafka">
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>小懒的博客</title>
+<title>druid.io实践1---提高查询速度 | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -268,11 +259,11 @@ kafka镜像流：启动samza任务，从老的kafka">
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-druid.io实践2---集群数据迁移" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-druid.io实践1---提高查询速度" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/29/druid.io实践2---集群数据迁移/" class="article-date">
-      <time datetime="2016-10-28T16:48:32.000Z" itemprop="datePublished">2016-10-29</time>
+      <a href="/2016/10/28/druid.io实践1---提高查询速度/" class="article-date">
+      <time datetime="2016-10-28T13:55:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
 
@@ -283,47 +274,43 @@ kafka镜像流：启动samza任务，从老的kafka">
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      druid.io实践1---提高查询速度
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    </div>
+
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="druid集群数据迁移"><a href="#druid集群数据迁移" class="headerlink" title="druid集群数据迁移"></a>druid集群数据迁移</h1><h2 id="背景交代"><a href="#背景交代" class="headerlink" title="背景交代"></a>背景交代</h2><p>druid数据存储采用hdfs。<br>实时输入流通过tranquility从kafka消费topic进行realtime indexing。<br>批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  </p>
-<p>数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。</p>
-<h2 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路"></a>大体思路</h2><ul>
-<li><p>kafka镜像流：<br>启动samza任务，从老的kafka集群consume消息，produce到新的kafka集群。直接使用kafka的mirror也可以，由于项目使用的arvo编解码，涉及到schema-id的问题，所以只能通过samza任务。</p>
-</li>
-<li><p>druid批量数据获取&amp;index：<br>给新druid集群提交任务，camus批量拉取数据，发送post请求提交配置json到overload执行batch index。 </p>
-</li>
-<li><p>脏数据覆盖(批量路线稳定、数据正确之后)</p>
-<ul>
-<li>利用hadoop-distcp迁移老hdfs中之前所有的segment数据</li>
-<li>利用insert-segment-to-db工具在mysql生成这之前的元数据（索引）。</li>
-</ul>
-</li>
-<li><p>druid实时数据获取&amp;index：<br>Tranquility任务，获取实时数据，提交给overload执行realtime index   </p>
-</li>
-<li><p>切换（稳定后）<br>将老的kafka的流的生产者逐个切换到新的kafka上</p>
-</li>
-</ul>
-<h2 id="使用工具介绍"><a href="#使用工具介绍" class="headerlink" title="使用工具介绍"></a>使用工具介绍</h2><h3 id="hadoop-distcp"><a href="#hadoop-distcp" class="headerlink" title="hadoop-distcp"></a>hadoop-distcp</h3><p>迁移老hdfs中之前所有的segment数据  </p>
-<h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>DistCp（分布式拷贝）是用于大规模集群内部和集群之间拷贝的工具。 它使用Map/Reduce实现文件分发，错误处理和恢复，以及报告生成。 它把文件和目录的列表作为map任务的输入，每个任务会完成源列表中部分文件的拷贝</p>
-<p><a href="https://hadoop.apache.org/docs/r1.0.4/cn/distcp.html" target="_blank" rel="external">https://hadoop.apache.org/docs/r1.0.4/cn/distcp.html</a>  </p>
-<p><a href="http://hadoop.apache.org/docs/r2.7.3/hadoop-distcp/DistCp.html" target="_blank" rel="external">http://hadoop.apache.org/docs/r2.7.3/hadoop-distcp/DistCp.html</a>  </p>
-<p><a href="http://stackoverflow.com/questions/31862904/how-to-do-i-copy-data-from-one-hdfs-to-another-hdfs" target="_blank" rel="external">http://stackoverflow.com/questions/31862904/how-to-do-i-copy-data-from-one-hdfs-to-another-hdfs</a>  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Usage: $ hadoop distcp &lt;src&gt; &lt;dst&gt;</div><div class="line"></div><div class="line">example: $ hadoop distcp hdfs://nn1:8020/file1 hdfs://nn2:8020/file2</div></pre></td></tr></table></figure>
-<p>默认情况下，如果在拷贝的目的地同名文件已经存在，则会默认跳过这些文件。  </p>
-<p>可以通过-overwrite选项指定覆盖掉同名文件，或者通过-update选项来更新同名文件。</p>
-<p>-overwrite来覆盖刚开启批量任务时的数据不完整那个小时的数据。</p>
-<h3 id="insert-segment-to-db"><a href="#insert-segment-to-db" class="headerlink" title="insert-segment-to-db"></a>insert-segment-to-db</h3><h4 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h4><p>HDFS上Segment在新的mysql中生成索引    </p>
-<p><a href="https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ" target="_blank" rel="external">https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ</a>     </p>
-<p><a href="https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU" target="_blank" rel="external">https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU</a>  </p>
-<p><a href="http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html" target="_blank" rel="external">http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html</a></p>
-<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><p>–workingDir：segment位置  </p>
-<p>–updateDescriptor：默认true，如果desciptor.json的实际路径与“loadSpec”中的路径是不同的，该工具将更新“loadSpec”字段的描述符。 </p>
-<p>例如：将老集群的数据迁移过去之后，desciptor.json中的路径没变，生成索引时会更新成现在的路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">hadoop fs -cat hdfs://nn1:port/.../dataSource/20161025T060000.000+0800_20161025T070000.000+0800/2016-10-25T07_33_53.379+08_00/0/descriptor.json</div><div class="line"></div><div class="line">其中loadSpec部分：</div><div class="line"></div><div class="line">&quot;loadSpec&quot;: &#123;</div><div class="line">    &quot;type&quot;: &quot;hdfs&quot;,</div><div class="line">    &quot;path&quot;: &quot;hdfs://nn1:port/.../dataSource/20161025T060000.000+0800_20161025T070000.000+0800/2016-10-25T07_33_53.379+08_00/0/index.zip&quot;</div><div class="line">&#125;,</div></pre></td></tr></table></figure></p>
-<h4 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h4><p>官方例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">java </div><div class="line">-Ddruid.metadata.storage.type=mysql </div><div class="line">-Ddruid.metadata.storage.connector.connectURI=jdbc:mysql://mysql-db:3306/druid</div><div class="line">-Ddruid.metadata.storage.connector.user=userxxx</div><div class="line">-Ddruid.metadata.storage.connector.password=passxxxx</div><div class="line">-Ddruid.extensions.loadList=[\&quot;mysql-metadata-storage\&quot;,\&quot;druid-hdfs-storage\&quot;] </div><div class="line">-Ddruid.storage.type=hdfs</div><div class="line">-cp $DRUID_CLASSPATH </div><div class="line">io.druid.cli.Main tools insert-segment-to-db --workingDir hdfs://nn1:port/.../dataSource</div></pre></td></tr></table></figure></p>
-<p>打印的日志：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2016-10-25T17:15:49,342 INFO [main] io.druid.storage.hdfs.HdfsDataSegmentFinder - Found segment [dataSource_2016-01-13T09:00:00.000+08:00_2016-01-13T10:00:00.000+08:00_2016-01-13T10:34:03.820+08:00_6] located at [hdfs://nn1:port/.../dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/index.zip]</div><div class="line">2016-10-25T17:15:49,342 INFO [main] io.druid.storage.hdfs.HdfsDataSegmentFinder - Updating loadSpec in descriptor.json at [hdfs://nn1:port/.../dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/descriptor.json] with new path [dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/index.zip]</div></pre></td></tr></table></figure></p>
-<p>会先更新descriptor.json中的路径：由之前的老集群的绝对路径—新集群的相对路径</p>
+        <excerpt in="" index="" |="" 首页摘要="">   
 
+<h1 id="提高查询速度"><a href="#提高查询速度" class="headerlink" title="提高查询速度"></a>提高查询速度</h1><p>当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：</p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<h2 id="broker-节点："><a href="#broker-节点：" class="headerlink" title="broker 节点："></a>broker 节点：</h2><p>配置缓存，加大缓存大小，或者从local替换成memcached。</p>
+<h2 id="historycal集群"><a href="#historycal集群" class="headerlink" title="historycal集群"></a>historycal集群</h2><p>查询为CPU密集型，通过数据分配策略，使数据尽量分散在不同的历史节点。</p>
+<h3 id="集群分片"><a href="#集群分片" class="headerlink" title="集群分片"></a>集群分片</h3><p>例如：根据冷热数据分成hot和_default_tier，近30天的数据在hot片上和default片上都有，永久的数据在default片，根据数据使用频率配置不同的机器数。  </p>
+<h3 id="增加节点数"><a href="#增加节点数" class="headerlink" title="增加节点数"></a>增加节点数</h3><p>节点存储空间尽量一致，使segment均匀分散在节点间，降低查询时每个historical节点的负载。例如：default分片增加到2-3台，hot分片增加到5-10台机器，热数据分散到更多台。 </p>
+<h3 id="调整druid-server-priority配置，默认为0。"><a href="#调整druid-server-priority配置，默认为0。" class="headerlink" title="调整druid.server.priority配置，默认为0。"></a>调整druid.server.priority配置，默认为0。</h3><p>broker节点中，druid.broker.select.tier的配置默认为highestPriority，表示如果有重复的数据样本，优先查询优先级高的。例如：hot分片的机器druid.server.priority设置为100，default分片的默认0，则查询热数据时，不会查询default，只会去查询hot，而hot集群机器比较多，每台机器压力小。</p>
+</the></excerpt>
       
     </div>
     
@@ -331,13 +318,13 @@ kafka镜像流：启动samza任务，从老的kafka">
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/29/druid.io实践2---集群数据迁移/"></a></p>
+        <p><span>本文标题:</span><a href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
-        <p><span>发布时间:</span>2016-10-29, 00:48:32</p>
-        <p><span>最后更新:</span>2016-10-29, 00:37:30</p>
+        <p><span>发布时间:</span>2016-10-28, 21:55:00</p>
+        <p><span>最后更新:</span>2016-10-29, 00:47:13</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io实践2---集群数据迁移/" title="">https://fangyeqing.github.io/2016/10/29/druid.io实践2---集群数据迁移/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io实践2---集群数据迁移/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/28/druid.io实践1---提高查询速度/" title="druid.io实践1---提高查询速度">https://fangyeqing.github.io/2016/10/28/druid.io实践1---提高查询速度/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/druid.io实践1---提高查询速度/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -349,10 +336,16 @@ kafka镜像流：启动samza任务，从老的kafka">
 
     <nav id="article-nav">
         
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/10/28/druid.io实践2---集群数据迁移/">
+                    druid.io实践2---集群数据迁移
+                </a>
+            </div>
+        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/29/druid.io实践1---提高查询速度/">
-                    
+                <a href="/2016/10/28/druid.io_3---druid集群/">
+                    druid.io学习3---druid集群
                 </a>
             </div>
         
@@ -364,7 +357,7 @@ kafka镜像流：启动samza任务，从老的kafka">
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#druid集群数据迁移"><span class="toc-number">1.</span> <span class="toc-text">druid集群数据迁移</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景交代"><span class="toc-number">1.1.</span> <span class="toc-text">背景交代</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#大体思路"><span class="toc-number">1.2.</span> <span class="toc-text">大体思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用工具介绍"><span class="toc-number">1.3.</span> <span class="toc-text">使用工具介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#hadoop-distcp"><span class="toc-number">1.3.1.</span> <span class="toc-text">hadoop-distcp</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#介绍"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">介绍</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#insert-segment-to-db"><span class="toc-number">1.3.2.</span> <span class="toc-text">insert-segment-to-db</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#介绍-1"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#参数说明"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">参数说明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#具体操作"><span class="toc-number">1.3.2.3.</span> <span class="toc-text">具体操作</span></a></li></ol></li></ol></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#提高查询速度"><span class="toc-number">1.</span> <span class="toc-text">提高查询速度</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#broker-节点："><span class="toc-number">1.1.</span> <span class="toc-text">broker 节点：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#historycal集群"><span class="toc-number">1.2.</span> <span class="toc-text">historycal集群</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#集群分片"><span class="toc-number">1.2.1.</span> <span class="toc-text">集群分片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增加节点数"><span class="toc-number">1.2.2.</span> <span class="toc-text">增加节点数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调整druid-server-priority配置，默认为0。"><span class="toc-number">1.2.3.</span> <span class="toc-text">调整druid.server.priority配置，默认为0。</span></a></li></ol></li></ol></li></ol>
         
     </div>
     <style>
@@ -400,7 +393,7 @@ kafka镜像流：启动samza任务，从老的kafka">
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"druid.io实践1---提高查询速度　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -416,7 +409,7 @@ kafka镜像流：启动samza任务，从老的kafka">
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/29/druid.io实践2---集群数据迁移/" data-title="" data-url="https://fangyeqing.github.io/2016/10/29/druid.io实践2---集群数据迁移/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/druid.io实践1---提高查询速度/" data-title="druid.io实践1---提高查询速度" data-url="https://fangyeqing.github.io/2016/10/28/druid.io实践1---提高查询速度/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -439,19 +432,21 @@ kafka镜像流：启动samza任务，从老的kafka">
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a href="/2016/10/28/druid.io实践2---集群数据迁移/" title="上一篇: druid.io实践2---集群数据迁移">
+                <i class="fa fa-angle-left"></i>
+            </a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/29/druid.io实践1---提高查询速度/" title="下一篇: ">
+            <a href="/2016/10/28/druid.io_3---druid集群/" title="下一篇: druid.io学习3---druid集群">
                 <i class="fa fa-angle-right"></i>
             </a>
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io学习3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hello-world/">Hello World</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io学习3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hello-world/">Hello World</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">hexo+github page搭建博客</a></li></ul>
 
 
 

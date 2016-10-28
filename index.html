@@ -265,8 +265,8 @@
     <article id="post-druid.io实践2---集群数据迁移" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/29/druid.io实践2---集群数据迁移/" class="article-date">
-      <time datetime="2016-10-28T16:48:32.000Z" itemprop="datePublished">2016-10-29</time>
+      <a href="/2016/10/28/druid.io实践2---集群数据迁移/" class="article-date">
+      <time datetime="2016-10-28T13:56:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
 
@@ -277,55 +277,41 @@
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a>
+    </h1>
+  
+
+      </header>
+      
+    
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="druid集群数据迁移"><a href="#druid集群数据迁移" class="headerlink" title="druid集群数据迁移"></a>druid集群数据迁移</h1><h2 id="背景交代"><a href="#背景交代" class="headerlink" title="背景交代"></a>背景交代</h2><p>druid数据存储采用hdfs。<br>实时输入流通过tranquility从kafka消费topic进行realtime indexing。<br>批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  </p>
-<p>数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。</p>
-<h2 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路"></a>大体思路</h2><ul>
-<li><p>kafka镜像流：<br>启动samza任务，从老的kafka集群consume消息，produce到新的kafka集群。直接使用kafka的mirror也可以，由于项目使用的arvo编解码，涉及到schema-id的问题，所以只能通过samza任务。</p>
-</li>
-<li><p>druid批量数据获取&amp;index：<br>给新druid集群提交任务，camus批量拉取数据，发送post请求提交配置json到overload执行batch index。 </p>
-</li>
-<li><p>脏数据覆盖(批量路线稳定、数据正确之后)</p>
-<ul>
-<li>利用hadoop-distcp迁移老hdfs中之前所有的segment数据</li>
-<li>利用insert-segment-to-db工具在mysql生成这之前的元数据（索引）。</li>
-</ul>
-</li>
-<li><p>druid实时数据获取&amp;index：<br>Tranquility任务，获取实时数据，提交给overload执行realtime index   </p>
-</li>
-<li><p>切换（稳定后）<br>将老的kafka的流的生产者逐个切换到新的kafka上</p>
-</li>
-</ul>
-<h2 id="使用工具介绍"><a href="#使用工具介绍" class="headerlink" title="使用工具介绍"></a>使用工具介绍</h2><h3 id="hadoop-distcp"><a href="#hadoop-distcp" class="headerlink" title="hadoop-distcp"></a>hadoop-distcp</h3><p>迁移老hdfs中之前所有的segment数据  </p>
-<h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>DistCp（分布式拷贝）是用于大规模集群内部和集群之间拷贝的工具。 它使用Map/Reduce实现文件分发，错误处理和恢复，以及报告生成。 它把文件和目录的列表作为map任务的输入，每个任务会完成源列表中部分文件的拷贝</p>
-<p><a href="https://hadoop.apache.org/docs/r1.0.4/cn/distcp.html" target="_blank" rel="external">https://hadoop.apache.org/docs/r1.0.4/cn/distcp.html</a>  </p>
-<p><a href="http://hadoop.apache.org/docs/r2.7.3/hadoop-distcp/DistCp.html" target="_blank" rel="external">http://hadoop.apache.org/docs/r2.7.3/hadoop-distcp/DistCp.html</a>  </p>
-<p><a href="http://stackoverflow.com/questions/31862904/how-to-do-i-copy-data-from-one-hdfs-to-another-hdfs" target="_blank" rel="external">http://stackoverflow.com/questions/31862904/how-to-do-i-copy-data-from-one-hdfs-to-another-hdfs</a>  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Usage: $ hadoop distcp &lt;src&gt; &lt;dst&gt;</div><div class="line"></div><div class="line">example: $ hadoop distcp hdfs://nn1:8020/file1 hdfs://nn2:8020/file2</div></pre></td></tr></table></figure>
-<p>默认情况下，如果在拷贝的目的地同名文件已经存在，则会默认跳过这些文件。  </p>
-<p>可以通过-overwrite选项指定覆盖掉同名文件，或者通过-update选项来更新同名文件。</p>
-<p>-overwrite来覆盖刚开启批量任务时的数据不完整那个小时的数据。</p>
-<h3 id="insert-segment-to-db"><a href="#insert-segment-to-db" class="headerlink" title="insert-segment-to-db"></a>insert-segment-to-db</h3><h4 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h4><p>HDFS上Segment在新的mysql中生成索引    </p>
-<p><a href="https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ" target="_blank" rel="external">https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ</a>     </p>
-<p><a href="https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU" target="_blank" rel="external">https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU</a>  </p>
-<p><a href="http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html" target="_blank" rel="external">http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html</a></p>
-<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><p>–workingDir：segment位置  </p>
-<p>–updateDescriptor：默认true，如果desciptor.json的实际路径与“loadSpec”中的路径是不同的，该工具将更新“loadSpec”字段的描述符。 </p>
-<p>例如：将老集群的数据迁移过去之后，desciptor.json中的路径没变，生成索引时会更新成现在的路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">hadoop fs -cat hdfs://nn1:port/.../dataSource/20161025T060000.000+0800_20161025T070000.000+0800/2016-10-25T07_33_53.379+08_00/0/descriptor.json</div><div class="line"></div><div class="line">其中loadSpec部分：</div><div class="line"></div><div class="line">&quot;loadSpec&quot;: &#123;</div><div class="line">    &quot;type&quot;: &quot;hdfs&quot;,</div><div class="line">    &quot;path&quot;: &quot;hdfs://nn1:port/.../dataSource/20161025T060000.000+0800_20161025T070000.000+0800/2016-10-25T07_33_53.379+08_00/0/index.zip&quot;</div><div class="line">&#125;,</div></pre></td></tr></table></figure></p>
-<h4 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h4><p>官方例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">java </div><div class="line">-Ddruid.metadata.storage.type=mysql </div><div class="line">-Ddruid.metadata.storage.connector.connectURI=jdbc:mysql://mysql-db:3306/druid</div><div class="line">-Ddruid.metadata.storage.connector.user=userxxx</div><div class="line">-Ddruid.metadata.storage.connector.password=passxxxx</div><div class="line">-Ddruid.extensions.loadList=[\&quot;mysql-metadata-storage\&quot;,\&quot;druid-hdfs-storage\&quot;] </div><div class="line">-Ddruid.storage.type=hdfs</div><div class="line">-cp $DRUID_CLASSPATH </div><div class="line">io.druid.cli.Main tools insert-segment-to-db --workingDir hdfs://nn1:port/.../dataSource</div></pre></td></tr></table></figure></p>
-<p>打印的日志：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2016-10-25T17:15:49,342 INFO [main] io.druid.storage.hdfs.HdfsDataSegmentFinder - Found segment [dataSource_2016-01-13T09:00:00.000+08:00_2016-01-13T10:00:00.000+08:00_2016-01-13T10:34:03.820+08:00_6] located at [hdfs://nn1:port/.../dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/index.zip]</div><div class="line">2016-10-25T17:15:49,342 INFO [main] io.druid.storage.hdfs.HdfsDataSegmentFinder - Updating loadSpec in descriptor.json at [hdfs://nn1:port/.../dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/descriptor.json] with new path [dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/index.zip]</div></pre></td></tr></table></figure></p>
-<p>会先更新descriptor.json中的路径：由之前的老集群的绝对路径—新集群的相对路径</p>
+              <Excerpt in index | 首页摘要>   
 
+<h1 id="druid集群数据迁移"><a href="#druid集群数据迁移" class="headerlink" title="druid集群数据迁移"></a>druid集群数据迁移</h1><h2 id="背景交代"><a href="#背景交代" class="headerlink" title="背景交代"></a>背景交代</h2><p>druid数据存储采用hdfs。<br>实时输入流通过tranquility从kafka消费topic进行realtime indexing。<br>批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  </p>
+<p>数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。</p>
+          
       
     </div>
     
     <div class="article-info article-info-index">
       
       
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    </div>
+
 
       
+      
+        <p class="article-more-link">
+          <a href="/2016/10/28/druid.io实践2---集群数据迁移/#more">阅读全文 >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>
@@ -346,8 +332,8 @@
     <article id="post-druid.io实践1---提高查询速度" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/29/druid.io实践1---提高查询速度/" class="article-date">
-      <time datetime="2016-10-28T16:48:32.000Z" itemprop="datePublished">2016-10-29</time>
+      <a href="/2016/10/28/druid.io实践1---提高查询速度/" class="article-date">
+      <time datetime="2016-10-28T13:55:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
 
@@ -358,24 +344,40 @@
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a>
+    </h1>
+  
+
+      </header>
+      
+    
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="提高查询速度"><a href="#提高查询速度" class="headerlink" title="提高查询速度"></a>提高查询速度</h1><p>当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：</p>
-<h2 id="broker-节点："><a href="#broker-节点：" class="headerlink" title="broker 节点："></a>broker 节点：</h2><p>配置缓存，加大缓存大小，或者从local替换成memcached。</p>
-<h2 id="historycal集群"><a href="#historycal集群" class="headerlink" title="historycal集群"></a>historycal集群</h2><p>查询为CPU密集型，通过数据分配策略，使数据尽量分散在不同的历史节点。</p>
-<h3 id="集群分片"><a href="#集群分片" class="headerlink" title="集群分片"></a>集群分片</h3><p>例如：根据冷热数据分成hot和_default_tier，近30天的数据在hot片上和default片上都有，永久的数据在default片，根据数据使用频率配置不同的机器数。  </p>
-<h3 id="增加节点数"><a href="#增加节点数" class="headerlink" title="增加节点数"></a>增加节点数</h3><p>节点存储空间尽量一致，使segment均匀分散在节点间，降低查询时每个historical节点的负载。例如：default分片增加到2-3台，hot分片增加到5-10台机器，热数据分散到更多台。 </p>
-<h3 id="调整druid-server-priority配置，默认为0。"><a href="#调整druid-server-priority配置，默认为0。" class="headerlink" title="调整druid.server.priority配置，默认为0。"></a>调整druid.server.priority配置，默认为0。</h3><p>broker节点中，druid.broker.select.tier的配置默认为highestPriority，表示如果有重复的数据样本，优先查询优先级高的。例如：hot分片的机器druid.server.priority设置为100，default分片的默认0，则查询热数据时，不会查询default，只会去查询hot，而hot集群机器比较多，每台机器压力小。</p>
+              <Excerpt in index | 首页摘要>   
 
+<h1 id="提高查询速度"><a href="#提高查询速度" class="headerlink" title="提高查询速度"></a>提高查询速度</h1><p>当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：</p>
+          
       
     </div>
     
     <div class="article-info article-info-index">
       
       
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    </div>
+
 
       
+      
+        <p class="article-more-link">
+          <a href="/2016/10/28/druid.io实践1---提高查询速度/#more">阅读全文 >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>

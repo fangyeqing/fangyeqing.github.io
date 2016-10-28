@@ -15,25 +15,19 @@
 
 
 
-<meta name="description" content="OLAP
-OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用户组建多维的数据模型。  
-维指的是用户的分析角度，例如对销售数据的分析，时间周期是一个维度，产品类别、分销渠道、地理分布、客户群类也分别是不同的维度。  
-一旦多维数据模型建立完成，用户可以快速地从各个分析角度获取数据，也能动态地在各个角度之间切换数据或者进行多角度综合分析，具有极大的分析灵活性。">
+<meta name="description" content="druid集群数据迁移背景交代druid数据存储采用hdfs。实时输入流通过tranquility从kafka消费topic进行realtime indexing。批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  
+数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="druid.io 1---概念">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/druid.io_1---OLAP&druid概念/index.html">
+<meta property="og:title" content="druid.io实践2---集群数据迁移">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/druid.io实践2---集群数据迁移/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="OLAP
-OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用户组建多维的数据模型。  
-维指的是用户的分析角度，例如对销售数据的分析，时间周期是一个维度，产品类别、分销渠道、地理分布、客户群类也分别是不同的维度。  
-一旦多维数据模型建立完成，用户可以快速地从各个分析角度获取数据，也能动态地在各个角度之间切换数据或者进行多角度综合分析，具有极大的分析灵活性。">
-<meta property="og:updated_time" content="2016-10-28T16:42:01.000Z">
+<meta property="og:description" content="druid集群数据迁移背景交代druid数据存储采用hdfs。实时输入流通过tranquility从kafka消费topic进行realtime indexing。批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  
+数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。">
+<meta property="og:updated_time" content="2016-10-28T16:47:51.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="druid.io 1---概念">
-<meta name="twitter:description" content="OLAP
-OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用户组建多维的数据模型。  
-维指的是用户的分析角度，例如对销售数据的分析，时间周期是一个维度，产品类别、分销渠道、地理分布、客户群类也分别是不同的维度。  
-一旦多维数据模型建立完成，用户可以快速地从各个分析角度获取数据，也能动态地在各个角度之间切换数据或者进行多角度综合分析，具有极大的分析灵活性。">
+<meta name="twitter:title" content="druid.io实践2---集群数据迁移">
+<meta name="twitter:description" content="druid集群数据迁移背景交代druid数据存储采用hdfs。实时输入流通过tranquility从kafka消费topic进行realtime indexing。批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  
+数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -65,7 +59,7 @@ OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用�
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>druid.io 1---概念 | 小懒的博客</title>
+<title>druid.io实践2---集群数据迁移 | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -268,11 +262,11 @@ OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用�
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-druid.io_1---OLAP&amp;druid概念" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-druid.io实践2---集群数据迁移" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/druid.io_1---OLAP&druid概念/" class="article-date">
-      <time datetime="2016-10-28T13:40:00.000Z" itemprop="datePublished">2016-10-28</time>
+      <a href="/2016/10/28/druid.io实践2---集群数据迁移/" class="article-date">
+      <time datetime="2016-10-28T13:56:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
 
@@ -287,7 +281,7 @@ OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用�
         
   
     <h1 class="article-title" itemprop="name">
-      druid.io 1---概念
+      druid.io实践2---集群数据迁移
     </h1>
   
 
@@ -310,103 +304,46 @@ OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用�
           
         <excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="OLAP"><a href="#OLAP" class="headerlink" title="OLAP"></a>OLAP</h1><ul>
-<li>OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用户组建多维的数据模型。  </li>
-<li>维指的是用户的分析角度，例如对销售数据的分析，时间周期是一个维度，产品类别、分销渠道、地理分布、客户群类也分别是不同的维度。  </li>
-<li>一旦多维数据模型建立完成，用户可以快速地从各个分析角度获取数据，也能动态地在各个角度之间切换数据或者进行多角度综合分析，具有极大的分析灵活性。</li>
-</ul>
+<h1 id="druid集群数据迁移"><a href="#druid集群数据迁移" class="headerlink" title="druid集群数据迁移"></a>druid集群数据迁移</h1><h2 id="背景交代"><a href="#背景交代" class="headerlink" title="背景交代"></a>背景交代</h2><p>druid数据存储采用hdfs。<br>实时输入流通过tranquility从kafka消费topic进行realtime indexing。<br>批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  </p>
+<p>数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。</p>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
-<h2 id="主要名词"><a href="#主要名词" class="headerlink" title="主要名词"></a>主要名词</h2><ul>
-<li>维(Dimension)：是用户观察数据的特定角度，是问题的一类属性，属性集合构成一个维(时间维、地理维等)。</li>
-<li>维的层次(Level)：用户观察数据的某个特定角度(即某个维)还可能存在细节程度不同的各个描述方面(时间维包括日期、月份、季度、年)。  </li>
-<li>维的成员(Member)：即维的一个取值，是数据项在某个维中位置的描述，如“某年某月某日”是在时间维上的位置描述。  </li>
-<li>度量(Measure)：多维数组的取值。  </li>
-</ul>
-<h2 id="多维分析操作"><a href="#多维分析操作" class="headerlink" title="多维分析操作"></a>多维分析操作</h2><ul>
-<li>钻取（Drill-up和Drill-down）：改变维的层次，变换分析的粒度。它包括向下钻取(Drill-down)和向上钻取(Drill-up)/上滚(Roll-up)。向上钻取是在某一维上将低层次的细节数据概括到高层次的汇总数据，或者减少维数;而向下钻取则相反，从汇总数据深入到细节数据进行观察或增加新维。  </li>
-<li>切片和切块（Slice&amp;Dice）：在一部分维上选定值后，关心度量数据在剩余维上的分布。如果剩余的维只有两个，则是切片;如果有三个或以上，则是切块。  </li>
-<li>旋转（Pivot）：变换维的方向，即在表格中重新安排维的放置(如行列互换)。</li>
-</ul>
-<h2 id="与OLTP区别"><a href="#与OLTP区别" class="headerlink" title="与OLTP区别"></a>与OLTP区别</h2><ul>
-<li>联机事务处理OLTP（on-line transaction processing）：<br>传统的关系型数据库的主要应用，主要是基本的、日常的事务处理，例如银行交易。  </li>
-<li>联机分析处理OLAP（On-Line Analytical Processing）：<br>数据仓库系统的主要应用，支持复杂的分析操作，侧重决策支持，并且提供直观易懂的查询结果。   </li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>比较</th>
-<th>OLTP</th>
-<th>OLAP</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>用户</td>
-<td>操作人员,低层管理人员</td>
-<td>决策人员,高级管理人员</td>
-</tr>
-<tr>
-<td>功能</td>
-<td>日常操作处理</td>
-<td>分析决策</td>
-</tr>
-<tr>
-<td>DB设计</td>
-<td>面向应用</td>
-<td>面向主题</td>
-</tr>
-<tr>
-<td>数据</td>
-<td>当前的, 最新的细节的,二维的分立的</td>
-<td>历史的, 聚集的, 多维的集成的, 统一的</td>
-</tr>
-<tr>
-<td>存</td>
-<td>简单快速的insert和update</td>
-<td>定期批量任务更新</td>
-</tr>
-<tr>
-<td>取</td>
-<td>简单的读取少量结果</td>
-<td>读取大量结果并做聚合操作</td>
-</tr>
-<tr>
-<td>工作单位</td>
-<td>简单的事务</td>
-<td>复杂的查询</td>
-</tr>
-<tr>
-<td>用户数</td>
-<td>上千个</td>
-<td>上百个</td>
-</tr>
-<tr>
-<td>DB 大小</td>
-<td>100MB-GB</td>
-<td>100GB-TB</td>
-</tr>
-<tr>
-<td>主要应用</td>
-<td>数据库</td>
-<td>数据仓库</td>
-</tr>
-</tbody>
-</table>
-<h1 id="druid概念"><a href="#druid概念" class="headerlink" title="druid概念"></a>druid概念</h1><p>Druid：海量数据实时OLAP分析系统  </p>
-<p>Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。<br>Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。</p>
-<p>优势：  </p>
+<h2 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路"></a>大体思路</h2><ul>
+<li><p>kafka镜像流：<br>启动samza任务，从老的kafka集群consume消息，produce到新的kafka集群。直接使用kafka的mirror也可以，由于项目使用的arvo编解码，涉及到schema-id的问题，所以只能通过samza任务。</p>
+</li>
+<li><p>druid批量数据获取&amp;index：<br>给新druid集群提交任务，camus批量拉取数据，发送post请求提交配置json到overload执行batch index。 </p>
+</li>
+<li><p>脏数据覆盖(批量路线稳定、数据正确之后)</p>
 <ul>
-<li>设计时充分考虑到了高可用性，各种节点挂掉都不会使得druid停止工作（但是状态会无法更新）；  </li>
-<li>各个组成部分之间耦合性低，如果不需要实时数据完全可以忽略实时节点；  </li>
-<li>使用Bitmap indexing加速列存储的查询速度，并使用CONCISE算法来对bitmap indexing进行压缩，使得生成的segments比原始文本文件小很多  </li>
+<li>利用hadoop-distcp迁移老hdfs中之前所有的segment数据</li>
+<li>利用insert-segment-to-db工具在mysql生成这之前的元数据（索引）。</li>
 </ul>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a></p>
-<p><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a></p>
-<p><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a></p>
-<p><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a>  </p>
-<p><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
+</li>
+<li><p>druid实时数据获取&amp;index：<br>Tranquility任务，获取实时数据，提交给overload执行realtime index   </p>
+</li>
+<li><p>切换（稳定后）<br>将老的kafka的流的生产者逐个切换到新的kafka上</p>
+</li>
+</ul>
+<h2 id="使用工具介绍"><a href="#使用工具介绍" class="headerlink" title="使用工具介绍"></a>使用工具介绍</h2><h3 id="hadoop-distcp"><a href="#hadoop-distcp" class="headerlink" title="hadoop-distcp"></a>hadoop-distcp</h3><p>迁移老hdfs中之前所有的segment数据  </p>
+<h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>DistCp（分布式拷贝）是用于大规模集群内部和集群之间拷贝的工具。 它使用Map/Reduce实现文件分发，错误处理和恢复，以及报告生成。 它把文件和目录的列表作为map任务的输入，每个任务会完成源列表中部分文件的拷贝</p>
+<p><a href="https://hadoop.apache.org/docs/r1.0.4/cn/distcp.html" target="_blank" rel="external">https://hadoop.apache.org/docs/r1.0.4/cn/distcp.html</a>  </p>
+<p><a href="http://hadoop.apache.org/docs/r2.7.3/hadoop-distcp/DistCp.html" target="_blank" rel="external">http://hadoop.apache.org/docs/r2.7.3/hadoop-distcp/DistCp.html</a>  </p>
+<p><a href="http://stackoverflow.com/questions/31862904/how-to-do-i-copy-data-from-one-hdfs-to-another-hdfs" target="_blank" rel="external">http://stackoverflow.com/questions/31862904/how-to-do-i-copy-data-from-one-hdfs-to-another-hdfs</a>  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Usage: $ hadoop distcp &lt;src&gt; &lt;dst&gt;</div><div class="line"></div><div class="line">example: $ hadoop distcp hdfs://nn1:8020/file1 hdfs://nn2:8020/file2</div></pre></td></tr></table></figure>
+<p>默认情况下，如果在拷贝的目的地同名文件已经存在，则会默认跳过这些文件。  </p>
+<p>可以通过-overwrite选项指定覆盖掉同名文件，或者通过-update选项来更新同名文件。</p>
+<p>-overwrite来覆盖刚开启批量任务时的数据不完整那个小时的数据。</p>
+<h3 id="insert-segment-to-db"><a href="#insert-segment-to-db" class="headerlink" title="insert-segment-to-db"></a>insert-segment-to-db</h3><h4 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h4><p>HDFS上Segment在新的mysql中生成索引    </p>
+<p><a href="https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ" target="_blank" rel="external">https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ</a>     </p>
+<p><a href="https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU" target="_blank" rel="external">https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU</a>  </p>
+<p><a href="http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html" target="_blank" rel="external">http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html</a></p>
+<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><p>–workingDir：segment位置  </p>
+<p>–updateDescriptor：默认true，如果desciptor.json的实际路径与“loadSpec”中的路径是不同的，该工具将更新“loadSpec”字段的描述符。 </p>
+<p>例如：将老集群的数据迁移过去之后，desciptor.json中的路径没变，生成索引时会更新成现在的路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">hadoop fs -cat hdfs://nn1:port/.../dataSource/20161025T060000.000+0800_20161025T070000.000+0800/2016-10-25T07_33_53.379+08_00/0/descriptor.json</div><div class="line"></div><div class="line">其中loadSpec部分：</div><div class="line"></div><div class="line">&quot;loadSpec&quot;: &#123;</div><div class="line">    &quot;type&quot;: &quot;hdfs&quot;,</div><div class="line">    &quot;path&quot;: &quot;hdfs://nn1:port/.../dataSource/20161025T060000.000+0800_20161025T070000.000+0800/2016-10-25T07_33_53.379+08_00/0/index.zip&quot;</div><div class="line">&#125;,</div></pre></td></tr></table></figure></p>
+<h4 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h4><p>官方例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">java </div><div class="line">-Ddruid.metadata.storage.type=mysql </div><div class="line">-Ddruid.metadata.storage.connector.connectURI=jdbc:mysql://mysql-db:3306/druid</div><div class="line">-Ddruid.metadata.storage.connector.user=userxxx</div><div class="line">-Ddruid.metadata.storage.connector.password=passxxxx</div><div class="line">-Ddruid.extensions.loadList=[\&quot;mysql-metadata-storage\&quot;,\&quot;druid-hdfs-storage\&quot;] </div><div class="line">-Ddruid.storage.type=hdfs</div><div class="line">-cp $DRUID_CLASSPATH </div><div class="line">io.druid.cli.Main tools insert-segment-to-db --workingDir hdfs://nn1:port/.../dataSource</div></pre></td></tr></table></figure></p>
+<p>打印的日志：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2016-10-25T17:15:49,342 INFO [main] io.druid.storage.hdfs.HdfsDataSegmentFinder - Found segment [dataSource_2016-01-13T09:00:00.000+08:00_2016-01-13T10:00:00.000+08:00_2016-01-13T10:34:03.820+08:00_6] located at [hdfs://nn1:port/.../dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/index.zip]</div><div class="line">2016-10-25T17:15:49,342 INFO [main] io.druid.storage.hdfs.HdfsDataSegmentFinder - Updating loadSpec in descriptor.json at [hdfs://nn1:port/.../dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/descriptor.json] with new path [dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/index.zip]</div></pre></td></tr></table></figure></p>
+<p>会先更新descriptor.json中的路径：由之前的老集群的绝对路径—新集群的相对路径</p>
 </the></excerpt>
       
     </div>
@@ -415,13 +352,13 @@ OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用�
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
-        <p><span>发布时间:</span>2016-10-28, 21:40:00</p>
-        <p><span>最后更新:</span>2016-10-29, 00:42:01</p>
+        <p><span>发布时间:</span>2016-10-28, 21:56:00</p>
+        <p><span>最后更新:</span>2016-10-29, 00:47:51</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/28/druid.io_1---OLAP&druid概念/" title="druid.io 1---概念">https://fangyeqing.github.io/2016/10/28/druid.io_1---OLAP&amp;druid概念/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/druid.io_1---OLAP&amp;druid概念/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/28/druid.io实践2---集群数据迁移/" title="druid.io实践2---集群数据迁移">https://fangyeqing.github.io/2016/10/28/druid.io实践2---集群数据迁移/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/druid.io实践2---集群数据迁移/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -433,16 +370,10 @@ OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用�
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/10/28/druid.io_2---druid数据相关/">
-                    druid.io 2---druid数据
-                </a>
-            </div>
-        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/28/Samza_5---Samza_API/">
-                    Samza 5---Samza API
+                <a href="/2016/10/28/druid.io实践1---提高查询速度/">
+                    druid.io实践1---提高查询速度
                 </a>
             </div>
         
@@ -454,7 +385,7 @@ OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用�
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#OLAP"><span class="toc-number">1.</span> <span class="toc-text">OLAP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主要名词"><span class="toc-number">1.1.</span> <span class="toc-text">主要名词</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多维分析操作"><span class="toc-number">1.2.</span> <span class="toc-text">多维分析操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#与OLTP区别"><span class="toc-number">1.3.</span> <span class="toc-text">与OLTP区别</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#druid概念"><span class="toc-number">2.</span> <span class="toc-text">druid概念</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考："><span class="toc-number">3.</span> <span class="toc-text">参考：</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#druid集群数据迁移"><span class="toc-number">1.</span> <span class="toc-text">druid集群数据迁移</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景交代"><span class="toc-number">1.1.</span> <span class="toc-text">背景交代</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#大体思路"><span class="toc-number">1.2.</span> <span class="toc-text">大体思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用工具介绍"><span class="toc-number">1.3.</span> <span class="toc-text">使用工具介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#hadoop-distcp"><span class="toc-number">1.3.1.</span> <span class="toc-text">hadoop-distcp</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#介绍"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">介绍</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#insert-segment-to-db"><span class="toc-number">1.3.2.</span> <span class="toc-text">insert-segment-to-db</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#介绍-1"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#参数说明"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">参数说明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#具体操作"><span class="toc-number">1.3.2.3.</span> <span class="toc-text">具体操作</span></a></li></ol></li></ol></li></ol></li></ol>
         
     </div>
     <style>
@@ -490,7 +421,7 @@ OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用�
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"druid.io 1---概念　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"druid.io实践2---集群数据迁移　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -506,7 +437,7 @@ OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用�
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/druid.io_1---OLAP&amp;druid概念/" data-title="druid.io 1---概念" data-url="https://fangyeqing.github.io/2016/10/28/druid.io_1---OLAP&amp;druid概念/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/druid.io实践2---集群数据迁移/" data-title="druid.io实践2---集群数据迁移" data-url="https://fangyeqing.github.io/2016/10/28/druid.io实践2---集群数据迁移/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -529,15 +460,13 @@ OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用�
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/10/28/druid.io_2---druid数据相关/" title="上一篇: druid.io 2---druid数据">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/28/Samza_5---Samza_API/" title="下一篇: Samza 5---Samza API">
+            <a href="/2016/10/28/druid.io实践1---提高查询速度/" title="下一篇: druid.io实践1---提高查询速度">
                 <i class="fa fa-angle-right"></i>
             </a>
         
