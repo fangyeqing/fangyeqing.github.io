@@ -860,4 +860,21 @@
     
   
   
+    
+    <entry>
+      <title><![CDATA[about]]></title>
+      <url>https://fangyeqing.github.io/about/index.html</url>
+      <content type="html"><![CDATA[<p>曾经也是文艺青年，也写过诗  </p>
+<p>曾经也是游戏狂人，奋战在dota，lol，炉石，大菠萝，天涯明月刀，斗战神的世界里</p>
+<p>程序员并不是木头和绝缘体，是有血有肉的逗比</p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[tags]]></title>
+      <url>https://fangyeqing.github.io/tags/index.html</url>
+      <content type="html"></content>
+    </entry>
+    
+  
 </search>
