@@ -15,7 +15,7 @@
 
 
 
-<meta name="description" content="Samza架构Samza是由以下三层构成：  
+<meta name="description" content="Samza是由以下三层构成：  
 
 数据流层（A streaming layer）：分布式消息中间件Kafka  
 执行层（An execution layer）：Hadoop资源调度管理系统YARN  
@@ -24,17 +24,17 @@
 <meta property="og:title" content="Samza 3---架构">
 <meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza_3---架构/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="Samza架构Samza是由以下三层构成：  
+<meta property="og:description" content="Samza是由以下三层构成：  
 
 数据流层（A streaming layer）：分布式消息中间件Kafka  
 执行层（An execution layer）：Hadoop资源调度管理系统YARN  
 处理层（A progressing layer）：Samza API">
 <meta property="og:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-ecosystem.png">
 <meta property="og:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/samza-yarn-kafka-integration.png">
-<meta property="og:updated_time" content="2016-10-28T16:41:25.000Z">
+<meta property="og:updated_time" content="2016-10-29T06:45:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Samza 3---架构">
-<meta name="twitter:description" content="Samza架构Samza是由以下三层构成：  
+<meta name="twitter:description" content="Samza是由以下三层构成：  
 
 数据流层（A streaming layer）：分布式消息中间件Kafka  
 执行层（An execution layer）：Hadoop资源调度管理系统YARN  
@@ -316,7 +316,7 @@
           
         <excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="Samza架构"><a href="#Samza架构" class="headerlink" title="Samza架构"></a>Samza架构</h1><p>Samza是由以下三层构成：  </p>
+<p>Samza是由以下三层构成：  </p>
 <ul>
 <li>数据流层（A streaming layer）：分布式消息中间件Kafka  </li>
 <li>执行层（An execution layer）：Hadoop资源调度管理系统YARN  </li>
@@ -344,7 +344,7 @@
 <p>Samza的客户端告诉YARN的RM（ResourceManager，以下简称RM）运行一个新的Job，RM会告诉YARN的一个NodeManager（简称NM）为Samza的ApplicationMaster（AM）在集群里分配空间。一旦NM分配了空间，就会启动这个Samza的AM。AM开始后，它会向RM请求运行SamzaContainers所需的YARN containers。RM和NMs一起为containers分配空间。一旦空间被分配，NMs就会开启Samza containers。  </p>
 <p>YARN启动并且监控一个或者多个SamzaContainers，并且你的处理逻辑代码（使用StreamTask API）在这些容器里运行。这些Samza 流任务的输入和输出都来自Kafka的Brokers（通常他们都是作为YARN NMs位于同台机器）</p>
 <p>通过对topic的分区，将数据流处理拆解到任务中以及在多台机器上并行执行任务，使得Samza具有很高的消息吞吐量。通过结合YARN和Kafka，Samza实现了高容错：如果一个进程或者机器失败，它会自动在另一台机器上重启它并且继续从消息终端的地方开始处理，这些都是自动化的。</p>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
 </the></excerpt>
       
     </div>
@@ -356,7 +356,7 @@
         <p><span>本文标题:</span><a href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-28, 17:42:00</p>
-        <p><span>最后更新:</span>2016-10-29, 00:41:25</p>
+        <p><span>最后更新:</span>2016-10-29, 14:45:57</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/28/Samza_3---架构/" title="Samza 3---架构">https://fangyeqing.github.io/2016/10/28/Samza_3---架构/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/Samza_3---架构/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -392,7 +392,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Samza架构"><span class="toc-number">1.</span> <span class="toc-text">Samza架构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#kafka"><span class="toc-number">1.1.</span> <span class="toc-text">kafka</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YARN"><span class="toc-number">1.2.</span> <span class="toc-text">YARN</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考："><span class="toc-number">2.</span> <span class="toc-text">参考：</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#kafka"><span class="toc-number">1.</span> <span class="toc-text">kafka</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YARN"><span class="toc-number">2.</span> <span class="toc-text">YARN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考："><span class="toc-number">3.</span> <span class="toc-text">参考：</span></a></li></ol>
         
     </div>
     <style>
@@ -400,8 +400,8 @@
         .left-col .switch-area {
             display: none;
         }
-        .toc-level-3 i,
-        .toc-level-3 ol {
+        .toc-level-4 i,
+        .toc-level-4 ol {
             display: none !important;
         }
     </style>
@@ -409,7 +409,7 @@
     <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
     <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
     </script>
 
 
@@ -481,7 +481,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io 3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
 
 
 

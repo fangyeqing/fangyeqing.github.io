@@ -18,10 +18,10 @@
 <meta name="description" content="环境安装在windows和linux下都配置了，感觉还是Linux方便一点">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hexo+github page搭建博客">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/hexo+github_page搭建博客（windows&linxu）/index.html">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/hexo+github_page搭建博客/index.html">
 <meta property="og:site_name" content="小懒的博客">
 <meta property="og:description" content="环境安装在windows和linux下都配置了，感觉还是Linux方便一点">
-<meta property="og:updated_time" content="2016-10-28T15:26:59.000Z">
+<meta property="og:updated_time" content="2016-10-29T07:08:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hexo+github page搭建博客">
 <meta name="twitter:description" content="环境安装在windows和linux下都配置了，感觉还是Linux方便一点">
@@ -259,10 +259,10 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-hexo+github_page搭建博客（windows&amp;linxu）" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-hexo+github_page搭建博客" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/" class="article-date">
+      <a href="/2016/10/28/hexo+github_page搭建博客/" class="article-date">
       <time datetime="2016-10-28T05:44:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
@@ -301,7 +301,6 @@
           
         <excerpt in="" index="" |="" 首页摘要="">   
 
-
 <h2 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h2><p>在windows和linux下都配置了，感觉还是Linux方便一点</p>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文="">   
@@ -333,22 +332,12 @@
 <h2 id="主题修改"><a href="#主题修改" class="headerlink" title="主题修改"></a>主题修改</h2><p>去<a href="https://github.com/hexojs/hexo/wiki/Themes" target="_blank" rel="external">hexo的github</a>下载主题，放到themes目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/MOxFIVE/hexo-theme-yelee.git themes/yelee</div></pre></td></tr></table></figure></p>
 <p>然后根据<a href="http://moxfive.coding.me/yelee/" target="_blank" rel="external">作者的gitbook</a>修改_config.yml文件，实现各种配置</p>
 <p>改完继续重新发布出去</p>
-<p>其中比较重要的，</p>
-<ul>
-<li>评论系统利用多说，fangyeqing.duoshuo.com</li>
-<li><p>站内搜索,需要先安装一个插件，然后修改配置文件themes/yelee/_config.yml,反注释掉on：true</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-search --save</div><div class="line"></div><div class="line">search: </div><div class="line">  #on: true</div><div class="line">  onload: false</div></pre></td></tr></table></figure>
-</li>
-<li><p>文章摘要，在首页显示摘要，非全文</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: Hello World</div><div class="line">date: 2015-12-03 00:00:00</div><div class="line">categories: samza</div><div class="line">toc: true</div><div class="line">---</div><div class="line">&lt;Excerpt in index | 首页摘要&gt; </div><div class="line">摘要内容...</div><div class="line">&lt;!-- more --&gt;</div><div class="line">&lt;The rest of contents | 余下全文&gt;</div><div class="line">余下的全文内容...</div></pre></td></tr></table></figure>
-</li>
-<li><p>关于我</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page about</div></pre></td></tr></table></figure>
-</li>
-<li><p>标签云</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page tags</div></pre></td></tr></table></figure>
+<p>其中比较重要的如下：</p>
+<h3 id="评论系统"><a href="#评论系统" class="headerlink" title="评论系统"></a>评论系统</h3><p>利用多说，fangyeqing.duoshuo.com</p>
+<h3 id="站内搜索"><a href="#站内搜索" class="headerlink" title="站内搜索"></a>站内搜索</h3><p>需要先安装一个插件，然后修改配置文件themes/yelee/_config.yml,反注释掉on：true<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-search --save</div><div class="line"></div><div class="line">search: </div><div class="line">  #on: true</div><div class="line">  onload: false</div></pre></td></tr></table></figure></p>
+<h3 id="文章摘要"><a href="#文章摘要" class="headerlink" title="文章摘要"></a>文章摘要</h3><p>在首页显示摘要，非全文<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: Hello World</div><div class="line">date: 2015-12-03 00:00:00</div><div class="line">categories: samza</div><div class="line">toc: true</div><div class="line">---</div><div class="line">&lt;Excerpt in index | 首页摘要&gt; </div><div class="line">摘要内容...</div><div class="line">&lt;!-- more --&gt;</div><div class="line">&lt;The rest of contents | 余下全文&gt;</div><div class="line">余下的全文内容...</div></pre></td></tr></table></figure></p>
+<h3 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page about</div></pre></td></tr></table></figure>
+<h3 id="标签云"><a href="#标签云" class="headerlink" title="标签云"></a>标签云</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page tags</div></pre></td></tr></table></figure>
 </the></excerpt>
       
     </div>
@@ -357,13 +346,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">hexo+github page搭建博客</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-28, 13:44:00</p>
-        <p><span>最后更新:</span>2016-10-28, 23:26:59</p>
+        <p><span>最后更新:</span>2016-10-29, 15:08:34</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/" title="hexo+github page搭建博客">https://fangyeqing.github.io/2016/10/28/hexo+github_page搭建博客（windows&amp;linxu）/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/hexo+github_page搭建博客（windows&amp;linxu）/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/28/hexo+github_page搭建博客/" title="hexo+github page搭建博客">https://fangyeqing.github.io/2016/10/28/hexo+github_page搭建博客/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/hexo+github_page搭建博客/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -390,7 +379,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境安装"><span class="toc-number">1.</span> <span class="toc-text">环境安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#node-js环境-windows-linux略"><span class="toc-number">1.1.</span> <span class="toc-text">node.js环境(windows,linux略)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#git环境"><span class="toc-number">1.2.</span> <span class="toc-text">git环境</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置github"><span class="toc-number">2.</span> <span class="toc-text">配置github</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#新建repository"><span class="toc-number">2.1.</span> <span class="toc-text">新建repository</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生成github-page"><span class="toc-number">2.2.</span> <span class="toc-text">生成github page</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hexo"><span class="toc-number">3.</span> <span class="toc-text">Hexo</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置文件"><span class="toc-number">3.1.</span> <span class="toc-text">配置文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#部署到github-page"><span class="toc-number">4.</span> <span class="toc-text">部署到github page</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#出现问题"><span class="toc-number">4.1.</span> <span class="toc-text">出现问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#添加新文章"><span class="toc-number">5.</span> <span class="toc-text">添加新文章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主题修改"><span class="toc-number">6.</span> <span class="toc-text">主题修改</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境安装"><span class="toc-number">1.</span> <span class="toc-text">环境安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#node-js环境-windows-linux略"><span class="toc-number">1.1.</span> <span class="toc-text">node.js环境(windows,linux略)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#git环境"><span class="toc-number">1.2.</span> <span class="toc-text">git环境</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置github"><span class="toc-number">2.</span> <span class="toc-text">配置github</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#新建repository"><span class="toc-number">2.1.</span> <span class="toc-text">新建repository</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生成github-page"><span class="toc-number">2.2.</span> <span class="toc-text">生成github page</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hexo"><span class="toc-number">3.</span> <span class="toc-text">Hexo</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置文件"><span class="toc-number">3.1.</span> <span class="toc-text">配置文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#部署到github-page"><span class="toc-number">4.</span> <span class="toc-text">部署到github page</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#出现问题"><span class="toc-number">4.1.</span> <span class="toc-text">出现问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#添加新文章"><span class="toc-number">5.</span> <span class="toc-text">添加新文章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主题修改"><span class="toc-number">6.</span> <span class="toc-text">主题修改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#评论系统"><span class="toc-number">6.1.</span> <span class="toc-text">评论系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#站内搜索"><span class="toc-number">6.2.</span> <span class="toc-text">站内搜索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文章摘要"><span class="toc-number">6.3.</span> <span class="toc-text">文章摘要</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关于我"><span class="toc-number">6.4.</span> <span class="toc-text">关于我</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#标签云"><span class="toc-number">6.5.</span> <span class="toc-text">标签云</span></a></li></ol></li></ol>
         
     </div>
     <style>
@@ -398,8 +387,8 @@
         .left-col .switch-area {
             display: none;
         }
-        .toc-level-3 i,
-        .toc-level-3 ol {
+        .toc-level-4 i,
+        .toc-level-4 ol {
             display: none !important;
         }
     </style>
@@ -407,7 +396,7 @@
     <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
     <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
     </script>
 
 
@@ -442,7 +431,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/hexo+github_page搭建博客（windows&amp;linxu）/" data-title="hexo+github page搭建博客" data-url="https://fangyeqing.github.io/2016/10/28/hexo+github_page搭建博客（windows&amp;linxu）/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/hexo+github_page搭建博客/" data-title="hexo+github page搭建博客" data-url="https://fangyeqing.github.io/2016/10/28/hexo+github_page搭建博客/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -477,7 +466,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io 3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
 
 
 

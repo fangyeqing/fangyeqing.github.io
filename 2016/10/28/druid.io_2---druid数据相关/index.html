@@ -15,7 +15,7 @@
 
 
 
-<meta name="description" content="druid数据数据格式：
+<meta name="description" content="数据格式
 Timestamp列: 所有的查询都以时间为中心。  
 Dimension列（维度）: Dimensions对应事件的维度,通常用于筛选过滤数据。
 Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,并且支持count、sum、mean等聚合操作。线上广告的例子：">
@@ -23,15 +23,15 @@ Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,�
 <meta property="og:title" content="druid.io 2---druid数据">
 <meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/druid.io_2---druid数据相关/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="druid数据数据格式：
+<meta property="og:description" content="数据格式
 Timestamp列: 所有的查询都以时间为中心。  
 Dimension列（维度）: Dimensions对应事件的维度,通常用于筛选过滤数据。
 Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,并且支持count、sum、mean等聚合操作。线上广告的例子：">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/D6B38A53DFD740328C51FD6093A90BE7">
-<meta property="og:updated_time" content="2016-10-28T16:42:12.000Z">
+<meta property="og:updated_time" content="2016-10-29T06:56:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="druid.io 2---druid数据">
-<meta name="twitter:description" content="druid数据数据格式：
+<meta name="twitter:description" content="数据格式
 Timestamp列: 所有的查询都以时间为中心。  
 Dimension列（维度）: Dimensions对应事件的维度,通常用于筛选过滤数据。
 Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,并且支持count、sum、mean等聚合操作。线上广告的例子：">
@@ -310,8 +310,9 @@ Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,�
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p><excerpt in="" index="" |="" 首页摘要="">   </excerpt></p>
-<h1 id="druid数据"><a href="#druid数据" class="headerlink" title="druid数据"></a>druid数据</h1><h2 id="数据格式："><a href="#数据格式：" class="headerlink" title="数据格式："></a>数据格式：</h2><ul>
+        <excerpt in="" index="" |="" 首页摘要="">   
+
+<h2 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h2><ul>
 <li><strong>Timestamp列</strong>: 所有的查询都以时间为中心。  </li>
 <li><strong>Dimension列（维度）</strong>: Dimensions对应事件的维度,通常用于筛选过滤数据。</li>
 <li><strong>Metric列（度量）</strong>: Metrics是用于聚合和计算的列。通常是数字,并且支持count、sum、mean等聚合操作。<br>线上广告的例子：</li>
@@ -356,15 +357,13 @@ Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,�
 <p>Druid的索引是基于每一个分片(即segment)上的。</p>
 <h2 id="数据加载"><a href="#数据加载" class="headerlink" title="数据加载"></a>数据加载</h2><p>Druid使用的通常情况是,联合使用批量和实时数据流的加载方法。近期的数据通过实时方式处理,离线批量处理来来提高精度。 </p>
 <p>在一些网络抖动延迟的非正常场景中，实时数据流加载方式有可能出现消息丢失或者消息重复，因此批量再加载方式消除了这种历史数据的潜在错误。或者由于某种原因，需要修改数据，批量再加载方式也提供给你再加载数据的选项。</p>
-<h4 id="实时方式"><a href="#实时方式" class="headerlink" title="实时方式"></a>实时方式</h4><ul>
-<li><p>Stream push </p>
-<ul>
+<h3 id="实时方式"><a href="#实时方式" class="headerlink" title="实时方式"></a>实时方式</h3><ul>
+<li>Stream push <ul>
 <li><strong>Tranquility+indexing service</strong>，数据来自于一个数据流系统，如Kafka、Storm、Spark Streaming。Tranquility：一个发送数据流到Druid的http客户端。</li>
 </ul>
 </li>
-<li><p>Stream pull </p>
-<ul>
-<li><strong>Realtime Node</strong>，直接从外部数据源拉数据流进入Druid。  <h4 id="离线批处理方式"><a href="#离线批处理方式" class="headerlink" title="离线批处理方式"></a>离线批处理方式</h4></li>
+<li>Stream pull <ul>
+<li><strong>Realtime Node</strong>，直接从外部数据源拉数据流进入Druid。  <h3 id="离线批处理方式"><a href="#离线批处理方式" class="headerlink" title="离线批处理方式"></a>离线批处理方式</h3></li>
 </ul>
 </li>
 <li>Files <ul>
@@ -375,12 +374,8 @@ Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,�
 <p>下图中，上面的indexing service为realtime，下面的为Batch Data Ingestion<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/D6B38A53DFD740328C51FD6093A90BE7" alt="image"></p>
 <h2 id="数据查询"><a href="#数据查询" class="headerlink" title="数据查询"></a>数据查询</h2><p>Druid原生的查询方式是通过http发送json,但是社区已经贡献出多种查询库,包括SQL方式的plyql。</p>
 <p>Druid被设计为执行单表操作,不支持join操纵(实际上可以做join)。 生产环境需要在ETL阶段进行join,因为数据在加载进Druid之前必须规范化。</p>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a></p>
-<p><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a></p>
-<p><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a></p>
-<p><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a>  </p>
-<p><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
-</the>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a><br><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a><br><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a><br><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a><br><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
+</the></excerpt>
       
     </div>
     
@@ -391,7 +386,7 @@ Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,�
         <p><span>本文标题:</span><a href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-28, 21:41:00</p>
-        <p><span>最后更新:</span>2016-10-29, 00:42:12</p>
+        <p><span>最后更新:</span>2016-10-29, 14:56:50</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/28/druid.io_2---druid数据相关/" title="druid.io 2---druid数据">https://fangyeqing.github.io/2016/10/28/druid.io_2---druid数据相关/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/druid.io_2---druid数据相关/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -408,7 +403,7 @@ Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,�
         
             <div id="article-nav-newer" class="article-nav-title">
                 <a href="/2016/10/28/druid.io_3---druid集群/">
-                    druid.io3---druid集群
+                    druid.io 3---druid集群
                 </a>
             </div>
         
@@ -427,7 +422,7 @@ Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,�
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#druid数据"><span class="toc-number">1.</span> <span class="toc-text">druid数据</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#数据格式："><span class="toc-number">1.1.</span> <span class="toc-text">数据格式：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#预聚合roll-up"><span class="toc-number">1.2.</span> <span class="toc-text">预聚合roll up</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据分片"><span class="toc-number">1.3.</span> <span class="toc-text">数据分片</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据存储"><span class="toc-number">1.4.</span> <span class="toc-text">数据存储</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HDFS存储举例"><span class="toc-number">1.4.1.</span> <span class="toc-text">HDFS存储举例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据索引"><span class="toc-number">1.5.</span> <span class="toc-text">数据索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据加载"><span class="toc-number">1.6.</span> <span class="toc-text">数据加载</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#实时方式"><span class="toc-number">1.6.0.1.</span> <span class="toc-text">实时方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#离线批处理方式"><span class="toc-number">1.6.0.2.</span> <span class="toc-text">离线批处理方式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据查询"><span class="toc-number">1.7.</span> <span class="toc-text">数据查询</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考："><span class="toc-number">2.</span> <span class="toc-text">参考：</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数据格式"><span class="toc-number">1.</span> <span class="toc-text">数据格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#预聚合roll-up"><span class="toc-number">2.</span> <span class="toc-text">预聚合roll up</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据分片"><span class="toc-number">3.</span> <span class="toc-text">数据分片</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据存储"><span class="toc-number">4.</span> <span class="toc-text">数据存储</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HDFS存储举例"><span class="toc-number">4.1.</span> <span class="toc-text">HDFS存储举例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据索引"><span class="toc-number">5.</span> <span class="toc-text">数据索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据加载"><span class="toc-number">6.</span> <span class="toc-text">数据加载</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实时方式"><span class="toc-number">6.1.</span> <span class="toc-text">实时方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#离线批处理方式"><span class="toc-number">6.2.</span> <span class="toc-text">离线批处理方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据查询"><span class="toc-number">7.</span> <span class="toc-text">数据查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">8.</span> <span class="toc-text">参考</span></a></li></ol>
         
     </div>
     <style>
@@ -435,8 +430,8 @@ Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,�
         .left-col .switch-area {
             display: none;
         }
-        .toc-level-3 i,
-        .toc-level-3 ol {
+        .toc-level-4 i,
+        .toc-level-4 ol {
             display: none !important;
         }
     </style>
@@ -444,7 +439,7 @@ Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,�
     <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
     <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
     </script>
 
 
@@ -502,7 +497,7 @@ Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,�
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/10/28/druid.io_3---druid集群/" title="上一篇: druid.io3---druid集群">
+            <a href="/2016/10/28/druid.io_3---druid集群/" title="上一篇: druid.io 3---druid集群">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -516,7 +511,7 @@ Metric列（度量）: Metrics是用于聚合和计算的列。通常是数字,�
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io 3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
 
 
 

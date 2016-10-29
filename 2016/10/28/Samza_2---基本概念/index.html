@@ -15,25 +15,25 @@
 
 
 
-<meta name="description" content="Samzasamza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。
+<meta name="description" content="samza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。
 为什么需要samzakafka作为一个分布式的消息队列系统，已经实现了流式处理框架底层的许多核心基础架构，把消息串联流动起来就是Streaming了。
-但是要构建一个可用的流式数据处理框架，还是有许多事情要做。例如生产者和消费者进程的管">
+但是要构建一个可用的流式数据处理框架，还是有许多事情要做。例如生产者和消费者进程的管理，作业调">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Samza 2---基本概念">
 <meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza_2---基本概念/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="Samzasamza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。
+<meta property="og:description" content="samza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。
 为什么需要samzakafka作为一个分布式的消息队列系统，已经实现了流式处理框架底层的许多核心基础架构，把消息串联流动起来就是Streaming了。
-但是要构建一个可用的流式数据处理框架，还是有许多事情要做。例如生产者和消费者进程的管">
+但是要构建一个可用的流式数据处理框架，还是有许多事情要做。例如生产者和消费者进程的管理，作业调">
 <meta property="og:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/stream.png">
 <meta property="og:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/job_detail.png">
 <meta property="og:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/dag.png">
-<meta property="og:updated_time" content="2016-10-28T16:40:44.000Z">
+<meta property="og:updated_time" content="2016-10-29T06:48:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Samza 2---基本概念">
-<meta name="twitter:description" content="Samzasamza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。
+<meta name="twitter:description" content="samza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。
 为什么需要samzakafka作为一个分布式的消息队列系统，已经实现了流式处理框架底层的许多核心基础架构，把消息串联流动起来就是Streaming了。
-但是要构建一个可用的流式数据处理框架，还是有许多事情要做。例如生产者和消费者进程的管">
+但是要构建一个可用的流式数据处理框架，还是有许多事情要做。例如生产者和消费者进程的管理，作业调">
 <meta name="twitter:image" content="https://samza.apache.org/img/0.10/learn/documentation/introduction/stream.png">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
@@ -311,7 +311,7 @@
           
         <excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="Samza"><a href="#Samza" class="headerlink" title="Samza"></a>Samza</h1><p>samza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。</p>
+<p>samza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。</p>
 <h2 id="为什么需要samza"><a href="#为什么需要samza" class="headerlink" title="为什么需要samza"></a>为什么需要samza</h2><p>kafka作为一个分布式的消息队列系统，已经实现了流式处理框架底层的许多核心基础架构，把消息串联流动起来就是Streaming了。</p>
 <p>但是要构建一个可用的流式数据处理框架，还是有许多事情要做。例如生产者和消费者进程的管理，作业调度和容错处理，辅助工具和监控管理手段，更友好方便的用户接口等等，本质上说，Samza是在消息队列系统上的更高层的抽象，是一种应用流式处理框架在消息队列系统上的一种应用模式的实现。  </p>
 <a id="more"></a>  
@@ -345,9 +345,14 @@
 <li>hadoop里，我们可能跟踪在hdfs上的一个目录下的文件</li>
 </ul>
 <h3 id="作业（job）"><a href="#作业（job）" class="headerlink" title="作业（job）"></a>作业（job）</h3><p>Samza的jobs 是将输入流进行逻辑处理，然后转化成输出流的程序。</p>
-<p>为了扩展流处理器的吞吐量，stream拆分成：分区Partitions<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">Streams--&gt;Partitions</div></pre></td></tr></table></figure></p>
+<p>为了扩展流处理器的吞吐量，stream拆分成：分区Partitions</p>
+<blockquote>
+<p>Streams–&gt;Partitions</p>
+</blockquote>
 <p>job拆分更小的并行单元：任务Tasks</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">job--&gt;tasks</div></pre></td></tr></table></figure>
+<blockquote>
+<p>job–&gt;tasks</p>
+</blockquote>
 <h3 id="分区（Partitions）"><a href="#分区（Partitions）" class="headerlink" title="分区（Partitions）"></a>分区（Partitions）</h3><p>每个流都被分割成一个或多个分区，并且在流里的每一个分区都总是一个有序的消息序列。每个消息在这个序列里有一个被叫做offset（中文称它为偏移量），它在每一个分区里都是唯一的。这个偏移量可以是一个连续的整数、字节偏移量或者字符串，这取决于底层的系统实现了。</p>
 <p>当有一个消息加入到流中，它只会追加到流的分区中的一个。这个消息通过写入者带着一个被选择的key分配到它对应的分区中。举个例子，如果用户id被用作key，那么所有和用户id相关的消息都应该追加到这个分区中。<br><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/stream.png" alt="image"></p>
 <h3 id="任务（task）"><a href="#任务（task）" class="headerlink" title="任务（task）"></a>任务（task）</h3><p>一个Job通过把他分割成多个任务Task进行扩展。每个任务Task消费来自一个Partitions的数据。</p>
@@ -365,7 +370,7 @@
 <li>“检查点（Checkpointing）”——检查点通常用于故障恢复。如果一个taskrunner由于某种原因宕掉了（比如，硬件故障），当重新启动时，它应该使用最后离开时的消息——这是通过检查点实现的。</li>
 <li>状态管理——需要在不同的消息处理之间传递的数据称之为状态——它可以是保存一个总数那样简单的东西，也可以是复杂得多的东西。Samza允许任务维持一种持久可变且可查询的状态，而且，它与每个任务在物理上处于同一位置。状态需要具备高可用性：如果出现任务失败的情况，它可以在任务故障转移到另一台机器时还原。</li>
 </ul>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
 </excerpt>
       
     </div>
@@ -377,7 +382,7 @@
         <p><span>本文标题:</span><a href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-28, 17:41:00</p>
-        <p><span>最后更新:</span>2016-10-29, 00:40:44</p>
+        <p><span>最后更新:</span>2016-10-29, 14:48:33</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/28/Samza_2---基本概念/" title="Samza 2---基本概念">https://fangyeqing.github.io/2016/10/28/Samza_2---基本概念/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/Samza_2---基本概念/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -413,7 +418,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Samza"><span class="toc-number">1.</span> <span class="toc-text">Samza</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么需要samza"><span class="toc-number">1.1.</span> <span class="toc-text">为什么需要samza</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#需要解决的问题"><span class="toc-number">1.1.1.</span> <span class="toc-text">需要解决的问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#核心思想"><span class="toc-number">1.2.</span> <span class="toc-text">核心思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#特性"><span class="toc-number">1.3.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#概念"><span class="toc-number">1.4.</span> <span class="toc-text">概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#流（Streams）"><span class="toc-number">1.4.1.</span> <span class="toc-text">流（Streams）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#作业（job）"><span class="toc-number">1.4.2.</span> <span class="toc-text">作业（job）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分区（Partitions）"><span class="toc-number">1.4.3.</span> <span class="toc-text">分区（Partitions）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#任务（task）"><span class="toc-number">1.4.4.</span> <span class="toc-text">任务（task）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dataflow-Graphs"><span class="toc-number">1.4.5.</span> <span class="toc-text">Dataflow Graphs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Containers"><span class="toc-number">1.4.6.</span> <span class="toc-text">Containers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他概念"><span class="toc-number">1.4.7.</span> <span class="toc-text">其他概念</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考："><span class="toc-number">2.</span> <span class="toc-text">参考：</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么需要samza"><span class="toc-number">1.</span> <span class="toc-text">为什么需要samza</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#需要解决的问题"><span class="toc-number">1.1.</span> <span class="toc-text">需要解决的问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#核心思想"><span class="toc-number">2.</span> <span class="toc-text">核心思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#特性"><span class="toc-number">3.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#概念"><span class="toc-number">4.</span> <span class="toc-text">概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#流（Streams）"><span class="toc-number">4.1.</span> <span class="toc-text">流（Streams）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#作业（job）"><span class="toc-number">4.2.</span> <span class="toc-text">作业（job）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分区（Partitions）"><span class="toc-number">4.3.</span> <span class="toc-text">分区（Partitions）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#任务（task）"><span class="toc-number">4.4.</span> <span class="toc-text">任务（task）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dataflow-Graphs"><span class="toc-number">4.5.</span> <span class="toc-text">Dataflow Graphs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Containers"><span class="toc-number">4.6.</span> <span class="toc-text">Containers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他概念"><span class="toc-number">4.7.</span> <span class="toc-text">其他概念</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考："><span class="toc-number">5.</span> <span class="toc-text">参考：</span></a></li></ol>
         
     </div>
     <style>
@@ -421,8 +426,8 @@
         .left-col .switch-area {
             display: none;
         }
-        .toc-level-3 i,
-        .toc-level-3 ol {
+        .toc-level-4 i,
+        .toc-level-4 ol {
             display: none !important;
         }
     </style>
@@ -430,7 +435,7 @@
     <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
     <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
     </script>
 
 
@@ -502,7 +507,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io 3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
 
 
 

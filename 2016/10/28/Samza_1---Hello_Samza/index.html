@@ -15,16 +15,16 @@
 
 
 
-<meta name="description" content="hello Samzahello-samza是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！">
+<meta name="description" content="hello-samza是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Samza1---Hello Samza">
 <meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/Samza_1---Hello_Samza/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="hello Samzahello-samza是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！">
-<meta property="og:updated_time" content="2016-10-28T16:40:26.000Z">
+<meta property="og:description" content="hello-samza是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！">
+<meta property="og:updated_time" content="2016-10-29T06:59:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Samza1---Hello Samza">
-<meta name="twitter:description" content="hello Samzahello-samza是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！">
+<meta name="twitter:description" content="hello-samza是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -301,8 +301,7 @@
           
         <excerpt in="" index="" |="" 首页摘要="">   
 
-
-<h1 id="hello-Samza"><a href="#hello-Samza" class="headerlink" title="hello Samza"></a>hello Samza</h1><p><a href="http://samza.apache.org/startup/hello-samza/0.10/" target="_blank" rel="external">hello-samza</a>是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！<br><a id="more"></a>   </p>
+<p><a href="http://samza.apache.org/startup/hello-samza/0.10/" target="_blank" rel="external">hello-samza</a>是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！<br><a id="more"></a>   </p>
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
 <p>安装和配置Apache-Samza，需要jdk1.7+、maven2的环境</p>
@@ -348,8 +347,14 @@
 <p>测试是否成功，开一个消费者实时消费wikipedia-raw<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-raw</div></pre></td></tr></table></figure></p>
 <p>将会有实时的消息输出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;raw&quot;:&quot;[[Paul Henreid]]  http://en.wikipedia.org/w/index.php?diff=606587718&amp;oldid=603654278 * .48.142.193 * (-1) original name Wasel, not Wassel - see ref &amp; ext link&quot;,&quot;time&quot;:1398926962623,&quot;source&quot;:&quot;rc-pmtpa&quot;,&quot;channel&quot;:&quot;#en.wikipedia&quot;&#125;</div></pre></td></tr></table></figure></p>
 <h3 id="数据统计job"><a href="#数据统计job" class="headerlink" title="数据统计job"></a>数据统计job</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">deploy/samza/bin/run-job.sh --config-factory=org.apache.samza.config.factories.PropertiesConfigFactory --config-path=file://$PWD/deploy/samza/config/wikipedia-parser.properties</div><div class="line"></div><div class="line">deploy/samza/bin/run-job.sh --config-factory=org.apache.samza.config.factories.PropertiesConfigFactory --config-path=file://$PWD/deploy/samza/config/wikipedia-stats.properties</div></pre></td></tr></table></figure>
-<p>前面的wikipedia-parser负责解析wikipedia-raw中消息，从而抽取edit的大小,修改者等信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">wikipedia-raw--&gt;wikipedia-edits</div></pre></td></tr></table></figure></p>
-<p>后面的wikipedia-stats负责统计来自wikipedia-edits中的消息，计算消息的个数。而后通过一个10秒钟长的滑动时间窗口将统计个数发送到kafka的wikipedia-statstopic中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">wikipedia-edits--&gt;wikipedia-statstopic</div></pre></td></tr></table></figure></p>
+<p>前面的wikipedia-parser负责解析wikipedia-raw中消息，从而抽取edit的大小,修改者等信息</p>
+<blockquote>
+<p>wikipedia-raw–&gt;wikipedia-edits</p>
+</blockquote>
+<p>后面的wikipedia-stats负责统计来自wikipedia-edits中的消息，计算消息的个数。而后通过一个10秒钟长的滑动时间窗口将统计个数发送到kafka的wikipedia-statstopic中</p>
+<blockquote>
+<p>wikipedia-edits–&gt;wikipedia-statstopic  </p>
+</blockquote>
 <p>可以查看结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-edits</div><div class="line"></div><div class="line">deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-stats</div></pre></td></tr></table></figure></p>
 <p>最后的输出结果类似：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;is-minor&quot;:948,&quot;unique-titles&quot;:763,&quot;is-talk&quot;:90,&quot;is-bot-edit&quot;:513,&quot;bytes-added&quot;:350253,&quot;edits&quot;:2790,&quot;is-new&quot;:135,&quot;edits-all-time&quot;:3720,&quot;is-unpatrolled&quot;:78&#125;</div><div class="line">&#123;&quot;is-minor&quot;:632,&quot;unique-titles&quot;:763,&quot;is-talk&quot;:60,&quot;is-bot-edit&quot;:342,&quot;bytes-added&quot;:233502,&quot;edits&quot;:1860,&quot;is-new&quot;:90,&quot;edits-all-time&quot;:5580,&quot;is-unpatrolled&quot;:52&#125;</div></pre></td></tr></table></figure></p>
 <h2 id="关闭samza"><a href="#关闭samza" class="headerlink" title="关闭samza"></a>关闭samza</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/grid stop all</div></pre></td></tr></table></figure>
@@ -366,7 +371,7 @@
         <p><span>本文标题:</span><a href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-28, 17:40:00</p>
-        <p><span>最后更新:</span>2016-10-29, 00:40:26</p>
+        <p><span>最后更新:</span>2016-10-29, 14:59:01</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/28/Samza_1---Hello_Samza/" title="Samza1---Hello Samza">https://fangyeqing.github.io/2016/10/28/Samza_1---Hello_Samza/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/Samza_1---Hello_Samza/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -389,7 +394,7 @@
         
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">
+                <a href="/2016/10/28/hexo+github_page搭建博客/">
                     hexo+github page搭建博客
                 </a>
             </div>
@@ -402,7 +407,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#hello-Samza"><span class="toc-number">1.</span> <span class="toc-text">hello Samza</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#下载源码"><span class="toc-number">1.1.</span> <span class="toc-text">下载源码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行grid"><span class="toc-number">1.2.</span> <span class="toc-text">运行grid</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#出现问题："><span class="toc-number">1.2.0.1.</span> <span class="toc-text">出现问题：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用maven打包并解压"><span class="toc-number">1.3.</span> <span class="toc-text">利用maven打包并解压</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#出现问题：-1"><span class="toc-number">1.3.0.1.</span> <span class="toc-text">出现问题：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行samza-job："><span class="toc-number">1.4.</span> <span class="toc-text">运行samza job：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据获取job"><span class="toc-number">1.4.1.</span> <span class="toc-text">数据获取job</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据统计job"><span class="toc-number">1.4.2.</span> <span class="toc-text">数据统计job</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关闭samza"><span class="toc-number">1.5.</span> <span class="toc-text">关闭samza</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开启samza"><span class="toc-number">1.6.</span> <span class="toc-text">开启samza</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">1.7.</span> <span class="toc-text">参考</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#下载源码"><span class="toc-number">1.</span> <span class="toc-text">下载源码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行grid"><span class="toc-number">2.</span> <span class="toc-text">运行grid</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#出现问题："><span class="toc-number">2.0.1.</span> <span class="toc-text">出现问题：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用maven打包并解压"><span class="toc-number">3.</span> <span class="toc-text">利用maven打包并解压</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#出现问题：-1"><span class="toc-number">3.0.1.</span> <span class="toc-text">出现问题：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行samza-job："><span class="toc-number">4.</span> <span class="toc-text">运行samza job：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据获取job"><span class="toc-number">4.1.</span> <span class="toc-text">数据获取job</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据统计job"><span class="toc-number">4.2.</span> <span class="toc-text">数据统计job</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关闭samza"><span class="toc-number">5.</span> <span class="toc-text">关闭samza</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开启samza"><span class="toc-number">6.</span> <span class="toc-text">开启samza</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">7.</span> <span class="toc-text">参考</span></a></li></ol>
         
     </div>
     <style>
@@ -410,8 +415,8 @@
         .left-col .switch-area {
             display: none;
         }
-        .toc-level-3 i,
-        .toc-level-3 ol {
+        .toc-level-4 i,
+        .toc-level-4 ol {
             display: none !important;
         }
     </style>
@@ -419,7 +424,7 @@
     <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
 
     <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
     </script>
 
 
@@ -485,13 +490,13 @@
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/" title="下一篇: hexo+github page搭建博客">
+            <a href="/2016/10/28/hexo+github_page搭建博客/" title="下一篇: hexo+github page搭建博客">
                 <i class="fa fa-angle-right"></i>
             </a>
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客（windows&linxu）/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_3---druid集群/">druid.io 3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
 
 
 

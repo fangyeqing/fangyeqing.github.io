@@ -8,26 +8,22 @@
       <url>https://fangyeqing.github.io/2016/10/28/druid.io%E5%AE%9E%E8%B7%B52---%E9%9B%86%E7%BE%A4%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="druid集群数据迁移"><a href="#druid集群数据迁移" class="headerlink" title="druid集群数据迁移"></a>druid集群数据迁移</h1><h2 id="背景交代"><a href="#背景交代" class="headerlink" title="背景交代"></a>背景交代</h2><p>druid数据存储采用hdfs。<br>实时输入流通过tranquility从kafka消费topic进行realtime indexing。<br>批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  </p>
+<h2 id="背景交代"><a href="#背景交代" class="headerlink" title="背景交代"></a>背景交代</h2><p>druid数据存储采用hdfs。</p>
+<p>实时输入流通过tranquility从kafka消费topic进行realtime indexing。<br>批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  </p>
 <p>数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。</p>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
 <h2 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路"></a>大体思路</h2><ul>
-<li><p>kafka镜像流：<br>启动samza任务，从老的kafka集群consume消息，produce到新的kafka集群。直接使用kafka的mirror也可以，由于项目使用的arvo编解码，涉及到schema-id的问题，所以只能通过samza任务。</p>
-</li>
-<li><p>druid批量数据获取&amp;index：<br>给新druid集群提交任务，camus批量拉取数据，发送post请求提交配置json到overload执行batch index。 </p>
-</li>
-<li><p>脏数据覆盖(批量路线稳定、数据正确之后)</p>
-<ul>
+<li>kafka镜像流：<br>启动samza任务，从老的kafka集群consume消息，produce到新的kafka集群。直接使用kafka的mirror也可以，由于项目使用的arvo编解码，涉及到schema-id的问题，所以只能通过samza任务。</li>
+<li>druid批量数据获取&amp;index：<br>给新druid集群提交任务，camus批量拉取数据，发送post请求提交配置json到overload执行batch index。 </li>
+<li>脏数据覆盖(批量路线稳定、数据正确之后)  <ul>
 <li>利用hadoop-distcp迁移老hdfs中之前所有的segment数据</li>
 <li>利用insert-segment-to-db工具在mysql生成这之前的元数据（索引）。</li>
 </ul>
 </li>
-<li><p>druid实时数据获取&amp;index：<br>Tranquility任务，获取实时数据，提交给overload执行realtime index   </p>
-</li>
-<li><p>切换（稳定后）<br>将老的kafka的流的生产者逐个切换到新的kafka上</p>
-</li>
+<li>druid实时数据获取&amp;index：<br>Tranquility任务，获取实时数据，提交给overload执行realtime index   </li>
+<li>切换（稳定后）<br>将老的kafka的流的生产者逐个切换到新的kafka上</li>
 </ul>
 <h2 id="使用工具介绍"><a href="#使用工具介绍" class="headerlink" title="使用工具介绍"></a>使用工具介绍</h2><h3 id="hadoop-distcp"><a href="#hadoop-distcp" class="headerlink" title="hadoop-distcp"></a>hadoop-distcp</h3><p>迁移老hdfs中之前所有的segment数据  </p>
 <h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>DistCp（分布式拷贝）是用于大规模集群内部和集群之间拷贝的工具。 它使用Map/Reduce实现文件分发，错误处理和恢复，以及报告生成。 它把文件和目录的列表作为map任务的输入，每个任务会完成源列表中部分文件的拷贝</p>
@@ -39,9 +35,7 @@
 <p>可以通过-overwrite选项指定覆盖掉同名文件，或者通过-update选项来更新同名文件。</p>
 <p>-overwrite来覆盖刚开启批量任务时的数据不完整那个小时的数据。</p>
 <h3 id="insert-segment-to-db"><a href="#insert-segment-to-db" class="headerlink" title="insert-segment-to-db"></a>insert-segment-to-db</h3><h4 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h4><p>HDFS上Segment在新的mysql中生成索引    </p>
-<p><a href="https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ" target="_blank" rel="external">https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ</a>     </p>
-<p><a href="https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU" target="_blank" rel="external">https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU</a>  </p>
-<p><a href="http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html" target="_blank" rel="external">http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html</a></p>
+<p><a href="https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ" target="_blank" rel="external">https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ</a><br><a href="https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU" target="_blank" rel="external">https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU</a><br><a href="http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html" target="_blank" rel="external">http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html</a></p>
 <h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><p>–workingDir：segment位置  </p>
 <p>–updateDescriptor：默认true，如果desciptor.json的实际路径与“loadSpec”中的路径是不同的，该工具将更新“loadSpec”字段的描述符。 </p>
 <p>例如：将老集群的数据迁移过去之后，desciptor.json中的路径没变，生成索引时会更新成现在的路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">hadoop fs -cat hdfs://nn1:port/.../dataSource/20161025T060000.000+0800_20161025T070000.000+0800/2016-10-25T07_33_53.379+08_00/0/descriptor.json</div><div class="line"></div><div class="line">其中loadSpec部分：</div><div class="line"></div><div class="line">&quot;loadSpec&quot;: &#123;</div><div class="line">    &quot;type&quot;: &quot;hdfs&quot;,</div><div class="line">    &quot;path&quot;: &quot;hdfs://nn1:port/.../dataSource/20161025T060000.000+0800_20161025T070000.000+0800/2016-10-25T07_33_53.379+08_00/0/index.zip&quot;</div><div class="line">&#125;,</div></pre></td></tr></table></figure></p>
@@ -56,7 +50,7 @@
       <url>https://fangyeqing.github.io/2016/10/28/druid.io%E5%AE%9E%E8%B7%B51---%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E9%80%9F%E5%BA%A6/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="提高查询速度"><a href="#提高查询速度" class="headerlink" title="提高查询速度"></a>提高查询速度</h1><p>当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：</p>
+<p>当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：</p>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
@@ -81,62 +75,51 @@
     </entry>
     
     <entry>
-      <title><![CDATA[druid.io3---druid集群]]></title>
+      <title><![CDATA[druid.io 3---druid集群]]></title>
       <url>https://fangyeqing.github.io/2016/10/28/druid.io_3---druid%E9%9B%86%E7%BE%A4/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="druid集群"><a href="#druid集群" class="headerlink" title="druid集群"></a>druid集群</h1><p>Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。</p>
+<p>Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。</p>
 <p>不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。</p>
 <h2 id="节点组成"><a href="#节点组成" class="headerlink" title="节点组成"></a>节点组成</h2><p>主要分为三大部分：数据生产、数据存储、数据查询</p>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文="">  
 
 <h3 id="数据生产"><a href="#数据生产" class="headerlink" title="数据生产"></a>数据生产</h3><ul>
-<li><p>Indexing Service 索引服务节点：<br>由多个worker组成的集群，负责为加载批量的和实时的数据创建索引，并且允许对已经存在的数据进行修改。</p>
-</li>
-<li><p>Realtime 实时节点：<br>负责加载实时的数据到系统中，在生产使用的几个限制成本上实时节点比索引服务节点更容易搭建。</p>
-</li>
+<li>Indexing Service 索引服务节点：<br>由多个worker组成的集群，负责为加载批量的和实时的数据创建索引，并且允许对已经存在的数据进行修改。</li>
+<li>Realtime 实时节点：<br>负责加载实时的数据到系统中，在生产使用的几个限制成本上实时节点比索引服务节点更容易搭建。</li>
 </ul>
 <p>实时数据和批量数据加载的两种方式在上一篇中介绍到了，就不赘述。</p>
 <h3 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h3><ul>
-<li><p>Coordinator 协调节点：<br>对历史节点的分组进行监控，以确保数据可用，和最佳的配置。协调节点通过从元数据存储中读取元数据信息来判断哪些segments是应该加载到集群的，使用Zookeeper去判断哪些历史节点是存活的，在Zookeeper中创建任务条目告诉历史节点去加载和删除segments。</p>
-</li>
-<li><p>Historical 历史节点：<br>负责处理历史数据存储和查询历史数据（非实时），历史节点从“deep storage”下载segments，将结果数据返回给broker节点，historical加载完segment通知Zookeeper，Historical nodes使用Zookeeper监控需要加载或者删除哪些新的segments。</p>
-</li>
+<li>Coordinator 协调节点：<br>对历史节点的分组进行监控，以确保数据可用，和最佳的配置。协调节点通过从元数据存储中读取元数据信息来判断哪些segments是应该加载到集群的，使用Zookeeper去判断哪些历史节点是存活的，在Zookeeper中创建任务条目告诉历史节点去加载和删除segments。</li>
+<li>Historical 历史节点：<br>负责处理历史数据存储和查询历史数据（非实时），历史节点从“deep storage”下载segments，将结果数据返回给broker节点，historical加载完segment通知Zookeeper，Historical nodes使用Zookeeper监控需要加载或者删除哪些新的segments。</li>
 </ul>
 <h3 id="数据查询"><a href="#数据查询" class="headerlink" title="数据查询"></a>数据查询</h3><ul>
 <li>Broker 代理节点<br>接收来自外部client的查询请求，并转发这些请求给实时节点和历史节点，当代理节点接收到结果时，将来自实时节点和历史节点的结果合并返回给调用方。为了知道整个拓扑结构，代理节点通过使用Zookeeper在确定哪些实时节点和历史节点存活。</li>
 </ul>
 <p><img src="http://druidio.cn/docs/img/druid-dataflow-3.png" alt="image"></p>
-<h2 id="外部依赖"><a href="#外部依赖" class="headerlink" title="外部依赖"></a>外部依赖</h2><p>Druid的集群需要有一些外部依赖。</p>
+<h2 id="外部依赖"><a href="#外部依赖" class="headerlink" title="外部依赖"></a>外部依赖</h2><p>Druid的集群需要有一些外部依赖。  </p>
 <ul>
-<li><p>Zookeeper<br>Druid依赖Zookeeper来保证集群内的信息一致。</p>
-</li>
-<li><p>Metadata Storage<br>Druid依赖metadata storage存储segments的元数据和配置。创建segments的服务在元数据中记录信息, coordinator监听着元数据以便了解什么时候需要下载新数据或者删除旧数据。 元数据的存储不涉及查询的路径。MySQL和PostgreSQL非常有利于生产环境下元数据的存储, 但Derby在你部署单机版做测试的时候非常好用。</p>
-</li>
-<li><p>Deep Storage：<br>Deep storage是segments的永久备份。创建segments的服务上传segments到Deep storage,然后historical节点下载。 Deep storage不涉及查询路径。 S3和HDFS是比较推荐到deep storages。</p>
-</li>
+<li>Zookeeper<br>Druid依赖Zookeeper来保证集群内的信息一致。</li>
+<li>Metadata Storage<br>Druid依赖metadata storage存储segments的元数据和配置。创建segments的服务在元数据中记录信息, coordinator监听着元数据以便了解什么时候需要下载新数据或者删除旧数据。 元数据的存储不涉及查询的路径。MySQL和PostgreSQL非常有利于生产环境下元数据的存储, 但Derby在你部署单机版做测试的时候非常好用。</li>
+<li>Deep Storage：<br>Deep storage是segments的永久备份。创建segments的服务上传segments到Deep storage,然后historical节点下载。 Deep storage不涉及查询路径。 S3和HDFS是比较推荐到deep storages。</li>
 </ul>
 <h2 id="Indexing-Service"><a href="#Indexing-Service" class="headerlink" title="Indexing Service"></a>Indexing Service</h2><p>索引服务负责<strong>实时</strong>和<strong>批量</strong>数据的导入、分析、索引、压缩，生成“segment”（数据段），存入Deep Storage（例如HDFS）。<br>实时数据通过<strong>Tranquility</strong>客户端，批量数据通过<strong>Batch Data Ingestion</strong>，将任务提交给overload，分配给Middle Manager创建Poen执行。  </p>
 <h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>索引服务是主从结构，由三个部分组成：</p>
-<p>a.peon组件：在一个单独的jvm中运行单个任务，通过单独的jvm对任务做资源隔离和日志隔离。<br>b.Middle Manager：用于创建和管理peon的中层管理组件<br>c.overlord组件：管理任务分配到Middle Manager<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8A3B9817DCAE4598A5D8582FB02E012E" alt="image"><br>综合Tranquility和整个系统之后：<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/26967A72BB75437786E663C1A91699D8" alt="image"> </p>
+<ul>
+<li>peon组件：在一个单独的jvm中运行单个任务，通过单独的jvm对任务做资源隔离和日志隔离。  </li>
+<li>Middle Manager：用于创建和管理peon的中层管理组件  </li>
+<li>overlord组件：管理任务分配到Middle Manager<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8A3B9817DCAE4598A5D8582FB02E012E" alt="image"><br>综合Tranquility和整个系统之后：<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/26967A72BB75437786E663C1A91699D8" alt="image"> </li>
+</ul>
 <h3 id="流程："><a href="#流程：" class="headerlink" title="流程："></a>流程：</h3><ul>
-<li><p>用户的spec文件在Tranquility中定义，首先Tranquility通过spec初始化，获得zk中Overlord的地址，与Overlord通信。</p>
-</li>
-<li><p>Overlord得到新写入任务后，查询zk节点信息，选择一个Middle Manager节点启动来启动peon，并将信息写入到zk中。</p>
-</li>
-<li><p>Middle Manager一直监控zk，发现有新的任务分配后，启动一个Peon进程，并监控Peon进程的状态。</p>
-</li>
-<li><p>Peon与Realtime Node流程基本一致，所不同的是Peon使用的是HTTP接口来接收数据，RealTime Node更多的是内部的线程不断的拉取Kafka的数据。</p>
-</li>
-<li><p>Tranquility随后通过zk获取Peon机器地址和端口，将数据不断的发送到Peon中。</p>
-</li>
-<li><p>Peon根据spec规则，定时或者定量将数据build index，handoff到deep storage(HDFS)中。</p>
-</li>
-<li><p>Coordinator根据Peon在zk中信息，将元数据写入到mysql中，并分配Historical Node去deep storage拉取index数据。</p>
-</li>
-<li><p>Historical Node到deep storage拉取index数据到本地，重建index到内存中，至此数据流入完成。</p>
-</li>
+<li>用户的spec文件在Tranquility中定义，首先Tranquility通过spec初始化，获得zk中Overlord的地址，与Overlord通信。</li>
+<li>Overlord得到新写入任务后，查询zk节点信息，选择一个Middle Manager节点启动来启动peon，并将信息写入到zk中。</li>
+<li>Middle Manager一直监控zk，发现有新的任务分配后，启动一个Peon进程，并监控Peon进程的状态。</li>
+<li>Peon与Realtime Node流程基本一致，所不同的是Peon使用的是HTTP接口来接收数据，RealTime Node更多的是内部的线程不断的拉取Kafka的数据。</li>
+<li>Tranquility随后通过zk获取Peon机器地址和端口，将数据不断的发送到Peon中。</li>
+<li>Peon根据spec规则，定时或者定量将数据build index，handoff到deep storage(HDFS)中。</li>
+<li>Coordinator根据Peon在zk中信息，将元数据写入到mysql中，并分配Historical Node去deep storage拉取index数据。</li>
+<li>Historical Node到deep storage拉取index数据到本地，重建index到内存中，至此数据流入完成。</li>
 </ul>
 <h3 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h3><p>overload节点配置时<br>druid.indexer.runner.type=local表示overload以本地模式运行，overload同时负责Middle Manager的作用，创建poen和分配任务。local模式下，overload配置需要对poen进行配置。</p>
 <h2 id="real-time-node"><a href="#real-time-node" class="headerlink" title="real-time node"></a>real-time node</h2><p>实时节点是进行存储和查询实时数据的工作区。在Zookeeper中通告它们的在线状态和为哪些数据提供服务。</p>
@@ -193,18 +176,12 @@
 <h4 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h4><p>在实际生产过程中，hot节点层本身只有两台机器，增加hot层到5台。负载最高的机器数据会往低的迁移。到最后每台机器上的数据大致相等。</p>
 <h2 id="Historical-Node"><a href="#Historical-Node" class="headerlink" title="Historical Node"></a>Historical Node</h2><p>历史节点负责加载历史Segment并且提供针对这些历史Segment的查询。Historical Nodes可分为多个tier， 比如热数据放在一个tier， 冷数据放到另外一个tier，以达到冷热数据分开处理的目的。</p>
 <h3 id="Historical节点segment创建流程"><a href="#Historical节点segment创建流程" class="headerlink" title="Historical节点segment创建流程"></a>Historical节点segment创建流程</h3><ul>
-<li><p>Coordinator在ZK下与Historical节点相关联的加载队列路径下创建一个临时记录。</p>
-</li>
-<li><p>每个历史节点与ZK保持一个长连接监测ZK。</p>
-</li>
-<li><p>当一个历史节点发现在Zookeeper中与它关联的加载队列目录下有一个新的加载记录时。</p>
-</li>
-<li><p>它首先检查本地磁盘目录（缓存）中关于新的Segment的信息。如果缓存中没有关于新的Segment的信息，历史节点将下载新的Segment的元数据信息并告知Zookeeper。元数据包含新的Segment在“Deep Storage”中的存储位置，怎样去解压缩和处理新的Segment的信息。</p>
-</li>
-<li><p>一旦一个历史节点处理完成一个Segment，该Segment在Zoookeeper与该节点关联的服务Segments路径中公布可以提供服务。</p>
-</li>
-<li><p>此刻，这个Segment可以用于查询。</p>
-</li>
+<li>Coordinator在ZK下与Historical节点相关联的加载队列路径下创建一个临时记录。</li>
+<li>每个历史节点与ZK保持一个长连接监测ZK。</li>
+<li>当一个历史节点发现在Zookeeper中与它关联的加载队列目录下有一个新的加载记录时。</li>
+<li>它首先检查本地磁盘目录（缓存）中关于新的Segment的信息。如果缓存中没有关于新的Segment的信息，历史节点将下载新的Segment的元数据信息并告知Zookeeper。元数据包含新的Segment在“Deep Storage”中的存储位置，怎样去解压缩和处理新的Segment的信息。</li>
+<li>一旦一个历史节点处理完成一个Segment，该Segment在Zoookeeper与该节点关联的服务Segments路径中公布可以提供服务。</li>
+<li>此刻，这个Segment可以用于查询。</li>
 </ul>
 <h2 id="Broker-Node"><a href="#Broker-Node" class="headerlink" title="Broker Node"></a>Broker Node</h2><p>broker（代理）提供针对segment的路由查询，代理节点从Zookeeper获取Segments存储在哪些节点和怎样找到正确的节点的元数据。将查询转发到Realtime和Historical节点。把来自于所有单个节点的结果合并在一起。  </p>
 <h3 id="转发查询"><a href="#转发查询" class="headerlink" title="转发查询"></a>转发查询</h3><p>Zookeeper维护有关历史和实时的节点信息和他们所能提供服务的Segment。  </p>
@@ -212,12 +189,9 @@
 <p>当收到一个特定数据源和时间间隔的查询请求，代理节点执行查找与查询数据源时间间隔相关的时间轴和检索包含数据查询的节点。代理节点然后将查询转发到所选节点。</p>
 <h3 id="缓存策略"><a href="#缓存策略" class="headerlink" title="缓存策略"></a>缓存策略</h3><p>Broker节点包含一个支持LRU失效策略的缓存。</p>
 <ul>
-<li><p>首先将这个查询映射到一组Segments，这些Segment结果的子集可能在缓存中已经存在，在缓存中已经存在的结果可以被直接拉取。  </p>
-</li>
-<li><p>对于一些缓存中不存在的结果。代理节点会转发查询到历史节点。一旦历史节点返回其结果，代理节点将结果存储到缓存中。  </p>
-</li>
-<li><p>实时节点返回的结果将永远不会被缓存，因此实时节点的查询请求将永远被转发到实时节点。实时节点的数据是不断变化的，缓存实时节点的结果是不可靠的。</p>
-</li>
+<li>首先将这个查询映射到一组Segments，这些Segment结果的子集可能在缓存中已经存在，在缓存中已经存在的结果可以被直接拉取。  </li>
+<li>对于一些缓存中不存在的结果。代理节点会转发查询到历史节点。一旦历史节点返回其结果，代理节点将结果存储到缓存中。  s</li>
+<li>实时节点返回的结果将永远不会被缓存，因此实时节点的查询请求将永远被转发到实时节点。实时节点的数据是不断变化的，缓存实时节点的结果是不可靠的。</li>
 </ul>
 <h2 id="外部依赖-1"><a href="#外部依赖-1" class="headerlink" title="外部依赖"></a>外部依赖</h2><p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0E59F34342744B8ABBDCE92DA750B186" alt="image"></p>
 <h3 id="Metadata-Storage（Mysql）"><a href="#Metadata-Storage（Mysql）" class="headerlink" title="Metadata Storage（Mysql）"></a>Metadata Storage（Mysql）</h3><p>存储segments的元数据和配置，而不是存储实际数据，包含3张表：<br>“druid_config”（通常是空的）,<br>“druid_rules”（协作节点使用的一些规则信息，比如哪个segment从哪个node去load）<br>“druid_segments”（存储 每个segment的metadata信息） </p>
@@ -236,8 +210,17 @@
 <li>索引服务任务管理</li>
 </ul>
 <h2 id="数据流过程"><a href="#数据流过程" class="headerlink" title="数据流过程"></a>数据流过程</h2><p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/69D6BCF5B4A3476898CF5599ED461232" alt="image">  </p>
-<p>1）实时数据写入到实时节点,会创建索引结构的Segment<br>2）实时节点的Segment经过一段时间会转存到DeepStorage<br>3）元数据写入MySQL; 实时节点转存的Segment会在ZooKeeper中新增一条记录<br>4）协调节点从MySQL获取元数据,比如schema信息(维度列和指标列)<br>5）协调节点监测ZK中有新分配/要删除的Segment,写入ZooKeeper信息:历史节点需要加载/删除Segment<br>6）历史节点监测ZK, 从ZooKeeper中得到要执行任务的Segment<br>7）历史节点从DeepStorage下载Segment并加载到内存/或者将已经保存的Segment删除掉<br>8）历史节点的Segment可以用于Broker的查询路由  </p>
-<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><p>上述流程中的实时节点，换成indexing service，流程基本一致。</p>
+<ol>
+<li>实时数据写入到实时节点,会创建索引结构的Segment  </li>
+<li>实时节点的Segment经过一段时间会转存到DeepStorage  </li>
+<li>元数据写入MySQL; 实时节点转存的Segment会在ZooKeeper中新增一条记录  </li>
+<li>协调节点从MySQL获取元数据,比如schema信息(维度列和指标列)  </li>
+<li>协调节点监测ZK中有新分配/要删除的Segment,写入ZooKeeper信息:历史节点需要加载/删除Segment  </li>
+<li>历史节点监测ZK, 从ZooKeeper中得到要执行任务的Segment  </li>
+<li>历史节点从DeepStorage下载Segment并加载到内存/或者将已经保存的Segment删除掉  </li>
+<li>历史节点的Segment可以用于Broker的查询路由  </li>
+</ol>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>上述流程中的实时节点，换成indexing service，流程基本一致。</p>
 <h2 id="容错性"><a href="#容错性" class="headerlink" title="容错性"></a>容错性</h2><h3 id="历史节点挂掉"><a href="#历史节点挂掉" class="headerlink" title="历史节点挂掉"></a>历史节点挂掉</h3><p>该节点就不会服务这个节点上的Segments。<br>但是只要这些Segments仍然存在于DeepStorage,其他节点就会下载它们并服务这些Segments。   </p>
 <p>可以从集群中移除所有的历史节点,并且重新发布它们,也不会有任何的数据损失(因为数据最终都保存到DeepStorage中)</p>
 <h3 id="DeepStorage不可用"><a href="#DeepStorage不可用" class="headerlink" title="DeepStorage不可用"></a>DeepStorage不可用</h3><p>历史节点上已经加载了DeepStorage的Segments,仍然可用于查询。<br>但是新进来的数据无法进入到集群中(DS挂掉)。</p>
@@ -247,19 +230,16 @@
 <h3 id="实时节点"><a href="#实时节点" class="headerlink" title="实时节点"></a>实时节点</h3><p>根据发送流的语义,可以有多个实时节点同时运行,处理同一个输入流. 每个实时节点分担输入流的一部分数据.</p>
 <h3 id="元数据存储挂掉"><a href="#元数据存储挂掉" class="headerlink" title="元数据存储挂掉"></a>元数据存储挂掉</h3><p>协调节点就无法找到集群中新的Segments(因为新的Segment一定会写入记录到元数据存储中)。但仍然可以提供当前集群的数据视图.</p>
 <h3 id="ZooKeeper挂掉"><a href="#ZooKeeper挂掉" class="headerlink" title="ZooKeeper挂掉"></a>ZooKeeper挂掉</h3><p>数据拓扑不会被更新(同协调节点挂掉),但是Broker仍然可以维护最近的数据拓扑,并继续提供查询的服务。</p>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a></p>
-<p><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a></p>
-<p><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a></p>
-<p><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a>  </p>
-<p><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a><br><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a><br><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a><br><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a><br><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
 </the></excerpt>]]></content>
     </entry>
     
     <entry>
       <title><![CDATA[druid.io 2---druid数据]]></title>
       <url>https://fangyeqing.github.io/2016/10/28/druid.io_2---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/</url>
-      <content type="html"><![CDATA[<p><excerpt in="" index="" |="" 首页摘要="">   </excerpt></p>
-<h1 id="druid数据"><a href="#druid数据" class="headerlink" title="druid数据"></a>druid数据</h1><h2 id="数据格式："><a href="#数据格式：" class="headerlink" title="数据格式："></a>数据格式：</h2><ul>
+      <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
+
+<h2 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h2><ul>
 <li><strong>Timestamp列</strong>: 所有的查询都以时间为中心。  </li>
 <li><strong>Dimension列（维度）</strong>: Dimensions对应事件的维度,通常用于筛选过滤数据。</li>
 <li><strong>Metric列（度量）</strong>: Metrics是用于聚合和计算的列。通常是数字,并且支持count、sum、mean等聚合操作。<br>线上广告的例子：</li>
@@ -304,15 +284,13 @@
 <p>Druid的索引是基于每一个分片(即segment)上的。</p>
 <h2 id="数据加载"><a href="#数据加载" class="headerlink" title="数据加载"></a>数据加载</h2><p>Druid使用的通常情况是,联合使用批量和实时数据流的加载方法。近期的数据通过实时方式处理,离线批量处理来来提高精度。 </p>
 <p>在一些网络抖动延迟的非正常场景中，实时数据流加载方式有可能出现消息丢失或者消息重复，因此批量再加载方式消除了这种历史数据的潜在错误。或者由于某种原因，需要修改数据，批量再加载方式也提供给你再加载数据的选项。</p>
-<h4 id="实时方式"><a href="#实时方式" class="headerlink" title="实时方式"></a>实时方式</h4><ul>
-<li><p>Stream push </p>
-<ul>
+<h3 id="实时方式"><a href="#实时方式" class="headerlink" title="实时方式"></a>实时方式</h3><ul>
+<li>Stream push <ul>
 <li><strong>Tranquility+indexing service</strong>，数据来自于一个数据流系统，如Kafka、Storm、Spark Streaming。Tranquility：一个发送数据流到Druid的http客户端。</li>
 </ul>
 </li>
-<li><p>Stream pull </p>
-<ul>
-<li><strong>Realtime Node</strong>，直接从外部数据源拉数据流进入Druid。  <h4 id="离线批处理方式"><a href="#离线批处理方式" class="headerlink" title="离线批处理方式"></a>离线批处理方式</h4></li>
+<li>Stream pull <ul>
+<li><strong>Realtime Node</strong>，直接从外部数据源拉数据流进入Druid。  <h3 id="离线批处理方式"><a href="#离线批处理方式" class="headerlink" title="离线批处理方式"></a>离线批处理方式</h3></li>
 </ul>
 </li>
 <li>Files <ul>
@@ -323,12 +301,8 @@
 <p>下图中，上面的indexing service为realtime，下面的为Batch Data Ingestion<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/D6B38A53DFD740328C51FD6093A90BE7" alt="image"></p>
 <h2 id="数据查询"><a href="#数据查询" class="headerlink" title="数据查询"></a>数据查询</h2><p>Druid原生的查询方式是通过http发送json,但是社区已经贡献出多种查询库,包括SQL方式的plyql。</p>
 <p>Druid被设计为执行单表操作,不支持join操纵(实际上可以做join)。 生产环境需要在ETL阶段进行join,因为数据在加载进Druid之前必须规范化。</p>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a></p>
-<p><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a></p>
-<p><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a></p>
-<p><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a>  </p>
-<p><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
-</the>]]></content>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a><br><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a><br><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a><br><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a><br><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
+</the></excerpt>]]></content>
     </entry>
     
     <entry>
@@ -336,26 +310,26 @@
       <url>https://fangyeqing.github.io/2016/10/28/druid.io_1---OLAP&druid%E6%A6%82%E5%BF%B5/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="OLAP"><a href="#OLAP" class="headerlink" title="OLAP"></a>OLAP</h1><ul>
-<li>OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用户组建多维的数据模型。  </li>
+<h2 id="OLAP"><a href="#OLAP" class="headerlink" title="OLAP"></a>OLAP</h2><ul>
+<li>OLAP的主要特点是直接仿照用户的多角度思考模式，预先为用户组建多维的数据模型。</li>
 <li>维指的是用户的分析角度，例如对销售数据的分析，时间周期是一个维度，产品类别、分销渠道、地理分布、客户群类也分别是不同的维度。  </li>
 <li>一旦多维数据模型建立完成，用户可以快速地从各个分析角度获取数据，也能动态地在各个角度之间切换数据或者进行多角度综合分析，具有极大的分析灵活性。</li>
 </ul>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
-<h2 id="主要名词"><a href="#主要名词" class="headerlink" title="主要名词"></a>主要名词</h2><ul>
+<h3 id="主要名词"><a href="#主要名词" class="headerlink" title="主要名词"></a>主要名词</h3><ul>
 <li>维(Dimension)：是用户观察数据的特定角度，是问题的一类属性，属性集合构成一个维(时间维、地理维等)。</li>
 <li>维的层次(Level)：用户观察数据的某个特定角度(即某个维)还可能存在细节程度不同的各个描述方面(时间维包括日期、月份、季度、年)。  </li>
 <li>维的成员(Member)：即维的一个取值，是数据项在某个维中位置的描述，如“某年某月某日”是在时间维上的位置描述。  </li>
 <li>度量(Measure)：多维数组的取值。  </li>
 </ul>
-<h2 id="多维分析操作"><a href="#多维分析操作" class="headerlink" title="多维分析操作"></a>多维分析操作</h2><ul>
+<h3 id="多维分析操作"><a href="#多维分析操作" class="headerlink" title="多维分析操作"></a>多维分析操作</h3><ul>
 <li>钻取（Drill-up和Drill-down）：改变维的层次，变换分析的粒度。它包括向下钻取(Drill-down)和向上钻取(Drill-up)/上滚(Roll-up)。向上钻取是在某一维上将低层次的细节数据概括到高层次的汇总数据，或者减少维数;而向下钻取则相反，从汇总数据深入到细节数据进行观察或增加新维。  </li>
 <li>切片和切块（Slice&amp;Dice）：在一部分维上选定值后，关心度量数据在剩余维上的分布。如果剩余的维只有两个，则是切片;如果有三个或以上，则是切块。  </li>
 <li>旋转（Pivot）：变换维的方向，即在表格中重新安排维的放置(如行列互换)。</li>
 </ul>
-<h2 id="与OLTP区别"><a href="#与OLTP区别" class="headerlink" title="与OLTP区别"></a>与OLTP区别</h2><ul>
+<h3 id="与OLTP区别"><a href="#与OLTP区别" class="headerlink" title="与OLTP区别"></a>与OLTP区别</h3><ul>
 <li>联机事务处理OLTP（on-line transaction processing）：<br>传统的关系型数据库的主要应用，主要是基本的、日常的事务处理，例如银行交易。  </li>
 <li>联机分析处理OLAP（On-Line Analytical Processing）：<br>数据仓库系统的主要应用，支持复杂的分析操作，侧重决策支持，并且提供直观易懂的查询结果。   </li>
 </ul>
@@ -420,7 +394,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="druid概念"><a href="#druid概念" class="headerlink" title="druid概念"></a>druid概念</h1><p>Druid：海量数据实时OLAP分析系统  </p>
+<h2 id="druid概念"><a href="#druid概念" class="headerlink" title="druid概念"></a>druid概念</h2><p>Druid：海量数据实时OLAP分析系统  </p>
 <p>Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。<br>Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。</p>
 <p>优势：  </p>
 <ul>
@@ -428,11 +402,7 @@
 <li>各个组成部分之间耦合性低，如果不需要实时数据完全可以忽略实时节点；  </li>
 <li>使用Bitmap indexing加速列存储的查询速度，并使用CONCISE算法来对bitmap indexing进行压缩，使得生成的segments比原始文本文件小很多  </li>
 </ul>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a></p>
-<p><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a></p>
-<p><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a></p>
-<p><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a>  </p>
-<p><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a><br><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a><br><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a><br><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a><br><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
 </the></excerpt>]]></content>
     </entry>
     
@@ -441,7 +411,7 @@
       <url>https://fangyeqing.github.io/2016/10/28/Samza_5---Samza_API/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="Samza-API"><a href="#Samza-API" class="headerlink" title="Samza API"></a>Samza API</h1><p>任务类必须实现StreamTask,可选 InitableTask, ClosableTask,WindowableTask<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class xxxxTask implements StreamTask, InitableTask, ClosableTask,WindowableTask &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Samza任务类必须实现StreamTask,可选 InitableTask, ClosableTask,WindowableTask<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class xxxxTask implements StreamTask, InitableTask, ClosableTask,WindowableTask &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <a id="more"></a>  
 <p><the rest="" of="" contents="" |="" 余下全文="">   </the></p>
 <h2 id="StreamTask"><a href="#StreamTask" class="headerlink" title="StreamTask"></a>StreamTask</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public interface StreamTask &#123;</div><div class="line">    void process(IncomingMessageEnvelope var1, //接收到的消息封装</div><div class="line">                MessageCollector var2,//用来发送其他消息</div><div class="line">                TaskCoordinator var3) </div><div class="line">    throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -466,7 +436,7 @@
 <h2 id="ClosableTask"><a href="#ClosableTask" class="headerlink" title="ClosableTask"></a>ClosableTask</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public interface ClosableTask &#123;</div><div class="line">    void close() throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="WindowableTask"><a href="#WindowableTask" class="headerlink" title="WindowableTask"></a>WindowableTask</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public interface WindowableTask &#123;</div><div class="line">    void window(MessageCollector var1, </div><div class="line">                TaskCoordinator var2) throws Exception;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>有一个简单的任务，它把每个输入的消息拆成单词，并且发送每一个单词作为一个消息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"> public class SplitStringIntoWords implements StreamTask, InitableTask, ClosableTask &#123;</div><div class="line"></div><div class="line">    private String outputSystem;</div><div class="line">    </div><div class="line">    //官网教程中直接使用固定的SystemStream,稍加改造</div><div class="line">    //private final SystemStream output_stream = new SystemStream(&quot;kafka&quot;, &quot;words&quot;);</div><div class="line">    </div><div class="line">    @Override</div><div class="line">    public void close() throws Exception &#123;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    @Override</div><div class="line">    public void init(Config config, TaskContext context) throws Exception &#123;//初始化时从配置文件读output system</div><div class="line">        outputSystem = config.get(&quot;task.output.system&quot;);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    public void process(IncomingMessageEnvelope envelope,</div><div class="line">                      MessageCollector collector,</div><div class="line">                      TaskCoordinator coordinator) &#123;</div><div class="line">        String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();</div><div class="line">        </div><div class="line">        topic=topic+&quot;_split&quot;;//获取输入消息的topic，加上后缀</div><div class="line">        </div><div class="line">        SystemStream output_stream=new SystemStream(outputSystem, topic);//构造新的发送消息的System+Stream</div><div class="line">        </div><div class="line">        String message = (String) envelope.getMessage();//接收到的消息</div><div class="line">        </div><div class="line">        for (String word : message.split(&quot; &quot;)) &#123;</div><div class="line">          //单词作为key，1作为value，后续任务可以将1相加计数</div><div class="line">          collector.send(new OutgoingMessageEnvelope(output_stream, word, 1));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
 </excerpt>]]></content>
     </entry>
     
@@ -475,7 +445,7 @@
       <url>https://fangyeqing.github.io/2016/10/28/Samza_4---%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="核心部件"><a href="#核心部件" class="headerlink" title="核心部件"></a>核心部件</h1><h2 id="SamzaContainer"><a href="#SamzaContainer" class="headerlink" title="SamzaContainer"></a>SamzaContainer</h2><p>SamzaContainer负责管理一个或多个StreamTask实例的启动，执行和关闭。每个SamzaContainer通常在独立的Java虚拟机上运行。一个Samza job可以由几个SamzaContainers组成，并可以在在不同的机器上运行。</p>
+<h2 id="SamzaContainer"><a href="#SamzaContainer" class="headerlink" title="SamzaContainer"></a>SamzaContainer</h2><p>SamzaContainer负责管理一个或多个StreamTask实例的启动，执行和关闭。每个SamzaContainer通常在独立的Java虚拟机上运行。一个Samza job可以由几个SamzaContainers组成，并可以在在不同的机器上运行。</p>
 <p>当SamzaContainer启动时，它按照顺序执行以下操作：  </p>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
@@ -489,7 +459,7 @@
 <li>为每个kafka输入流的分区实例化和初始化StreamTask（即调用InitableTask的init方法）</li>
 <li>启动事件循环（event loop），从reader线程读取消息，传递到StreamTask</li>
 </ul>
-<h5 id="Event-Loop"><a href="#Event-Loop" class="headerlink" title="Event Loop"></a>Event Loop</h5><p>事件循环是container的一个单线程，负责读写消息,传递指标（metrix）、checkpoint周期执行和window周期执行。事件循环的工作原理如下:</p>
+<h3 id="Event-Loop"><a href="#Event-Loop" class="headerlink" title="Event Loop"></a>Event Loop</h3><p>事件循环是container的一个单线程，负责读写消息,传递指标（metrix）、checkpoint周期执行和window周期执行。事件循环的工作原理如下:</p>
 <ul>
 <li>从传入消息队列获取消息;</li>
 <li>通过调用process()给适当的任务实例传递信息;</li>
@@ -623,10 +593,8 @@
 <p>这样数据是不会丢了, 但是明显效率会有问题<br>而且会产生对其他系统的依赖性<br>还会影响正确性, 比如当task失败了, 之前的state需要作废,   如何让外部存储上的数据回滚  </p>
 <h3 id="Samza管理任务的方法——Local-state-in-Samza"><a href="#Samza管理任务的方法——Local-state-in-Samza" class="headerlink" title="Samza管理任务的方法——Local state in Samza"></a>Samza管理任务的方法——Local state in Samza</h3><p>samza相当于结合上述两处的优点。   </p>
 <ul>
-<li><p>local：存整个state，但是存在硬盘上。采用Key-value数据库存储：RocksDB    </p>
-</li>
-<li><p>external：state的change会生成changelog stream放在kafka上,。<br>这样当有task failover的时候, 可以从kafka上读出change log, 并replay出local state</p>
-</li>
+<li>local：存整个state，但是存在硬盘上。采用Key-value数据库存储：RocksDB    </li>
+<li>external：state的change会生成changelog stream放在kafka上,。<br>这样当有task failover的时候, 可以从kafka上读出change log, 并replay出local state</li>
 </ul>
 <p><img src="http://samza.apache.org/img/0.10/learn/documentation/container/stateful_job.png" alt="image"></p>
 <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># Use the key-value store implementation for a store called &quot;my-store&quot;</div><div class="line">stores.my-store.factory=org.apache.samza.storage.kv.RocksDbKeyValueStorageEngineFactory</div><div class="line"></div><div class="line"># Use the Kafka topic &quot;my-store-changelog&quot; as the changelog stream for this store.</div><div class="line"># This enables automatic recovery of the store after a failure. If you don&apos;t</div><div class="line"># configure this, no changelog stream will be generated.</div><div class="line">stores.my-store.changelog=kafka.my-store-changelog</div><div class="line"></div><div class="line"># Encode keys and values in the store as UTF-8 strings.</div><div class="line">serializers.registry.string.class=org.apache.samza.serializers.StringSerdeFactory</div><div class="line">stores.my-store.key.serde=string</div><div class="line">stores.my-store.msg.serde=string</div></pre></td></tr></table></figure>
@@ -646,10 +614,8 @@
 </ol>
 <h2 id="Metrix"><a href="#Metrix" class="headerlink" title="Metrix"></a>Metrix</h2><p>当在生产中运行stream process过程,有合理的metrix（度量）来跟踪job的运行是很重要的。Samza提供封装好的metrix库。Samza本身生成消息吞吐量等标准指标,也可以自定义指标。</p>
 <h3 id="metrix上报方式"><a href="#metrix上报方式" class="headerlink" title="metrix上报方式"></a>metrix上报方式</h3><ul>
-<li><p>JmxReporterFactory方式（jvm）：<br>每个容器的指标作为JMX mbean，即通过jmx可以监控，见下节。</p>
-</li>
-<li><p>MetricsSnapshotReporterFactory方式（kafka）：<br>reporter每分钟将指标作为消息发送到kafka输出流。输出流用metrics.reporter.*.stream配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># Define a metrics reporter called &quot;snapshot&quot;, which publishes metrics every 60 seconds.</div><div class="line">metrics.reporters=snapshot</div><div class="line">metrics.reporter.snapshot.class=org.apache.samza.metrics.reporter.MetricsSnapshotReporterFactory</div><div class="line"></div><div class="line"># Tell the snapshot reporter to publish to a topic called &quot;metrics&quot;in the &quot;kafka&quot; system.</div><div class="line">metrics.reporter.snapshot.stream=kafka.metrics</div><div class="line"></div><div class="line"># Encode metrics data as JSON.</div><div class="line">serializers.registry.metrics.class=org.apache.samza.serializers.MetricsSnapshotSerdeFactory</div><div class="line">systems.kafka.streams.metrics.samza.msg.serde=metrics</div></pre></td></tr></table></figure>
+<li>JmxReporterFactory方式（jvm）：<br>每个容器的指标作为JMX mbean，即通过jmx可以监控，见下节。</li>
+<li>MetricsSnapshotReporterFactory方式（kafka）：<br>reporter每分钟将指标作为消息发送到kafka输出流。输出流用metrics.reporter.*.stream配置<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># Define a metrics reporter called &quot;snapshot&quot;, which publishes metrics every 60 seconds.</div><div class="line">metrics.reporters=snapshot</div><div class="line">metrics.reporter.snapshot.class=org.apache.samza.metrics.reporter.MetricsSnapshotReporterFactory</div><div class="line"></div><div class="line"># Tell the snapshot reporter to publish to a topic called &quot;metrics&quot;in the &quot;kafka&quot; system.</div><div class="line">metrics.reporter.snapshot.stream=kafka.metrics</div><div class="line"></div><div class="line"># Encode metrics data as JSON.</div><div class="line">serializers.registry.metrics.class=org.apache.samza.serializers.MetricsSnapshotSerdeFactory</div><div class="line">systems.kafka.streams.metrics.samza.msg.serde=metrics</div></pre></td></tr></table></figure>
 </li>
 </ul>
 <h3 id="默认metrix内容"><a href="#默认metrix内容" class="headerlink" title="默认metrix内容"></a>默认metrix内容</h3><p>这个配置,job每隔60秒自动发送几个json编码的消息到kafka的“metrics”话题。像这样的消息:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;header&quot;: &#123;</div><div class="line">    &quot;container-name&quot;: &quot;samza-container-0&quot;,</div><div class="line">    &quot;host&quot;: &quot;samza-grid-1234.example.com&quot;,</div><div class="line">    &quot;job-id&quot;: &quot;1&quot;,</div><div class="line">    &quot;job-name&quot;: &quot;my-samza-job&quot;,</div><div class="line">    &quot;reset-time&quot;: 1401729000347,</div><div class="line">    &quot;samza-version&quot;: &quot;0.0.1&quot;,</div><div class="line">    &quot;source&quot;: &quot;Partition-2&quot;,</div><div class="line">    &quot;time&quot;: 1401729420566,</div><div class="line">    &quot;version&quot;: &quot;0.0.1&quot;</div><div class="line">  &#125;,</div><div class="line">  &quot;metrics&quot;: &#123;</div><div class="line">    &quot;org.apache.samza.container.TaskInstanceMetrics&quot;: &#123;</div><div class="line">      &quot;commit-calls&quot;: 7,</div><div class="line">      &quot;commit-skipped&quot;: 77948,</div><div class="line">      &quot;kafka-input-topic-offset&quot;: &quot;1606&quot;,</div><div class="line">      &quot;messages-sent&quot;: 985,</div><div class="line">      &quot;process-calls&quot;: 1093,</div><div class="line">      &quot;send-calls&quot;: 985,</div><div class="line">      &quot;send-skipped&quot;: 76970,</div><div class="line">      &quot;window-calls&quot;: 0,</div><div class="line">      &quot;window-skipped&quot;: 77955</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
@@ -671,7 +637,7 @@
 <h2 id="JMX"><a href="#JMX" class="headerlink" title="JMX"></a>JMX</h2><p>Samza容器和YARN ApplicationMaster默认支持JMX。可以使用JMX管理JVM;例如,可以使用包含在JDK中的jconsole连接到它。</p>
 <p>可以告诉Samza发布其内部指标,你和任何自定义指标定义,作为JMX mbean。需要设置以下属性:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># Define a Samza metrics reporter called &quot;jmx&quot;, which publishes to JMX</div><div class="line">metrics.reporter.jmx.class=org.apache.samza.metrics.reporter.JmxReporterFactory</div><div class="line"></div><div class="line"># Use it (if you have multiple reporters defined, separate them with commas)</div><div class="line">metrics.reporters=jmx</div></pre></td></tr></table></figure></p>
 <p>JMX需要配置为使用一个特定的端口,但是在分布式环境中,没有办法提前知道哪些端口可用的机器运行您的容器。因此Samza JMX端口随机选择。如果你需要连接到它,你可以通过容器的日志找到port,报告JMX服务器详细信息如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">2014-06-02 21:50:17 JmxServer [INFO] According to InetAddress.getLocalHost.getHostName we are samza-grid-1234.example.com</div><div class="line">2014-06-02 21:50:17 JmxServer [INFO] Started JmxServer registry port=50214 server port=50215 url=service:jmx:rmi://localhost:50215/jndi/rmi://localhost:50214/jmxrmi</div><div class="line">2014-06-02 21:50:17 JmxServer [INFO] If you are tunneling, you might want to try JmxServer registry port=50214 server port=50215 url=service:jmx:rmi://samza-grid-1234.example.com:50215/jndi/rmi://samza-grid-1234.example.com:50214/jmxrmi</div></pre></td></tr></table></figure></p>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
 </the></excerpt>]]></content>
     </entry>
     
@@ -680,7 +646,7 @@
       <url>https://fangyeqing.github.io/2016/10/28/Samza_3---%E6%9E%B6%E6%9E%84/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="Samza架构"><a href="#Samza架构" class="headerlink" title="Samza架构"></a>Samza架构</h1><p>Samza是由以下三层构成：  </p>
+<p>Samza是由以下三层构成：  </p>
 <ul>
 <li>数据流层（A streaming layer）：分布式消息中间件Kafka  </li>
 <li>执行层（An execution layer）：Hadoop资源调度管理系统YARN  </li>
@@ -708,7 +674,7 @@
 <p>Samza的客户端告诉YARN的RM（ResourceManager，以下简称RM）运行一个新的Job，RM会告诉YARN的一个NodeManager（简称NM）为Samza的ApplicationMaster（AM）在集群里分配空间。一旦NM分配了空间，就会启动这个Samza的AM。AM开始后，它会向RM请求运行SamzaContainers所需的YARN containers。RM和NMs一起为containers分配空间。一旦空间被分配，NMs就会开启Samza containers。  </p>
 <p>YARN启动并且监控一个或者多个SamzaContainers，并且你的处理逻辑代码（使用StreamTask API）在这些容器里运行。这些Samza 流任务的输入和输出都来自Kafka的Brokers（通常他们都是作为YARN NMs位于同台机器）</p>
 <p>通过对topic的分区，将数据流处理拆解到任务中以及在多台机器上并行执行任务，使得Samza具有很高的消息吞吐量。通过结合YARN和Kafka，Samza实现了高容错：如果一个进程或者机器失败，它会自动在另一台机器上重启它并且继续从消息终端的地方开始处理，这些都是自动化的。</p>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
 </the></excerpt>]]></content>
     </entry>
     
@@ -717,7 +683,7 @@
       <url>https://fangyeqing.github.io/2016/10/28/Samza_2---%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="Samza"><a href="#Samza" class="headerlink" title="Samza"></a>Samza</h1><p>samza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。</p>
+<p>samza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。</p>
 <h2 id="为什么需要samza"><a href="#为什么需要samza" class="headerlink" title="为什么需要samza"></a>为什么需要samza</h2><p>kafka作为一个分布式的消息队列系统，已经实现了流式处理框架底层的许多核心基础架构，把消息串联流动起来就是Streaming了。</p>
 <p>但是要构建一个可用的流式数据处理框架，还是有许多事情要做。例如生产者和消费者进程的管理，作业调度和容错处理，辅助工具和监控管理手段，更友好方便的用户接口等等，本质上说，Samza是在消息队列系统上的更高层的抽象，是一种应用流式处理框架在消息队列系统上的一种应用模式的实现。  </p>
 <a id="more"></a>  
@@ -751,9 +717,14 @@
 <li>hadoop里，我们可能跟踪在hdfs上的一个目录下的文件</li>
 </ul>
 <h3 id="作业（job）"><a href="#作业（job）" class="headerlink" title="作业（job）"></a>作业（job）</h3><p>Samza的jobs 是将输入流进行逻辑处理，然后转化成输出流的程序。</p>
-<p>为了扩展流处理器的吞吐量，stream拆分成：分区Partitions<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">Streams--&gt;Partitions</div></pre></td></tr></table></figure></p>
+<p>为了扩展流处理器的吞吐量，stream拆分成：分区Partitions</p>
+<blockquote>
+<p>Streams–&gt;Partitions</p>
+</blockquote>
 <p>job拆分更小的并行单元：任务Tasks</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">job--&gt;tasks</div></pre></td></tr></table></figure>
+<blockquote>
+<p>job–&gt;tasks</p>
+</blockquote>
 <h3 id="分区（Partitions）"><a href="#分区（Partitions）" class="headerlink" title="分区（Partitions）"></a>分区（Partitions）</h3><p>每个流都被分割成一个或多个分区，并且在流里的每一个分区都总是一个有序的消息序列。每个消息在这个序列里有一个被叫做offset（中文称它为偏移量），它在每一个分区里都是唯一的。这个偏移量可以是一个连续的整数、字节偏移量或者字符串，这取决于底层的系统实现了。</p>
 <p>当有一个消息加入到流中，它只会追加到流的分区中的一个。这个消息通过写入者带着一个被选择的key分配到它对应的分区中。举个例子，如果用户id被用作key，那么所有和用户id相关的消息都应该追加到这个分区中。<br><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/stream.png" alt="image"></p>
 <h3 id="任务（task）"><a href="#任务（task）" class="headerlink" title="任务（task）"></a>任务（task）</h3><p>一个Job通过把他分割成多个任务Task进行扩展。每个任务Task消费来自一个Partitions的数据。</p>
@@ -771,7 +742,7 @@
 <li>“检查点（Checkpointing）”——检查点通常用于故障恢复。如果一个taskrunner由于某种原因宕掉了（比如，硬件故障），当重新启动时，它应该使用最后离开时的消息——这是通过检查点实现的。</li>
 <li>状态管理——需要在不同的消息处理之间传递的数据称之为状态——它可以是保存一个总数那样简单的东西，也可以是复杂得多的东西。Samza允许任务维持一种持久可变且可查询的状态，而且，它与每个任务在物理上处于同一位置。状态需要具备高可用性：如果出现任务失败的情况，它可以在任务故障转移到另一台机器时还原。</li>
 </ul>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="https://samza.apache.org/learn/documentation/0.10/" target="_blank" rel="external">https://samza.apache.org/learn/documentation/0.10/</a><br><a href="https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md" target="_blank" rel="external">https://github.com/feuyeux/hello-samza/blob/master/doc/0.hello_samza.md</a><br><a href="http://wdxtub.com/vault/cc-21.html" target="_blank" rel="external">http://wdxtub.com/vault/cc-21.html</a><br><a href="http://www.infoq.com/cn/articles/linkedin-samza" target="_blank" rel="external">http://www.infoq.com/cn/articles/linkedin-samza</a><br><a href="http://blog.csdn.net/colorant/article/details/12082145" target="_blank" rel="external">http://blog.csdn.net/colorant/article/details/12082145</a><br><a href="https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html" target="_blank" rel="external">https://wyyhzc.gitbooks.io/hadoop2x/content/samzacontainer.html</a></p>
 </excerpt>]]></content>
     </entry>
     
@@ -780,8 +751,7 @@
       <url>https://fangyeqing.github.io/2016/10/28/Samza_1---Hello_Samza/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
-
-<h1 id="hello-Samza"><a href="#hello-Samza" class="headerlink" title="hello Samza"></a>hello Samza</h1><p><a href="http://samza.apache.org/startup/hello-samza/0.10/" target="_blank" rel="external">hello-samza</a>是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！<br><a id="more"></a>   </p>
+<p><a href="http://samza.apache.org/startup/hello-samza/0.10/" target="_blank" rel="external">hello-samza</a>是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！<br><a id="more"></a>   </p>
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
 <p>安装和配置Apache-Samza，需要jdk1.7+、maven2的环境</p>
@@ -827,8 +797,14 @@
 <p>测试是否成功，开一个消费者实时消费wikipedia-raw<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-raw</div></pre></td></tr></table></figure></p>
 <p>将会有实时的消息输出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;raw&quot;:&quot;[[Paul Henreid]]  http://en.wikipedia.org/w/index.php?diff=606587718&amp;oldid=603654278 * .48.142.193 * (-1) original name Wasel, not Wassel - see ref &amp; ext link&quot;,&quot;time&quot;:1398926962623,&quot;source&quot;:&quot;rc-pmtpa&quot;,&quot;channel&quot;:&quot;#en.wikipedia&quot;&#125;</div></pre></td></tr></table></figure></p>
 <h3 id="数据统计job"><a href="#数据统计job" class="headerlink" title="数据统计job"></a>数据统计job</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">deploy/samza/bin/run-job.sh --config-factory=org.apache.samza.config.factories.PropertiesConfigFactory --config-path=file://$PWD/deploy/samza/config/wikipedia-parser.properties</div><div class="line"></div><div class="line">deploy/samza/bin/run-job.sh --config-factory=org.apache.samza.config.factories.PropertiesConfigFactory --config-path=file://$PWD/deploy/samza/config/wikipedia-stats.properties</div></pre></td></tr></table></figure>
-<p>前面的wikipedia-parser负责解析wikipedia-raw中消息，从而抽取edit的大小,修改者等信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">wikipedia-raw--&gt;wikipedia-edits</div></pre></td></tr></table></figure></p>
-<p>后面的wikipedia-stats负责统计来自wikipedia-edits中的消息，计算消息的个数。而后通过一个10秒钟长的滑动时间窗口将统计个数发送到kafka的wikipedia-statstopic中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">graph LR</div><div class="line">wikipedia-edits--&gt;wikipedia-statstopic</div></pre></td></tr></table></figure></p>
+<p>前面的wikipedia-parser负责解析wikipedia-raw中消息，从而抽取edit的大小,修改者等信息</p>
+<blockquote>
+<p>wikipedia-raw–&gt;wikipedia-edits</p>
+</blockquote>
+<p>后面的wikipedia-stats负责统计来自wikipedia-edits中的消息，计算消息的个数。而后通过一个10秒钟长的滑动时间窗口将统计个数发送到kafka的wikipedia-statstopic中</p>
+<blockquote>
+<p>wikipedia-edits–&gt;wikipedia-statstopic  </p>
+</blockquote>
 <p>可以查看结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-edits</div><div class="line"></div><div class="line">deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-stats</div></pre></td></tr></table></figure></p>
 <p>最后的输出结果类似：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;is-minor&quot;:948,&quot;unique-titles&quot;:763,&quot;is-talk&quot;:90,&quot;is-bot-edit&quot;:513,&quot;bytes-added&quot;:350253,&quot;edits&quot;:2790,&quot;is-new&quot;:135,&quot;edits-all-time&quot;:3720,&quot;is-unpatrolled&quot;:78&#125;</div><div class="line">&#123;&quot;is-minor&quot;:632,&quot;unique-titles&quot;:763,&quot;is-talk&quot;:60,&quot;is-bot-edit&quot;:342,&quot;bytes-added&quot;:233502,&quot;edits&quot;:1860,&quot;is-new&quot;:90,&quot;edits-all-time&quot;:5580,&quot;is-unpatrolled&quot;:52&#125;</div></pre></td></tr></table></figure></p>
 <h2 id="关闭samza"><a href="#关闭samza" class="headerlink" title="关闭samza"></a>关闭samza</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/grid stop all</div></pre></td></tr></table></figure>
@@ -839,9 +815,8 @@
     
     <entry>
       <title><![CDATA[hexo+github page搭建博客]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/hexo+github_page%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%EF%BC%88windows&linxu%EF%BC%89/</url>
+      <url>https://fangyeqing.github.io/2016/10/28/hexo+github_page%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
-
 
 <h2 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h2><p>在windows和linux下都配置了，感觉还是Linux方便一点</p>
 <a id="more"></a>  
@@ -874,22 +849,12 @@
 <h2 id="主题修改"><a href="#主题修改" class="headerlink" title="主题修改"></a>主题修改</h2><p>去<a href="https://github.com/hexojs/hexo/wiki/Themes" target="_blank" rel="external">hexo的github</a>下载主题，放到themes目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/MOxFIVE/hexo-theme-yelee.git themes/yelee</div></pre></td></tr></table></figure></p>
 <p>然后根据<a href="http://moxfive.coding.me/yelee/" target="_blank" rel="external">作者的gitbook</a>修改_config.yml文件，实现各种配置</p>
 <p>改完继续重新发布出去</p>
-<p>其中比较重要的，</p>
-<ul>
-<li>评论系统利用多说，fangyeqing.duoshuo.com</li>
-<li><p>站内搜索,需要先安装一个插件，然后修改配置文件themes/yelee/_config.yml,反注释掉on：true</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-search --save</div><div class="line"></div><div class="line">search: </div><div class="line">  #on: true</div><div class="line">  onload: false</div></pre></td></tr></table></figure>
-</li>
-<li><p>文章摘要，在首页显示摘要，非全文</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: Hello World</div><div class="line">date: 2015-12-03 00:00:00</div><div class="line">categories: samza</div><div class="line">toc: true</div><div class="line">---</div><div class="line">&lt;Excerpt in index | 首页摘要&gt; </div><div class="line">摘要内容...</div><div class="line">&lt;!-- more --&gt;</div><div class="line">&lt;The rest of contents | 余下全文&gt;</div><div class="line">余下的全文内容...</div></pre></td></tr></table></figure>
-</li>
-<li><p>关于我</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page about</div></pre></td></tr></table></figure>
-</li>
-<li><p>标签云</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page tags</div></pre></td></tr></table></figure>
+<p>其中比较重要的如下：</p>
+<h3 id="评论系统"><a href="#评论系统" class="headerlink" title="评论系统"></a>评论系统</h3><p>利用多说，fangyeqing.duoshuo.com</p>
+<h3 id="站内搜索"><a href="#站内搜索" class="headerlink" title="站内搜索"></a>站内搜索</h3><p>需要先安装一个插件，然后修改配置文件themes/yelee/_config.yml,反注释掉on：true<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-search --save</div><div class="line"></div><div class="line">search: </div><div class="line">  #on: true</div><div class="line">  onload: false</div></pre></td></tr></table></figure></p>
+<h3 id="文章摘要"><a href="#文章摘要" class="headerlink" title="文章摘要"></a>文章摘要</h3><p>在首页显示摘要，非全文<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: Hello World</div><div class="line">date: 2015-12-03 00:00:00</div><div class="line">categories: samza</div><div class="line">toc: true</div><div class="line">---</div><div class="line">&lt;Excerpt in index | 首页摘要&gt; </div><div class="line">摘要内容...</div><div class="line">&lt;!-- more --&gt;</div><div class="line">&lt;The rest of contents | 余下全文&gt;</div><div class="line">余下的全文内容...</div></pre></td></tr></table></figure></p>
+<h3 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page about</div></pre></td></tr></table></figure>
+<h3 id="标签云"><a href="#标签云" class="headerlink" title="标签云"></a>标签云</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page tags</div></pre></td></tr></table></figure>
 </the></excerpt>]]></content>
     </entry>
     
