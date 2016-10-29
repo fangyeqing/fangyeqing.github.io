@@ -4,8 +4,37 @@
   
     
     <entry>
+      <title><![CDATA[druid.io实践1---提高查询速度]]></title>
+      <url>https://fangyeqing.github.io/2016/10/29/druid.io%E5%AE%9E%E8%B7%B51---%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E9%80%9F%E5%BA%A6/</url>
+      <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
+
+<p>当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：</p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<h2 id="broker-节点"><a href="#broker-节点" class="headerlink" title="broker 节点"></a>broker 节点</h2><p>配置缓存，加大缓存大小，或者从local替换成memcached。</p>
+<h3 id="附：broker部分配置"><a href="#附：broker部分配置" class="headerlink" title="附：broker部分配置"></a>附：broker部分配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># Query cache</div><div class="line">druid.broker.cache.useCache=true</div><div class="line">druid.broker.cache.populateCache=true</div><div class="line">druid.cache.type=local</div><div class="line">druid.cache.sizeInBytes=2000000000</div></pre></td></tr></table></figure>
+<h2 id="historical集群"><a href="#historical集群" class="headerlink" title="historical集群"></a>historical集群</h2><p>查询为CPU密集型，通过合理的数据分配策略，使数据尽量分散在不同的历史节点。</p>
+<h3 id="集群分片"><a href="#集群分片" class="headerlink" title="集群分片"></a>集群分片</h3><p>可以根据查询频率的高低分为冷热数据，公司经常查40天内的数据，40天内的数据显然是hot数据。 </p>
+<p>这里涉及到coordinate节点的Load Rules配置，druid 0.9版本有coordinator的UI界面，可以设置每个dataSource的Load Rules。如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;type&quot; : &quot;loadByPeriod&quot;,</div><div class="line">  &quot;period&quot; : &quot;P40D&quot;,</div><div class="line">  &quot;tieredReplicants&quot;: &#123;</div><div class="line">      &quot;hot&quot;: 1,</div><div class="line">      &quot;_default_tier&quot; : 1</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">&#123;</div><div class="line">  &quot;type&quot; : &quot;loadForever&quot;,  </div><div class="line">  &quot;tieredReplicants&quot;: &#123;</div><div class="line">    &quot;_default_tier&quot; : 1</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这里设置了两个Load Rules，loadByPeriod部分表示40天内的数据在hot和_default_tier分片各保存一份副本。loadForever部分表示所有数据在_default_tier保存一份。</p>
+<h3 id="增加分片的节点数"><a href="#增加分片的节点数" class="headerlink" title="增加分片的节点数"></a>增加分片的节点数</h3><p>增加_default_tier和hot分片的节点数，并且节点存储空间尽量一致，使segment均匀分散在节点间，降低查询时每个historical节点的CPU负载。</p>
+<p>例如：_default_tier分片增加到2-3台，hot分片增加到5-10台机器，热数据分散到更多台。 </p>
+<h3 id="调整历史节点配置参数"><a href="#调整历史节点配置参数" class="headerlink" title="调整历史节点配置参数"></a>调整历史节点配置参数</h3><h4 id="druid-server-priority"><a href="#druid-server-priority" class="headerlink" title="druid.server.priority"></a>druid.server.priority</h4><p>默认为0。</p>
+<p>broker节点中，druid.broker.select.tier的配置默认为highestPriority，表示如果有重复的数据样本，优先查询优先级高的历史节点。</p>
+<p>例如：将hot分片的机器druid.server.priority设置为100，_default_tier分片的默认0，则查询热数据时，不会查询_default_tier，只会去查询hot，而hot集群机器比较多，查询速度快。</p>
+<h4 id="druid-processing-numThreads"><a href="#druid-processing-numThreads" class="headerlink" title="druid.processing.numThreads"></a>druid.processing.numThreads</h4><p>可以根据自己机器的情况进行调节，如果机器只用于历史节点，可以设置为（核心数-1），32核机器可以设置为31，或者默认值就是31。</p>
+<h4 id="druid-segmentCache-locations"><a href="#druid-segmentCache-locations" class="headerlink" title="druid.segmentCache.locations"></a>druid.segmentCache.locations</h4><p>可以将数据存储分散在不同的磁盘上，可以减轻磁盘的读写压力。</p>
+<h4 id="附：history节点部分配置"><a href="#附：history节点部分配置" class="headerlink" title="附：history节点部分配置"></a>附：history节点部分配置</h4><p>hot集群中调优查询速度的相关配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">#集群分片，不写默认_default_tier</div><div class="line">druid.server.tier=hot  </div><div class="line">#查询优先级，不写默认0，_default_tier分片的两个节点为0，hot节点的都改为100。这样，热数据只会查hot节点的机器。</div><div class="line">druid.server.priority=100</div><div class="line"></div><div class="line">#processing.buff，可以注释掉，默认是1G</div><div class="line">#processing.numThreads:默认是繁忙时core-1做process，剩余的1个进程做与zk通信和拉取seg等。</div><div class="line">druid.processing.buffer.sizeBytes=1073741824</div><div class="line">druid.processing.numThreads=31</div><div class="line"></div><div class="line">#segment路径和各路径的空间，例如：在disk1、2、3各配了200G</div><div class="line">druid.segmentCache.locations=[&#123;&quot;path&quot;: &quot;/disk1/druid-0.9.1.1-historical-data/persistent&quot;, &quot;maxSize&quot;: 200000000000&#125;,&#123;&quot;path&quot;: &quot;/disk2/druid-0.9.1.1-historical-data/persistent&quot;, &quot;maxSize&quot;: 200000000000&#125;,&#123;&quot;path&quot;: &quot;/disk3/druid-0.9.1.1-historical-data/persistent&quot;, &quot;maxSize&quot;: 200000000000&#125;]</div><div class="line">#segment总空间（字节）=上述空间之和</div><div class="line">druid.server.maxSize=600000000000</div></pre></td></tr></table></figure></p>
+<h2 id="老数据roll-up"><a href="#老数据roll-up" class="headerlink" title="老数据roll up"></a>老数据roll up</h2><p>进行实时和批量indexing的时候，一般配置的按小时的粒度进行roll up，最后存储的就是按小时聚合的数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&quot;granularitySpec&quot;: &#123;</div><div class="line">    &quot;type&quot;: &quot;uniform&quot;,</div><div class="line">    &quot;segmentGranularity&quot;: &quot;HOUR&quot;,</div><div class="line">    &quot;queryGranularity&quot;: &quot;HOUR&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当数据积累较长时间后，按小时聚合必然数据量巨大，可以将不常用或者不太重要的数据，按天存储，数据量会大大减小，必然可以提高查询速度。</p>
+<p>例如：将40天之后的数据提交batch indexing任务按天roll up。</p>
+</the></excerpt>]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[druid.io实践2---集群数据迁移]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/druid.io%E5%AE%9E%E8%B7%B52---%E9%9B%86%E7%BE%A4%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB/</url>
+      <url>https://fangyeqing.github.io/2016/10/29/druid.io%E5%AE%9E%E8%B7%B52---%E9%9B%86%E7%BE%A4%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
 <h2 id="背景交代"><a href="#背景交代" class="headerlink" title="背景交代"></a>背景交代</h2><p>druid数据存储采用hdfs。</p>
@@ -46,37 +75,8 @@
     </entry>
     
     <entry>
-      <title><![CDATA[druid.io实践1---提高查询速度]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/druid.io%E5%AE%9E%E8%B7%B51---%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E9%80%9F%E5%BA%A6/</url>
-      <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
-
-<p>当数据量到T级别时，如果history节点只是单机版，肯定会查询特别慢。在生产过程中，主要做了以下几点尝试：</p>
-<a id="more"></a>  
-<the rest="" of="" contents="" |="" 余下全文=""> 
-
-<h2 id="broker-节点"><a href="#broker-节点" class="headerlink" title="broker 节点"></a>broker 节点</h2><p>配置缓存，加大缓存大小，或者从local替换成memcached。</p>
-<h3 id="附：broker部分配置"><a href="#附：broker部分配置" class="headerlink" title="附：broker部分配置"></a>附：broker部分配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># Query cache</div><div class="line">druid.broker.cache.useCache=true</div><div class="line">druid.broker.cache.populateCache=true</div><div class="line">druid.cache.type=local</div><div class="line">druid.cache.sizeInBytes=2000000000</div></pre></td></tr></table></figure>
-<h2 id="historical集群"><a href="#historical集群" class="headerlink" title="historical集群"></a>historical集群</h2><p>查询为CPU密集型，通过合理的数据分配策略，使数据尽量分散在不同的历史节点。</p>
-<h3 id="集群分片"><a href="#集群分片" class="headerlink" title="集群分片"></a>集群分片</h3><p>可以根据查询频率的高低分为冷热数据，公司经常查40天内的数据，40天内的数据显然是hot数据。 </p>
-<p>这里涉及到coordinate节点的Load Rules配置，druid 0.9版本有coordinator的UI界面，可以设置每个dataSource的Load Rules。如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;type&quot; : &quot;loadByPeriod&quot;,</div><div class="line">  &quot;period&quot; : &quot;P40D&quot;,</div><div class="line">  &quot;tieredReplicants&quot;: &#123;</div><div class="line">      &quot;hot&quot;: 1,</div><div class="line">      &quot;_default_tier&quot; : 1</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">&#123;</div><div class="line">  &quot;type&quot; : &quot;loadForever&quot;,  </div><div class="line">  &quot;tieredReplicants&quot;: &#123;</div><div class="line">    &quot;_default_tier&quot; : 1</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这里设置了两个Load Rules，loadByPeriod部分表示40天内的数据在hot和_default_tier分片各保存一份副本。loadForever部分表示所有数据在_default_tier保存一份。</p>
-<h3 id="增加分片的节点数"><a href="#增加分片的节点数" class="headerlink" title="增加分片的节点数"></a>增加分片的节点数</h3><p>增加_default_tier和hot分片的节点数，并且节点存储空间尽量一致，使segment均匀分散在节点间，降低查询时每个historical节点的CPU负载。</p>
-<p>例如：_default_tier分片增加到2-3台，hot分片增加到5-10台机器，热数据分散到更多台。 </p>
-<h3 id="调整历史节点配置参数"><a href="#调整历史节点配置参数" class="headerlink" title="调整历史节点配置参数"></a>调整历史节点配置参数</h3><h4 id="druid-server-priority"><a href="#druid-server-priority" class="headerlink" title="druid.server.priority"></a>druid.server.priority</h4><p>默认为0。</p>
-<p>broker节点中，druid.broker.select.tier的配置默认为highestPriority，表示如果有重复的数据样本，优先查询优先级高的历史节点。</p>
-<p>例如：将hot分片的机器druid.server.priority设置为100，_default_tier分片的默认0，则查询热数据时，不会查询_default_tier，只会去查询hot，而hot集群机器比较多，查询速度快。</p>
-<h4 id="druid-processing-numThreads"><a href="#druid-processing-numThreads" class="headerlink" title="druid.processing.numThreads"></a>druid.processing.numThreads</h4><p>可以根据自己机器的情况进行调节，如果机器只用于历史节点，可以设置为（核心数-1），32核机器可以设置为31，或者默认值就是31。</p>
-<h4 id="druid-segmentCache-locations"><a href="#druid-segmentCache-locations" class="headerlink" title="druid.segmentCache.locations"></a>druid.segmentCache.locations</h4><p>可以将数据存储分散在不同的磁盘上，可以减轻磁盘的读写压力。</p>
-<h4 id="附：history节点部分配置"><a href="#附：history节点部分配置" class="headerlink" title="附：history节点部分配置"></a>附：history节点部分配置</h4><p>hot集群中调优查询速度的相关配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">#集群分片，不写默认_default_tier</div><div class="line">druid.server.tier=hot  </div><div class="line">#查询优先级，不写默认0，_default_tier分片的两个节点为0，hot节点的都改为100。这样，热数据只会查hot节点的机器。</div><div class="line">druid.server.priority=100</div><div class="line"></div><div class="line">#processing.buff，可以注释掉，默认是1G</div><div class="line">#processing.numThreads:默认是繁忙时core-1做process，剩余的1个进程做与zk通信和拉取seg等。</div><div class="line">druid.processing.buffer.sizeBytes=1073741824</div><div class="line">druid.processing.numThreads=31</div><div class="line"></div><div class="line">#segment路径和各路径的空间，例如：在disk1、2、3各配了200G</div><div class="line">druid.segmentCache.locations=[&#123;&quot;path&quot;: &quot;/disk1/druid-0.9.1.1-historical-data/persistent&quot;, &quot;maxSize&quot;: 200000000000&#125;,&#123;&quot;path&quot;: &quot;/disk2/druid-0.9.1.1-historical-data/persistent&quot;, &quot;maxSize&quot;: 200000000000&#125;,&#123;&quot;path&quot;: &quot;/disk3/druid-0.9.1.1-historical-data/persistent&quot;, &quot;maxSize&quot;: 200000000000&#125;]</div><div class="line">#segment总空间（字节）=上述空间之和</div><div class="line">druid.server.maxSize=600000000000</div></pre></td></tr></table></figure></p>
-<h2 id="老数据roll-up"><a href="#老数据roll-up" class="headerlink" title="老数据roll up"></a>老数据roll up</h2><p>进行实时和批量indexing的时候，一般配置的按小时的粒度进行roll up，最后存储的就是按小时聚合的数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&quot;granularitySpec&quot;: &#123;</div><div class="line">    &quot;type&quot;: &quot;uniform&quot;,</div><div class="line">    &quot;segmentGranularity&quot;: &quot;HOUR&quot;,</div><div class="line">    &quot;queryGranularity&quot;: &quot;HOUR&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>当数据积累较长时间后，按小时聚合必然数据量巨大，可以将不常用或者不太重要的数据，按天存储，数据量会大大减小，必然可以提高查询速度。</p>
-<p>例如：将40天之后的数据提交batch indexing任务按天roll up。</p>
-</the></excerpt>]]></content>
-    </entry>
-    
-    <entry>
       <title><![CDATA[druid.io 3---druid集群]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/druid.io_3---druid%E9%9B%86%E7%BE%A4/</url>
+      <url>https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E9%9B%86%E7%BE%A4/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
 <p>Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。</p>
@@ -236,7 +236,7 @@
     
     <entry>
       <title><![CDATA[druid.io 2---druid数据]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/druid.io_2---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/</url>
+      <url>https://fangyeqing.github.io/2016/10/29/druid.io_2---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
 <h2 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h2><ul>
@@ -307,7 +307,7 @@
     
     <entry>
       <title><![CDATA[druid.io 1---概念]]></title>
-      <url>https://fangyeqing.github.io/2016/10/28/druid.io_1---OLAP&druid%E6%A6%82%E5%BF%B5/</url>
+      <url>https://fangyeqing.github.io/2016/10/29/druid.io_1---OLAP&druid%E6%A6%82%E5%BF%B5/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
 <h2 id="OLAP"><a href="#OLAP" class="headerlink" title="OLAP"></a>OLAP</h2><ul>

@@ -16,12 +16,11 @@
 
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="tags">
-<meta property="og:url" content="https://fangyeqing.github.io/tags/index.html">
+<meta property="og:title" content="小懒的博客">
+<meta property="og:url" content="https://fangyeqing.github.io/tags/druid-io/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:updated_time" content="2016-10-28T13:57:34.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="tags">
+<meta name="twitter:title" content="小懒的博客">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -53,7 +52,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>tags | 小懒的博客</title>
+<title>Tag: druid.io | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -65,7 +64,7 @@
         isHome: false,
         isPost: false,
         isArchive: false,
-        isTag: false,
+        isTag: true,
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
@@ -256,190 +255,245 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
+      <div class="body-wrap">
   
-    <div class="article-meta">
-      <a href="/tags/index.html" class="article-date">
-      <time datetime="2016-10-28T13:57:34.000Z" itemprop="datePublished">2016-10-28</time>
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2016" class="archive-year">2016</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+          <div class="article-meta">
+              <a href="/2016/10/29/druid.io实践1---提高查询速度/" class="archive-article-date">
+      <time datetime="2016-10-29T03:57:00.000Z" itemprop="datePublished">10-29</time>
 </a>
 
 
-    </div>
+        </div>
+         
   
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      tags
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2016/10/29/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a>
     </h1>
   
 
-      </header>
-      
-      <div class="article-info article-info-post">
-        
-
-        
-        <div class="clearfix"></div>
-      </div>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
+        <div class="article-info info-on-archive">
           
-              <style>
-    .article-meta { display: none; }
-    #container .article .article-title { padding-right: 0; }
-    .article-header {
-        padding: 0;
-        padding-top: 26px;
-        border-left: none;
-        text-align: center;
-    }
-    .article-header:hover { border-left: none; }
-    .article-title { font-size: 1.6em }
-    .article-entry hr { margin: 0;}
-    .article-meta,
-    #container .article-info-post.article-info { display: none;}
-    #container .article .article-title { padding: 0; }
-</style>
-
-
-    <!-- Tag Cloud Page -->
-    <hr>
-<br>
-<ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/druid-io/">druid.io</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">other</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/samza/">samza</a><span class="category-list-count">5</span></li></ul>
-
-<p class="count"></p>
-
-<div class="tags">
-    <a href="/tags/druid-io/" style="font-size: 31.2px; color: #1a1a1a">druid.io</a> <a href="/tags/hello-world/" style="font-size: 19.8px; color: #666">hello world</a> <a href="/tags/samza/" style="font-size: 27.4px; color: #333">samza</a> <a href="/tags/大数据/" style="font-size: 23.6px; color: #4d4d4d">大数据</a> <a href="/tags/学习/" style="font-size: 35px; color: #000">学习</a> <a href="/tags/实践/" style="font-size: 23.6px; color: #4d4d4d">实践</a> <a href="/tags/性能优化/" style="font-size: 16px; color: #808080">性能优化</a> <a href="/tags/流处理/" style="font-size: 27.4px; color: #333">流处理</a> <a href="/tags/经验/" style="font-size: 16px; color: #808080">经验</a>
-</div>
-<style>
-    .category-list li{
-        display: inline-block;
-        margin: 0 1em .5em 0;
-        padding: 4px;
-        border: 1px solid lightgray;
-        font-size: 1.2rem;
-    }
-    .category-list a { color: gray; }
-    .category-list-item:hover a {
-        color: gray;
-        text-decoration: none;
-    }
-    .category-list-count {
-        margin-left: 2px;
-        font-size: .9rem;
-    }
-    .article-entry ul li:before{ display: none; }
-    .article-inner { text-align: center; }
-    .tags {
-        max-width: 42em;
-        margin: 2em auto;
-        margin-top: 0em;
-    }
-    .tags a {
-        margin-right: 1em;
-        line-height: 65px;
-        border-bottom: 1px solid gray;
-        white-space: nowrap;
-        transition: border-bottom .5s;
-    }
-    .tags a:hover {
-        border-bottom: 3px dotted gray;
-        text-decoration: none;
-    }
-    #count > span {
-        margin: auto .2em;
-        font-weight: bold;
-    }
-</style>
-
-<!-- Count tags and categories -->
-<p id="count">
-        已有<span><script>document.write($(".category-list-item").length)</script></span>个分类，
-        共计<span><script>document.write($(".tags > a").length)</script></span>个标签
-</p>
-<script>
-    $('#count').appendTo('.count');
-</script>
-
-          
-        
-      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
     </div>
-    
-  </div>
-  
-    
 
 
-  
-</article>
+          
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/实践/">实践</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/性能优化/">性能优化</a></li></ul>
+    </div>
 
-
-
-    
-<div class="share">
-    
-        <div class="bdsharebuttonbox">
-            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
-            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
-            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
-            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
-            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
-            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
         </div>
-        <script>
-            window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"tags　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
-        </script>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+          <div class="article-meta">
+              <a href="/2016/10/29/druid.io实践2---集群数据迁移/" class="archive-article-date">
+      <time datetime="2016-10-29T03:56:00.000Z" itemprop="datePublished">10-29</time>
+</a>
+
+
+        </div>
+         
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a>
+    </h1>
+  
+
+        <div class="article-info info-on-archive">
+          
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    </div>
+
+
+          
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/实践/">实践</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+    </div>
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+          <div class="article-meta">
+              <a href="/2016/10/29/druid.io_3---druid集群/" class="archive-article-date">
+      <time datetime="2016-10-29T03:53:00.000Z" itemprop="datePublished">10-29</time>
+</a>
+
+
+        </div>
+         
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2016/10/29/druid.io_3---druid集群/">druid.io 3---druid集群</a>
+    </h1>
+  
+
+        <div class="article-info info-on-archive">
+          
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    </div>
+
+
+          
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li></ul>
+    </div>
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+          <div class="article-meta">
+              <a href="/2016/10/29/druid.io_2---druid数据相关/" class="archive-article-date">
+      <time datetime="2016-10-29T03:52:00.000Z" itemprop="datePublished">10-29</time>
+</a>
+
+
+        </div>
+         
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2016/10/29/druid.io_2---druid数据相关/">druid.io 2---druid数据</a>
+    </h1>
+  
+
+        <div class="article-info info-on-archive">
+          
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    </div>
+
+
+          
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li></ul>
+    </div>
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+          <div class="article-meta">
+              <a href="/2016/10/29/druid.io_1---OLAP&druid概念/" class="archive-article-date">
+      <time datetime="2016-10-29T03:51:00.000Z" itemprop="datePublished">10-29</time>
+</a>
+
+
+        </div>
+         
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2016/10/29/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a>
+    </h1>
+  
+
+        <div class="article-info info-on-archive">
+          
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    </div>
+
+
+          
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li></ul>
+    </div>
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+          <div class="article-meta">
+              <a href="/2016/10/28/hexo+github_page搭建博客/" class="archive-article-date">
+      <time datetime="2016-10-28T05:44:00.000Z" itemprop="datePublished">10-28</time>
+</a>
+
+
+        </div>
+         
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a>
+    </h1>
+  
+
+        <div class="article-info info-on-archive">
+          
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/other/">other</a>
+    </div>
+
+
+          
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/实践/">实践</a></li></ul>
+    </div>
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+  
+    </div></section>
+  
+
     
 
-    
-</div>
-
-
-
-
-
-
-
-    
-      <div class="duoshuo" id="comments">
-    <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="tags/index.html" data-title="tags" data-url="https://fangyeqing.github.io/tags/index.html"></div>
-    <script>
-        var duoshuoQuery = {short_name:"fangyeqing"};
-        var loadComment = function(){
-            var d = document, s = d.createElement('script');
-            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-            s.async = true; s.charset = 'UTF-8';
-            (d.head || d.body).appendChild(s);
-        }
-
-        
-    </script>
-    
-    <script> loadComment(); </script>
-
-</div>
-    
-
-
-
-
-
-    <script>
-        
-    </script>
 </div>
       <footer id="footer">
     <div class="outer">
