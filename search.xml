@@ -73,11 +73,40 @@
       <url>https://fangyeqing.github.io/2016/10/28/druid.io_3---druid%E9%9B%86%E7%BE%A4/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
-<h1 id="druid集群"><a href="#druid集群" class="headerlink" title="druid集群"></a>druid集群</h1><h2 id="Indexing-Service"><a href="#Indexing-Service" class="headerlink" title="Indexing Service"></a>Indexing Service</h2><p>索引服务负责<strong>实时</strong>和<strong>批量</strong>数据的导入、分析、索引、压缩，生成“segment”（数据段），存入Deep Storage（例如HDFS）。<br>实时数据通过<strong>Tranquility</strong>客户端，批量数据通过<strong>Batch Data Ingestion</strong>，将任务提交给overload，分配给Middle Manager创建Poen执行。  </p>
-<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>索引服务是主从结构，由三个部分组成：</p>
+<h1 id="druid集群"><a href="#druid集群" class="headerlink" title="druid集群"></a>druid集群</h1><p>Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。</p>
+<p>不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。</p>
+<h2 id="节点组成"><a href="#节点组成" class="headerlink" title="节点组成"></a>节点组成</h2><p>主要分为三大部分：数据生产、数据存储、数据查询</p>
 <a id="more"></a>  
-<the rest="" of="" contents="" |="" 余下全文="">
+<the rest="" of="" contents="" |="" 余下全文="">  
 
+<h3 id="数据生产"><a href="#数据生产" class="headerlink" title="数据生产"></a>数据生产</h3><ul>
+<li><p>Indexing Service 索引服务节点：<br>由多个worker组成的集群，负责为加载批量的和实时的数据创建索引，并且允许对已经存在的数据进行修改。</p>
+</li>
+<li><p>Realtime 实时节点：<br>负责加载实时的数据到系统中，在生产使用的几个限制成本上实时节点比索引服务节点更容易搭建。</p>
+</li>
+</ul>
+<p>实时数据和批量数据加载的两种方式在上一篇中介绍到了，就不赘述。</p>
+<h3 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h3><ul>
+<li><p>Coordinator 协调节点：<br>对历史节点的分组进行监控，以确保数据可用，和最佳的配置。协调节点通过从元数据存储中读取元数据信息来判断哪些segments是应该加载到集群的，使用Zookeeper去判断哪些历史节点是存活的，在Zookeeper中创建任务条目告诉历史节点去加载和删除segments。</p>
+</li>
+<li><p>Historical 历史节点：<br>负责处理历史数据存储和查询历史数据（非实时），历史节点从“deep storage”下载segments，将结果数据返回给broker节点，historical加载完segment通知Zookeeper，Historical nodes使用Zookeeper监控需要加载或者删除哪些新的segments。</p>
+</li>
+</ul>
+<h3 id="数据查询"><a href="#数据查询" class="headerlink" title="数据查询"></a>数据查询</h3><ul>
+<li>Broker 代理节点<br>接收来自外部client的查询请求，并转发这些请求给实时节点和历史节点，当代理节点接收到结果时，将来自实时节点和历史节点的结果合并返回给调用方。为了知道整个拓扑结构，代理节点通过使用Zookeeper在确定哪些实时节点和历史节点存活。</li>
+</ul>
+<p><img src="http://druidio.cn/docs/img/druid-dataflow-3.png" alt="image"></p>
+<h2 id="外部依赖"><a href="#外部依赖" class="headerlink" title="外部依赖"></a>外部依赖</h2><p>Druid的集群需要有一些外部依赖。</p>
+<ul>
+<li><p>Zookeeper<br>Druid依赖Zookeeper来保证集群内的信息一致。</p>
+</li>
+<li><p>Metadata Storage<br>Druid依赖metadata storage存储segments的元数据和配置。创建segments的服务在元数据中记录信息, coordinator监听着元数据以便了解什么时候需要下载新数据或者删除旧数据。 元数据的存储不涉及查询的路径。MySQL和PostgreSQL非常有利于生产环境下元数据的存储, 但Derby在你部署单机版做测试的时候非常好用。</p>
+</li>
+<li><p>Deep Storage：<br>Deep storage是segments的永久备份。创建segments的服务上传segments到Deep storage,然后historical节点下载。 Deep storage不涉及查询路径。 S3和HDFS是比较推荐到deep storages。</p>
+</li>
+</ul>
+<h2 id="Indexing-Service"><a href="#Indexing-Service" class="headerlink" title="Indexing Service"></a>Indexing Service</h2><p>索引服务负责<strong>实时</strong>和<strong>批量</strong>数据的导入、分析、索引、压缩，生成“segment”（数据段），存入Deep Storage（例如HDFS）。<br>实时数据通过<strong>Tranquility</strong>客户端，批量数据通过<strong>Batch Data Ingestion</strong>，将任务提交给overload，分配给Middle Manager创建Poen执行。  </p>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>索引服务是主从结构，由三个部分组成：</p>
 <p>a.peon组件：在一个单独的jvm中运行单个任务，通过单独的jvm对任务做资源隔离和日志隔离。<br>b.Middle Manager：用于创建和管理peon的中层管理组件<br>c.overlord组件：管理任务分配到Middle Manager<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8A3B9817DCAE4598A5D8582FB02E012E" alt="image"><br>综合Tranquility和整个系统之后：<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/26967A72BB75437786E663C1A91699D8" alt="image"> </p>
 <h3 id="流程："><a href="#流程：" class="headerlink" title="流程："></a>流程：</h3><ul>
 <li><p>用户的spec文件在Tranquility中定义，首先Tranquility通过spec初始化，获得zk中Overlord的地址，与Overlord通信。</p>
@@ -178,7 +207,7 @@
 <li><p>实时节点返回的结果将永远不会被缓存，因此实时节点的查询请求将永远被转发到实时节点。实时节点的数据是不断变化的，缓存实时节点的结果是不可靠的。</p>
 </li>
 </ul>
-<h2 id="外部依赖"><a href="#外部依赖" class="headerlink" title="外部依赖"></a>外部依赖</h2><p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0E59F34342744B8ABBDCE92DA750B186" alt="image"></p>
+<h2 id="外部依赖-1"><a href="#外部依赖-1" class="headerlink" title="外部依赖"></a>外部依赖</h2><p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0E59F34342744B8ABBDCE92DA750B186" alt="image"></p>
 <h3 id="Metadata-Storage（Mysql）"><a href="#Metadata-Storage（Mysql）" class="headerlink" title="Metadata Storage（Mysql）"></a>Metadata Storage（Mysql）</h3><p>存储segments的元数据和配置，而不是存储实际数据，包含3张表：<br>“druid_config”（通常是空的）,<br>“druid_rules”（协作节点使用的一些规则信息，比如哪个segment从哪个node去load）<br>“druid_segments”（存储 每个segment的metadata信息） </p>
 <h3 id="Deep-storage"><a href="#Deep-storage" class="headerlink" title="Deep storage"></a>Deep storage</h3><p>segments的永久备份，Druid目前已经支持本地磁盘、NFS挂载磁盘、HDFS、S3等。<br>创建segments的服务上传segments到Deep storage,然后historical节点下载。  </p>
 <h3 id="ZooKeeper"><a href="#ZooKeeper" class="headerlink" title="ZooKeeper"></a>ZooKeeper</h3><p>管理当前集群状态, 发现和维持当前的数据拓扑。（节点状态、数据操作、数据同步） </p>
