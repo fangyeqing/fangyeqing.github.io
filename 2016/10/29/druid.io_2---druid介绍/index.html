@@ -16,36 +16,24 @@
 
 
 <meta name="description" content="Druid概念Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。  
-Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。
-优势：  
-
-高容错性：单个节点挂掉不会影响其他部分。详情在文末有介绍。 
-多版本控制（MVCC）：通过数">
+Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="druid.io 2---druid介绍">
 <meta property="og:url" content="https://fangyeqing.github.io/2016/10/29/druid.io_2---druid介绍/index.html">
 <meta property="og:site_name" content="小懒的博客">
 <meta property="og:description" content="Druid概念Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。  
-Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。
-优势：  
-
-高容错性：单个节点挂掉不会影响其他部分。详情在文末有介绍。 
-多版本控制（MVCC）：通过数">
+Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。">
 <meta property="og:image" content="http://druidio.cn/docs/img/druid-dataflow-3.png">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8A3B9817DCAE4598A5D8582FB02E012E">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/26967A72BB75437786E663C1A91699D8">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/5D9BEA80D1E642C88D707A330CC9D618">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0E59F34342744B8ABBDCE92DA750B186">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/69D6BCF5B4A3476898CF5599ED461232">
-<meta property="og:updated_time" content="2016-10-30T03:50:19.000Z">
+<meta property="og:updated_time" content="2016-10-30T04:17:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="druid.io 2---druid介绍">
 <meta name="twitter:description" content="Druid概念Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。  
-Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。
-优势：  
-
-高容错性：单个节点挂掉不会影响其他部分。详情在文末有介绍。 
-多版本控制（MVCC）：通过数">
+Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。">
 <meta name="twitter:image" content="http://druidio.cn/docs/img/druid-dataflow-3.png">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
@@ -338,17 +326,16 @@ Druid 是一个开源的，分布式的，列存储的，适用于实时数据�
         <p><excerpt in="" index="" |="" 首页摘要="">   </excerpt></p>
 <h2 id="Druid概念"><a href="#Druid概念" class="headerlink" title="Druid概念"></a>Druid概念</h2><p>Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。  </p>
 <p>Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。</p>
-<p>优势：  </p>
+<a id="more"></a>  
+<p><the rest="" of="" contents="" |="" 余下全文=""><br>优势：</the></p>
 <ul>
 <li>高容错性：单个节点挂掉不会影响其他部分。详情在<a href="#容错性">文末</a>有介绍。 </li>
 <li>多版本控制（MVCC）：通过数据更新时间来区分版本，历史节点只加载最新版本数据。支持实时数据indexing与批量数据indexing同时进行，实时数据索引满足实时需求，批量数据覆盖实时数据满足准确性需求。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#数据加载">druid数据加载</a>。</li>
 <li>高聚合性：数据roll up预处理，减少存储数据量。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#预聚合roll-up">druid预聚合roll-up</a>。</li>
 <li>高压缩度：使用Bitmap indexing加速列存储的查询速度，并使用CONCISE算法来对bitmap indexing进行压缩，使得生成的segments比原始文本文件小很多  </li>
 </ul>
-<h2 id="集群组成"><a href="#集群组成" class="headerlink" title="集群组成"></a>集群组成</h2><p>Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。主要分为四大部分：数据生产、数据存储、数据查询、外部依赖。本小节先做一个简单的介绍，后面每个部分会有详细介绍。</p>
-<a id="more"></a>  
-<the rest="" of="" contents="" |="" 余下全文="">  
-
+<h2 id="集群组成"><a href="#集群组成" class="headerlink" title="集群组成"></a>集群组成</h2><p>Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。</p>
+<p>主要分为四大部分：数据生产、数据存储、数据查询、外部依赖。本小节先做一个简单的介绍，后面每个部分会有详细介绍。</p>
 <p><img src="http://druidio.cn/docs/img/druid-dataflow-3.png" alt="image"></p>
 <h3 id="数据生产"><a href="#数据生产" class="headerlink" title="数据生产"></a>数据生产</h3><ul>
 <li>Indexing Service 索引服务节点：<br>由多个worker组成的集群，负责为加载批量的和实时的数据创建索引，并且允许对已经存在的数据进行修改。</li>
@@ -495,7 +482,7 @@ Druid 是一个开源的，分布式的，列存储的，适用于实时数据�
 <h3 id="元数据存储挂掉"><a href="#元数据存储挂掉" class="headerlink" title="元数据存储挂掉"></a>元数据存储挂掉</h3><p>协调节点就无法找到集群中新的Segments(因为新的Segment一定会写入记录到元数据存储中)。但仍然可以提供当前集群的数据视图.</p>
 <h3 id="ZooKeeper挂掉"><a href="#ZooKeeper挂掉" class="headerlink" title="ZooKeeper挂掉"></a>ZooKeeper挂掉</h3><p>数据拓扑不会被更新(同协调节点挂掉),但是Broker仍然可以维护最近的数据拓扑,并继续提供查询的服务。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a><br><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a><br><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a><br><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a><br><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
-</the>
+
       
     </div>
     
@@ -506,7 +493,7 @@ Druid 是一个开源的，分布式的，列存储的，适用于实时数据�
         <p><span>本文标题:</span><a href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-29, 11:52:00</p>
-        <p><span>最后更新:</span>2016-10-30, 11:50:19</p>
+        <p><span>最后更新:</span>2016-10-30, 12:17:53</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io_2---druid介绍/" title="druid.io 2---druid介绍">https://fangyeqing.github.io/2016/10/29/druid.io_2---druid介绍/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io_2---druid介绍/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -631,7 +618,7 @@ Druid 是一个开源的，分布式的，列存储的，适用于实时数据�
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
 
 
 

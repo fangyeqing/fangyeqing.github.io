@@ -4,7 +4,7 @@
   
     
     <entry>
-      <title><![CDATA[druid.io实践1---查询速度优化]]></title>
+      <title><![CDATA[druid.io实践1---提高查询速度]]></title>
       <url>https://fangyeqing.github.io/2016/10/29/druid.io%E5%AE%9E%E8%B7%B51---%E6%9F%A5%E8%AF%A2%E9%80%9F%E5%BA%A6%E4%BC%98%E5%8C%96/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
@@ -151,17 +151,16 @@
       <content type="html"><![CDATA[<p><excerpt in="" index="" |="" 首页摘要="">   </excerpt></p>
 <h2 id="Druid概念"><a href="#Druid概念" class="headerlink" title="Druid概念"></a>Druid概念</h2><p>Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。  </p>
 <p>Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。</p>
-<p>优势：  </p>
+<a id="more"></a>  
+<p><the rest="" of="" contents="" |="" 余下全文=""><br>优势：</the></p>
 <ul>
 <li>高容错性：单个节点挂掉不会影响其他部分。详情在<a href="#容错性">文末</a>有介绍。 </li>
 <li>多版本控制（MVCC）：通过数据更新时间来区分版本，历史节点只加载最新版本数据。支持实时数据indexing与批量数据indexing同时进行，实时数据索引满足实时需求，批量数据覆盖实时数据满足准确性需求。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#数据加载">druid数据加载</a>。</li>
 <li>高聚合性：数据roll up预处理，减少存储数据量。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#预聚合roll-up">druid预聚合roll-up</a>。</li>
 <li>高压缩度：使用Bitmap indexing加速列存储的查询速度，并使用CONCISE算法来对bitmap indexing进行压缩，使得生成的segments比原始文本文件小很多  </li>
 </ul>
-<h2 id="集群组成"><a href="#集群组成" class="headerlink" title="集群组成"></a>集群组成</h2><p>Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。主要分为四大部分：数据生产、数据存储、数据查询、外部依赖。本小节先做一个简单的介绍，后面每个部分会有详细介绍。</p>
-<a id="more"></a>  
-<the rest="" of="" contents="" |="" 余下全文="">  
-
+<h2 id="集群组成"><a href="#集群组成" class="headerlink" title="集群组成"></a>集群组成</h2><p>Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。</p>
+<p>主要分为四大部分：数据生产、数据存储、数据查询、外部依赖。本小节先做一个简单的介绍，后面每个部分会有详细介绍。</p>
 <p><img src="http://druidio.cn/docs/img/druid-dataflow-3.png" alt="image"></p>
 <h3 id="数据生产"><a href="#数据生产" class="headerlink" title="数据生产"></a>数据生产</h3><ul>
 <li>Indexing Service 索引服务节点：<br>由多个worker组成的集群，负责为加载批量的和实时的数据创建索引，并且允许对已经存在的数据进行修改。</li>
@@ -308,7 +307,7 @@
 <h3 id="元数据存储挂掉"><a href="#元数据存储挂掉" class="headerlink" title="元数据存储挂掉"></a>元数据存储挂掉</h3><p>协调节点就无法找到集群中新的Segments(因为新的Segment一定会写入记录到元数据存储中)。但仍然可以提供当前集群的数据视图.</p>
 <h3 id="ZooKeeper挂掉"><a href="#ZooKeeper挂掉" class="headerlink" title="ZooKeeper挂掉"></a>ZooKeeper挂掉</h3><p>数据拓扑不会被更新(同协调节点挂掉),但是Broker仍然可以维护最近的数据拓扑,并继续提供查询的服务。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a><br><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a><br><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a><br><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a><br><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
-</the>]]></content>
+]]></content>
     </entry>
     
     <entry>
