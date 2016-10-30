@@ -154,8 +154,8 @@
 <p>优势：  </p>
 <ul>
 <li>高容错性：单个节点挂掉不会影响其他部分。详情在<a href="#容错性">文末</a>有介绍。 </li>
-<li>多版本控制（MVCC）：通过数据更新时间来区分版本，历史节点只加载最新版本数据。支持实时数据indexing与批量数据indexing同时进行，实时数据索引满足实时需求，批量数据覆盖实时数据满足准确性需求。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#数据加载">druid数据部分</a>。</li>
-<li>高聚合性：数据roll up预处理，减少存储数据量。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#数据加载">druid数据部分</a>。</li>
+<li>多版本控制（MVCC）：通过数据更新时间来区分版本，历史节点只加载最新版本数据。支持实时数据indexing与批量数据indexing同时进行，实时数据索引满足实时需求，批量数据覆盖实时数据满足准确性需求。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#数据加载">druid数据加载</a>。</li>
+<li>高聚合性：数据roll up预处理，减少存储数据量。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#预聚合roll-up">druid预聚合roll-up</a>。</li>
 <li>高压缩度：使用Bitmap indexing加速列存储的查询速度，并使用CONCISE算法来对bitmap indexing进行压缩，使得生成的segments比原始文本文件小很多  </li>
 </ul>
 <h2 id="集群组成"><a href="#集群组成" class="headerlink" title="集群组成"></a>集群组成</h2><p>Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。主要分为四大部分：数据生产、数据存储、数据查询、外部依赖。本小节先做一个简单的介绍，后面每个部分会有详细介绍。</p>
