@@ -75,16 +75,87 @@
     </entry>
     
     <entry>
-      <title><![CDATA[druid.io 3---druid介绍]]></title>
-      <url>https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E4%BB%8B%E7%BB%8D/</url>
+      <title><![CDATA[druid.io 3---druid数据]]></title>
+      <url>https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/</url>
+      <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
+
+<h2 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h2><ul>
+<li><strong>Timestamp列</strong>: 所有的查询都以时间为中心。  </li>
+<li><strong>Dimension列（维度）</strong>: Dimensions对应事件的维度,通常用于筛选过滤数据。</li>
+<li><strong>Metric列（度量）</strong>: Metrics是用于聚合和计算的列。通常是数字,并且支持count、sum、mean等聚合操作。<br>线上广告的例子：</li>
+</ul>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">timestamp             publisher          advertiser  gender  country  click  price</div><div class="line">2011-01-01T01:01:35Z  bieberfever.com    google.com  Male    USA      0      0.65</div><div class="line">2011-01-01T01:03:63Z  bieberfever.com    google.com  Male    USA      0      0.62</div><div class="line">2011-01-01T01:04:51Z  bieberfever.com    google.com  Male    USA      1      0.45</div><div class="line">2011-01-01T01:00:00Z  ultratrimfast.com  google.com  Female  UK       0      0.87</div><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Female  UK       0      0.99</div><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Female  UK       1      1.53</div></pre></td></tr></table></figure>
+<p>dimensions: publisher, advertiser, gender, and country。<br>metrics: click和price</p>
+<h2 id="预聚合roll-up"><a href="#预聚合roll-up" class="headerlink" title="预聚合roll up"></a>预聚合roll up</h2><p>Roll-up是在一系列维度选定后的数据之上做的初始聚合，一般发生在push/pull数据流阶段，通过realtime node或者tranquility+indexing service的方式。    </p>
+<p>通过queryGranularity定义数据roll up的粒度。  </p>
+<p>这种预聚合的方式可以很显著的减少数据的存储(可减少100倍)。 Druid也是通过这种方式来减少数据的存储。 这种减少存储的方式也会带来副作用,比如我们没有办法再查询到每条数据具体的明细。换句话说,数据聚合的粒度是我们能查询数据的最小粒度。  </p>
+<p>例如定义粒度为HOUR<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GROUP BY timestamp, publisher, advertiser, gender, country</div><div class="line">  :: impressions = COUNT(1),  clicks = SUM(click),  revenue = SUM(price)</div></pre></td></tr></table></figure></p>
+<p>上述例子聚合之后为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">timestamp             publisher          advertiser  gender country impressions clicks revenue</div><div class="line">2011-01-01T01:00:00Z  ultratrimfast.com  google.com  Male   USA     1800        25     15.70</div><div class="line">2011-01-01T01:00:00Z  bieberfever.com    google.com  Male   USA     2912        42     29.18</div><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Male   UK      1953        17     17.31</div><div class="line">2011-01-01T02:00:00Z  bieberfever.com    google.com  Male   UK      3194        170    34.01</div></pre></td></tr></table></figure></p>
+<p>也可以将过久时间的历史数据进行自定义的roll up操作，例如近90天的数据按小时进行roll up预处理，然后将90天之后的数据提交batch indexing任务按天roll up。</p>
+<h2 id="数据分片"><a href="#数据分片" class="headerlink" title="数据分片"></a>数据分片</h2><p>以segments(段)的形式就行分片,并且以时间作为第一级分片。  </p>
+<p>Segments是自包含容器,包含着一个时间段内的数据，通过segmentGranularity定义segments的分片时间粒度。<br>Segments包括基于列的压缩,以及这些列的索引。Druid只需要清楚如何扫描这些segments就可以查询。</p>
+<p>Segments通过datasource, interval, version, 和一个可选的partition number来区分。   </p>
+<blockquote>
+<p>dataSource_interval_version_partitionNumber。</p>
+</blockquote>
+<p>例如：<br>Segment sampleData_2011-01-01T01:00:00:00Z_2011-01-01T02:00:00:00Z_v1_0 包含<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2011-01-01T01:00:00Z  ultratrimfast.com  google.com  Male   USA     1800        25     15.70</div><div class="line">2011-01-01T01:00:00Z  bieberfever.com    google.com  Male   USA     2912        42     29.18</div></pre></td></tr></table></figure></p>
+<p>Segment sampleData_2011-01-01T02:00:00:00Z_2011-01-01T03:00:00:00Z_v1_0 包含<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Male   UK      1953        17     17.31</div><div class="line">2011-01-01T02:00:00Z  bieberfever.com    google.com  Male   UK      3194        170    34.01</div></pre></td></tr></table></figure></p>
+<h2 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h2><p><strong>MVCC</strong>：多版本控制，以HDFS作为DeepStorage为例，HDFS上会保存每次修改的版本，history节点只load最新的数据，即用最新的版本来表示数据。</p>
+<p>druid在0.9版本之后，HDFS上存储格式如下:</p>
+<p><strong>hdfs://nn1:port/…/ sampleData / startTime_endTime / updateTime / shard / index.zip</strong><br><strong>hdfs://nn1:port/…/ sampleData / startTime_endTime / updateTime / shard / descriptor.json</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">startTime_endTime:看聚合粒度，可能是1个小时之内，可能是1天之内</div><div class="line">updateTime：修改时间，即版本号。取最新的一个版本</div><div class="line">shard:分片，数据比较多，一个分片放不下</div></pre></td></tr></table></figure></p>
+<h3 id="HDFS存储举例"><a href="#HDFS存储举例" class="headerlink" title="HDFS存储举例"></a>HDFS存储举例</h3><p><strong>hdfs://nn1:port/…/sampleData/20160801T120000.000+0800_20160801T130000.000+0800/</strong><br>目录下有如下两个版本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2016-08-01T12_07_40.483+08_00/	rwxr-xr-x	root/supergroup	    2016-08-01 13:15:12</div><div class="line">2016-08-01T13_17_06.199+08_00/	rwxr-xr-x	root/supergroup	    2016-08-01 13:23:40</div></pre></td></tr></table></figure></p>
+<p><strong>2016-08-01T13_17_06.199+08_00</strong>目录下有3个分片：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">0/	rwxr-xr-x	root/supergroup	2016-08-01 13:23:05</div><div class="line">1/	rwxr-xr-x	root/supergroup	2016-08-01 13:23:11</div><div class="line">2/	rwxr-xr-x	root/supergroup	2016-08-01 13:23:46</div></pre></td></tr></table></figure></p>
+<p><strong>0/</strong>目录下有两个文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">descriptor.json	rw-r--r--	eadata/supergroup	766 B	128 mb	3	2016-08-01 13:23:05</div><div class="line">index.zip	rw-r--r--	eadata/supergroup	5.56 mb	128 mb	3	2016-08-01 13:23:04</div></pre></td></tr></table></figure></p>
+<p>descriptor.json保存的信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;dataSource&quot;: &quot;sampleData&quot;,//数据源</div><div class="line">    &quot;interval&quot;: &quot;2016-08-01T12:00:00.000+08:00/2016-08-01T13:00:00.000+08:00&quot;,//时间区间</div><div class="line">    &quot;version&quot;: &quot;2016-08-01T13:17:06.199+08:00&quot;,//版本号，即修改时间</div><div class="line">    &quot;loadSpec&quot;: &#123;//存储路径</div><div class="line">        &quot;type&quot;: &quot;hdfs&quot;,</div><div class="line">        &quot;path&quot;: &quot;hdfs://nn1:port/..../sampleData/20160801T120000.000+0800_20160801T130000.000+0800/2016-08-01T13_17_06.199+08_00/0/index.zip&quot;</div><div class="line">    &#125;,</div><div class="line">    &quot;dimensions&quot;: &quot;publisher,advertiser,gender,country&quot;,</div><div class="line">    &quot;metrics&quot;: &quot;click,price&quot;,</div><div class="line">    &quot;shardSpec&quot;: &#123;//分片信息</div><div class="line">        &quot;type&quot;: &quot;hashed&quot;,</div><div class="line">        &quot;partitionNum&quot;: 0,</div><div class="line">        &quot;partitions&quot;: 3,</div><div class="line">        &quot;partitionDimensions&quot;: []</div><div class="line">    &#125;,</div><div class="line">    &quot;binaryVersion&quot;: 9,</div><div class="line">    &quot;size&quot;: 8959843,//index.zip解压后的大小</div><div class="line">    &quot;identifier&quot;: &quot;sampleData_2016-08-01T12:00:00.000+08:00_2016-08-01T13:00:00.000+08:00_2016-08-01T13:17:06.199+08:00&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当historical节点加载HDFS中的segment到本地存储时，会解压index.zip，解压出00000.smoosh、meta.smoosh、version.bin三个文件。保存在本地路径:</p>
+<blockquote>
+<p>druid.segmentCache.locations / sampleData / startTime_endTime / updateTime / shard   </p>
+</blockquote>
+<p>descriptor.json保存在本地路径：</p>
+<blockquote>
+<p>druid.segmentCache.locations / info_dir / sampleData / startTime_endTime / updateTime / shard</p>
+</blockquote>
+<p>druid.segmentCache.locations在historical节点配置中配置。</p>
+<p><del>druid在0.9版本之前，realtime index放在上述路径中，batch（批量）任务会放在：<br>datasource / datasource / startTime_endTime / updateTime /shard / index.zip</del></p>
+<h2 id="数据索引"><a href="#数据索引" class="headerlink" title="数据索引"></a>数据索引</h2><p>Druid是列式存储,每一个列都是单独存储,在查询的过程中只扫描查询所需的列即可。不同的列可以采用不同的压缩方式,也可以关联不同的索引。  </p>
+<p>Druid的索引是基于每一个分片(即segment)上的。</p>
+<h2 id="数据加载"><a href="#数据加载" class="headerlink" title="数据加载"></a>数据加载</h2><p>Druid使用的通常情况是,联合使用批量和实时数据流的加载方法。近期的数据通过实时方式处理,离线批量处理来来提高精度。 </p>
+<p>在一些网络抖动延迟的非正常场景中，实时数据流加载方式有可能出现消息丢失或者消息重复，因此批量再加载方式消除了这种历史数据的潜在错误。或者由于某种原因，需要修改数据，批量再加载方式也提供给你再加载数据的选项。</p>
+<h3 id="实时方式"><a href="#实时方式" class="headerlink" title="实时方式"></a>实时方式</h3><ul>
+<li>Stream push <ul>
+<li><strong>Tranquility+indexing service</strong>，数据来自于一个数据流系统，如Kafka、Storm、Spark Streaming。Tranquility：一个发送数据流到Druid的http客户端。</li>
+</ul>
+</li>
+<li>Stream pull <ul>
+<li><strong>Realtime Node</strong>，直接从外部数据源拉数据流进入Druid。  <h3 id="离线批处理方式"><a href="#离线批处理方式" class="headerlink" title="离线批处理方式"></a>离线批处理方式</h3></li>
+</ul>
+</li>
+<li>Files <ul>
+<li><strong>Batch Data Ingestion+indexing service</strong>，从HDFS、S3、本地文件、或者其他支持批处理的Hadoop文件系统加载数据。如果在平面文件中你的数据集已经准备好，我们建议使用这种方法。例如：利用camus从kafka拉取数据到hdfs，再利用批处理从hdfs。  </li>
+</ul>
+</li>
+</ul>
+<p>下图中，上面的indexing service为realtime，下面的为Batch Data Ingestion<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/D6B38A53DFD740328C51FD6093A90BE7" alt="image"></p>
+<h2 id="数据查询"><a href="#数据查询" class="headerlink" title="数据查询"></a>数据查询</h2><p>Druid原生的查询方式是通过http发送json,但是社区已经贡献出多种查询库,包括SQL方式的plyql。</p>
+<p>Druid被设计为执行单表操作,不支持join操纵(实际上可以做join)。 生产环境需要在ETL阶段进行join,因为数据在加载进Druid之前必须规范化。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a><br><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a><br><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a><br><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a><br><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
+</the></excerpt>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[druid.io 2---druid介绍]]></title>
+      <url>https://fangyeqing.github.io/2016/10/29/druid.io_2---druid%E4%BB%8B%E7%BB%8D/</url>
       <content type="html"><![CDATA[<p><excerpt in="" index="" |="" 首页摘要="">   </excerpt></p>
 <h2 id="Druid概念"><a href="#Druid概念" class="headerlink" title="Druid概念"></a>Druid概念</h2><p>Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。  </p>
 <p>Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。</p>
 <p>优势：  </p>
 <ul>
 <li>高容错性：单个节点挂掉不会影响其他部分。详情在<a href="#容错性">文末</a>有介绍。 </li>
-<li>多版本控制（MVCC）：通过数据更新时间来区分版本，历史节点只加载最新版本数据。支持实时数据indexing与批量数据indexing同时进行，实时数据索引满足实时需求，批量数据覆盖实时数据满足准确性需求。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_2---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#数据加载">druid数据部分</a>。</li>
-<li>高聚合性：数据roll up预处理，减少存储数据量。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_2---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#数据加载">druid数据部分</a>。</li>
+<li>多版本控制（MVCC）：通过数据更新时间来区分版本，历史节点只加载最新版本数据。支持实时数据indexing与批量数据indexing同时进行，实时数据索引满足实时需求，批量数据覆盖实时数据满足准确性需求。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#数据加载">druid数据部分</a>。</li>
+<li>高聚合性：数据roll up预处理，减少存储数据量。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#数据加载">druid数据部分</a>。</li>
 <li>高压缩度：使用Bitmap indexing加速列存储的查询速度，并使用CONCISE算法来对bitmap indexing进行压缩，使得生成的segments比原始文本文件小很多  </li>
 </ul>
 <h2 id="集群组成"><a href="#集群组成" class="headerlink" title="集群组成"></a>集群组成</h2><p>Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。主要分为四大部分：数据生产、数据存储、数据查询、外部依赖。本小节先做一个简单的介绍，后面每个部分会有详细介绍。</p>
@@ -106,9 +177,9 @@
 </ul>
 <h3 id="外部依赖"><a href="#外部依赖" class="headerlink" title="外部依赖"></a>外部依赖</h3><p>Druid的集群需要有一些外部依赖。  </p>
 <ul>
-<li>Zookeeper<br>Druid依赖Zookeeper来保证集群内的信息一致。</li>
-<li>Metadata Storage<br>Druid依赖metadata storage存储segments的元数据和配置。创建segments的服务在元数据中记录信息, coordinator监听着元数据以便了解什么时候需要下载新数据或者删除旧数据。 元数据的存储不涉及查询的路径。MySQL和PostgreSQL非常有利于生产环境下元数据的存储, 但Derby在你部署单机版做测试的时候非常好用。</li>
-<li>Deep Storage：<br>Deep storage是segments的永久备份。创建segments的服务上传segments到Deep storage,然后historical节点下载。 Deep storage不涉及查询路径。 S3和HDFS是比较推荐到deep storages。</li>
+<li>Zookeeper</li>
+<li>Metadata Storage</li>
+<li>Deep Storage</li>
 </ul>
 <h2 id="Indexing-Service"><a href="#Indexing-Service" class="headerlink" title="Indexing Service"></a>Indexing Service</h2><p>索引服务负责<strong>实时</strong>和<strong>批量</strong>数据的导入、分析、索引、压缩，生成“segment”（数据段），存入Deep Storage（例如HDFS）。<br>实时数据通过<strong>Tranquility</strong>客户端，批量数据通过<strong>Batch Data Ingestion</strong>，将任务提交给overload，分配给Middle Manager创建Poen执行。  </p>
 <h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>索引服务是主从结构，由三个部分组成：</p>
@@ -238,77 +309,6 @@
 <h3 id="ZooKeeper挂掉"><a href="#ZooKeeper挂掉" class="headerlink" title="ZooKeeper挂掉"></a>ZooKeeper挂掉</h3><p>数据拓扑不会被更新(同协调节点挂掉),但是Broker仍然可以维护最近的数据拓扑,并继续提供查询的服务。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a><br><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a><br><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a><br><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a><br><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
 </the>]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[druid.io 2---druid数据]]></title>
-      <url>https://fangyeqing.github.io/2016/10/29/druid.io_2---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/</url>
-      <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
-
-<h2 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h2><ul>
-<li><strong>Timestamp列</strong>: 所有的查询都以时间为中心。  </li>
-<li><strong>Dimension列（维度）</strong>: Dimensions对应事件的维度,通常用于筛选过滤数据。</li>
-<li><strong>Metric列（度量）</strong>: Metrics是用于聚合和计算的列。通常是数字,并且支持count、sum、mean等聚合操作。<br>线上广告的例子：</li>
-</ul>
-<a id="more"></a>  
-<the rest="" of="" contents="" |="" 余下全文=""> 
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">timestamp             publisher          advertiser  gender  country  click  price</div><div class="line">2011-01-01T01:01:35Z  bieberfever.com    google.com  Male    USA      0      0.65</div><div class="line">2011-01-01T01:03:63Z  bieberfever.com    google.com  Male    USA      0      0.62</div><div class="line">2011-01-01T01:04:51Z  bieberfever.com    google.com  Male    USA      1      0.45</div><div class="line">2011-01-01T01:00:00Z  ultratrimfast.com  google.com  Female  UK       0      0.87</div><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Female  UK       0      0.99</div><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Female  UK       1      1.53</div></pre></td></tr></table></figure>
-<p>dimensions: publisher, advertiser, gender, and country。<br>metrics: click和price</p>
-<h2 id="预聚合roll-up"><a href="#预聚合roll-up" class="headerlink" title="预聚合roll up"></a>预聚合roll up</h2><p>Roll-up是在一系列维度选定后的数据之上做的初始聚合，一般发生在push/pull数据流阶段，通过realtime node或者tranquility+indexing service的方式。    </p>
-<p>通过queryGranularity定义数据roll up的粒度。  </p>
-<p>这种预聚合的方式可以很显著的减少数据的存储(可减少100倍)。 Druid也是通过这种方式来减少数据的存储。 这种减少存储的方式也会带来副作用,比如我们没有办法再查询到每条数据具体的明细。换句话说,数据聚合的粒度是我们能查询数据的最小粒度。  </p>
-<p>例如定义粒度为HOUR<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GROUP BY timestamp, publisher, advertiser, gender, country</div><div class="line">  :: impressions = COUNT(1),  clicks = SUM(click),  revenue = SUM(price)</div></pre></td></tr></table></figure></p>
-<p>上述例子聚合之后为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">timestamp             publisher          advertiser  gender country impressions clicks revenue</div><div class="line">2011-01-01T01:00:00Z  ultratrimfast.com  google.com  Male   USA     1800        25     15.70</div><div class="line">2011-01-01T01:00:00Z  bieberfever.com    google.com  Male   USA     2912        42     29.18</div><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Male   UK      1953        17     17.31</div><div class="line">2011-01-01T02:00:00Z  bieberfever.com    google.com  Male   UK      3194        170    34.01</div></pre></td></tr></table></figure></p>
-<p>也可以将过久时间的历史数据进行自定义的roll up操作，例如近90天的数据按小时进行roll up预处理，然后将90天之后的数据提交batch indexing任务按天roll up。</p>
-<h2 id="数据分片"><a href="#数据分片" class="headerlink" title="数据分片"></a>数据分片</h2><p>以segments(段)的形式就行分片,并且以时间作为第一级分片。  </p>
-<p>Segments是自包含容器,包含着一个时间段内的数据，通过segmentGranularity定义segments的分片时间粒度。<br>Segments包括基于列的压缩,以及这些列的索引。Druid只需要清楚如何扫描这些segments就可以查询。</p>
-<p>Segments通过datasource, interval, version, 和一个可选的partition number来区分。   </p>
-<blockquote>
-<p>dataSource_interval_version_partitionNumber。</p>
-</blockquote>
-<p>例如：<br>Segment sampleData_2011-01-01T01:00:00:00Z_2011-01-01T02:00:00:00Z_v1_0 包含<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2011-01-01T01:00:00Z  ultratrimfast.com  google.com  Male   USA     1800        25     15.70</div><div class="line">2011-01-01T01:00:00Z  bieberfever.com    google.com  Male   USA     2912        42     29.18</div></pre></td></tr></table></figure></p>
-<p>Segment sampleData_2011-01-01T02:00:00:00Z_2011-01-01T03:00:00:00Z_v1_0 包含<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Male   UK      1953        17     17.31</div><div class="line">2011-01-01T02:00:00Z  bieberfever.com    google.com  Male   UK      3194        170    34.01</div></pre></td></tr></table></figure></p>
-<h2 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h2><p><strong>MVCC</strong>：多版本控制，以HDFS作为DeepStorage为例，HDFS上会保存每次修改的版本，history节点只load最新的数据，即用最新的版本来表示数据。</p>
-<p>druid在0.9版本之后，HDFS上存储格式如下:</p>
-<p><strong>hdfs://nn1:port/…/ sampleData / startTime_endTime / updateTime / shard / index.zip</strong><br><strong>hdfs://nn1:port/…/ sampleData / startTime_endTime / updateTime / shard / descriptor.json</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">startTime_endTime:看聚合粒度，可能是1个小时之内，可能是1天之内</div><div class="line">updateTime：修改时间，即版本号。取最新的一个版本</div><div class="line">shard:分片，数据比较多，一个分片放不下</div></pre></td></tr></table></figure></p>
-<h3 id="HDFS存储举例"><a href="#HDFS存储举例" class="headerlink" title="HDFS存储举例"></a>HDFS存储举例</h3><p><strong>hdfs://nn1:port/…/sampleData/20160801T120000.000+0800_20160801T130000.000+0800/</strong><br>目录下有如下两个版本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2016-08-01T12_07_40.483+08_00/	rwxr-xr-x	root/supergroup	    2016-08-01 13:15:12</div><div class="line">2016-08-01T13_17_06.199+08_00/	rwxr-xr-x	root/supergroup	    2016-08-01 13:23:40</div></pre></td></tr></table></figure></p>
-<p><strong>2016-08-01T13_17_06.199+08_00</strong>目录下有3个分片：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">0/	rwxr-xr-x	root/supergroup	2016-08-01 13:23:05</div><div class="line">1/	rwxr-xr-x	root/supergroup	2016-08-01 13:23:11</div><div class="line">2/	rwxr-xr-x	root/supergroup	2016-08-01 13:23:46</div></pre></td></tr></table></figure></p>
-<p><strong>0/</strong>目录下有两个文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">descriptor.json	rw-r--r--	eadata/supergroup	766 B	128 mb	3	2016-08-01 13:23:05</div><div class="line">index.zip	rw-r--r--	eadata/supergroup	5.56 mb	128 mb	3	2016-08-01 13:23:04</div></pre></td></tr></table></figure></p>
-<p>descriptor.json保存的信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;dataSource&quot;: &quot;sampleData&quot;,//数据源</div><div class="line">    &quot;interval&quot;: &quot;2016-08-01T12:00:00.000+08:00/2016-08-01T13:00:00.000+08:00&quot;,//时间区间</div><div class="line">    &quot;version&quot;: &quot;2016-08-01T13:17:06.199+08:00&quot;,//版本号，即修改时间</div><div class="line">    &quot;loadSpec&quot;: &#123;//存储路径</div><div class="line">        &quot;type&quot;: &quot;hdfs&quot;,</div><div class="line">        &quot;path&quot;: &quot;hdfs://nn1:port/..../sampleData/20160801T120000.000+0800_20160801T130000.000+0800/2016-08-01T13_17_06.199+08_00/0/index.zip&quot;</div><div class="line">    &#125;,</div><div class="line">    &quot;dimensions&quot;: &quot;publisher,advertiser,gender,country&quot;,</div><div class="line">    &quot;metrics&quot;: &quot;click,price&quot;,</div><div class="line">    &quot;shardSpec&quot;: &#123;//分片信息</div><div class="line">        &quot;type&quot;: &quot;hashed&quot;,</div><div class="line">        &quot;partitionNum&quot;: 0,</div><div class="line">        &quot;partitions&quot;: 3,</div><div class="line">        &quot;partitionDimensions&quot;: []</div><div class="line">    &#125;,</div><div class="line">    &quot;binaryVersion&quot;: 9,</div><div class="line">    &quot;size&quot;: 8959843,//index.zip解压后的大小</div><div class="line">    &quot;identifier&quot;: &quot;sampleData_2016-08-01T12:00:00.000+08:00_2016-08-01T13:00:00.000+08:00_2016-08-01T13:17:06.199+08:00&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>当historical节点加载HDFS中的segment到本地存储时，会解压index.zip，解压出00000.smoosh、meta.smoosh、version.bin三个文件。保存在本地路径:</p>
-<blockquote>
-<p>druid.segmentCache.locations / sampleData / startTime_endTime / updateTime / shard   </p>
-</blockquote>
-<p>descriptor.json保存在本地路径：</p>
-<blockquote>
-<p>druid.segmentCache.locations / info_dir / sampleData / startTime_endTime / updateTime / shard</p>
-</blockquote>
-<p>druid.segmentCache.locations在historical节点配置中配置。</p>
-<p><del>druid在0.9版本之前，realtime index放在上述路径中，batch（批量）任务会放在：<br>datasource / datasource / startTime_endTime / updateTime /shard / index.zip</del></p>
-<h2 id="数据索引"><a href="#数据索引" class="headerlink" title="数据索引"></a>数据索引</h2><p>Druid是列式存储,每一个列都是单独存储,在查询的过程中只扫描查询所需的列即可。不同的列可以采用不同的压缩方式,也可以关联不同的索引。  </p>
-<p>Druid的索引是基于每一个分片(即segment)上的。</p>
-<h2 id="数据加载"><a href="#数据加载" class="headerlink" title="数据加载"></a>数据加载</h2><p>Druid使用的通常情况是,联合使用批量和实时数据流的加载方法。近期的数据通过实时方式处理,离线批量处理来来提高精度。 </p>
-<p>在一些网络抖动延迟的非正常场景中，实时数据流加载方式有可能出现消息丢失或者消息重复，因此批量再加载方式消除了这种历史数据的潜在错误。或者由于某种原因，需要修改数据，批量再加载方式也提供给你再加载数据的选项。</p>
-<h3 id="实时方式"><a href="#实时方式" class="headerlink" title="实时方式"></a>实时方式</h3><ul>
-<li>Stream push <ul>
-<li><strong>Tranquility+indexing service</strong>，数据来自于一个数据流系统，如Kafka、Storm、Spark Streaming。Tranquility：一个发送数据流到Druid的http客户端。</li>
-</ul>
-</li>
-<li>Stream pull <ul>
-<li><strong>Realtime Node</strong>，直接从外部数据源拉数据流进入Druid。  <h3 id="离线批处理方式"><a href="#离线批处理方式" class="headerlink" title="离线批处理方式"></a>离线批处理方式</h3></li>
-</ul>
-</li>
-<li>Files <ul>
-<li><strong>Batch Data Ingestion+indexing service</strong>，从HDFS、S3、本地文件、或者其他支持批处理的Hadoop文件系统加载数据。如果在平面文件中你的数据集已经准备好，我们建议使用这种方法。例如：利用camus从kafka拉取数据到hdfs，再利用批处理从hdfs。  </li>
-</ul>
-</li>
-</ul>
-<p>下图中，上面的indexing service为realtime，下面的为Batch Data Ingestion<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/D6B38A53DFD740328C51FD6093A90BE7" alt="image"></p>
-<h2 id="数据查询"><a href="#数据查询" class="headerlink" title="数据查询"></a>数据查询</h2><p>Druid原生的查询方式是通过http发送json,但是社区已经贡献出多种查询库,包括SQL方式的plyql。</p>
-<p>Druid被设计为执行单表操作,不支持join操纵(实际上可以做join)。 生产环境需要在ETL阶段进行join,因为数据在加载进Druid之前必须规范化。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a><br><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a><br><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a><br><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a><br><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
-</the></excerpt>]]></content>
     </entry>
     
     <entry>
