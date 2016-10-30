@@ -15,28 +15,37 @@
 
 
 
-<meta name="description" content="Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。
-不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。
-节点组成主要分为三大部分：数据生产、数据存储、数据查询">
+<meta name="description" content="Druid概念Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。  
+Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。
+优势：  
+
+高容错性：单个节点挂掉不会影响其他部分。详情在文末有介绍。 
+多版本控制（MVCC）：通过数">
 <meta property="og:type" content="article">
-<meta property="og:title" content="druid.io 3---druid集群">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid集群/index.html">
+<meta property="og:title" content="druid.io 3---druid介绍">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid介绍/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。
-不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。
-节点组成主要分为三大部分：数据生产、数据存储、数据查询">
+<meta property="og:description" content="Druid概念Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。  
+Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。
+优势：  
+
+高容错性：单个节点挂掉不会影响其他部分。详情在文末有介绍。 
+多版本控制（MVCC）：通过数">
 <meta property="og:image" content="http://druidio.cn/docs/img/druid-dataflow-3.png">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8A3B9817DCAE4598A5D8582FB02E012E">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/26967A72BB75437786E663C1A91699D8">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/5D9BEA80D1E642C88D707A330CC9D618">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0E59F34342744B8ABBDCE92DA750B186">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/69D6BCF5B4A3476898CF5599ED461232">
-<meta property="og:updated_time" content="2016-10-29T07:35:53.000Z">
+<meta property="og:updated_time" content="2016-10-30T03:31:16.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="druid.io 3---druid集群">
-<meta name="twitter:description" content="Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。
-不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。
-节点组成主要分为三大部分：数据生产、数据存储、数据查询">
+<meta name="twitter:title" content="druid.io 3---druid介绍">
+<meta name="twitter:description" content="Druid概念Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。  
+Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。
+优势：  
+
+高容错性：单个节点挂掉不会影响其他部分。详情在文末有介绍。 
+多版本控制（MVCC）：通过数">
 <meta name="twitter:image" content="http://druidio.cn/docs/img/druid-dataflow-3.png">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
@@ -69,7 +78,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>druid.io 3---druid集群 | 小懒的博客</title>
+<title>druid.io 3---druid介绍 | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -282,10 +291,10 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-druid.io_3---druid集群" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-druid.io_3---druid介绍" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/29/druid.io_3---druid集群/" class="article-date">
+      <a href="/2016/10/29/druid.io_3---druid介绍/" class="article-date">
       <time datetime="2016-10-29T03:53:00.000Z" itemprop="datePublished">2016-10-29</time>
 </a>
 
@@ -301,7 +310,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      druid.io 3---druid集群
+      druid.io 3---druid介绍
     </h1>
   
 
@@ -326,19 +335,26 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <excerpt in="" index="" |="" 首页摘要="">   
-
-<p>Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。</p>
-<p>不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。</p>
-<h2 id="节点组成"><a href="#节点组成" class="headerlink" title="节点组成"></a>节点组成</h2><p>主要分为三大部分：数据生产、数据存储、数据查询</p>
+        <p><excerpt in="" index="" |="" 首页摘要="">   </excerpt></p>
+<h2 id="Druid概念"><a href="#Druid概念" class="headerlink" title="Druid概念"></a>Druid概念</h2><p>Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。  </p>
+<p>Druid 是一个开源的，分布式的，列存储的，适用于实时数据分析的存储系统，能够快速聚合、灵活过滤、毫秒级查询、和低延迟数据导入。</p>
+<p>优势：  </p>
+<ul>
+<li>高容错性：单个节点挂掉不会影响其他部分。详情在<a href="#容错性">文末</a>有介绍。 </li>
+<li>多版本控制（MVCC）：通过数据更新时间来区分版本，历史节点只加载最新版本数据。支持实时数据indexing与批量数据indexing同时进行，实时数据索引满足实时需求，批量数据覆盖实时数据满足准确性需求。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_2---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#数据加载">druid数据部分</a>。</li>
+<li>高聚合性：数据roll up预处理，减少存储数据量。详情见<a href="https://fangyeqing.github.io/2016/10/29/druid.io_2---druid%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/#数据加载">druid数据部分</a>。</li>
+<li>高压缩度：使用Bitmap indexing加速列存储的查询速度，并使用CONCISE算法来对bitmap indexing进行压缩，使得生成的segments比原始文本文件小很多  </li>
+</ul>
+<h2 id="集群组成"><a href="#集群组成" class="headerlink" title="集群组成"></a>集群组成</h2><p>Druid集群包含不同类型的节点，而每种节点都被设计来做好某组事情。这样的设计可以隔离关注并简化整个系统的复杂度。不同节点的运转几乎都是独立的并且和其他的节点有着最小化的交互，因此集群内的通信故障对于数据可用性的影响非常小。主要分为四大部分：数据生产、数据存储、数据查询、外部依赖。本小节先做一个简单的介绍，后面每个部分会有详细介绍。</p>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文="">  
 
+<p><img src="http://druidio.cn/docs/img/druid-dataflow-3.png" alt="image"></p>
 <h3 id="数据生产"><a href="#数据生产" class="headerlink" title="数据生产"></a>数据生产</h3><ul>
 <li>Indexing Service 索引服务节点：<br>由多个worker组成的集群，负责为加载批量的和实时的数据创建索引，并且允许对已经存在的数据进行修改。</li>
 <li>Realtime 实时节点：<br>负责加载实时的数据到系统中，在生产使用的几个限制成本上实时节点比索引服务节点更容易搭建。</li>
 </ul>
-<p>实时数据和批量数据加载的两种方式在上一篇中介绍到了，就不赘述。</p>
+<p>实时数据和批量数据加载的两种方式在上一篇druid数据相关中介绍到了，就不赘述。</p>
 <h3 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h3><ul>
 <li>Coordinator 协调节点：<br>对历史节点的分组进行监控，以确保数据可用，和最佳的配置。协调节点通过从元数据存储中读取元数据信息来判断哪些segments是应该加载到集群的，使用Zookeeper去判断哪些历史节点是存活的，在Zookeeper中创建任务条目告诉历史节点去加载和删除segments。</li>
 <li>Historical 历史节点：<br>负责处理历史数据存储和查询历史数据（非实时），历史节点从“deep storage”下载segments，将结果数据返回给broker节点，historical加载完segment通知Zookeeper，Historical nodes使用Zookeeper监控需要加载或者删除哪些新的segments。</li>
@@ -346,8 +362,7 @@
 <h3 id="数据查询"><a href="#数据查询" class="headerlink" title="数据查询"></a>数据查询</h3><ul>
 <li>Broker 代理节点<br>接收来自外部client的查询请求，并转发这些请求给实时节点和历史节点，当代理节点接收到结果时，将来自实时节点和历史节点的结果合并返回给调用方。为了知道整个拓扑结构，代理节点通过使用Zookeeper在确定哪些实时节点和历史节点存活。</li>
 </ul>
-<p><img src="http://druidio.cn/docs/img/druid-dataflow-3.png" alt="image"></p>
-<h2 id="外部依赖"><a href="#外部依赖" class="headerlink" title="外部依赖"></a>外部依赖</h2><p>Druid的集群需要有一些外部依赖。  </p>
+<h3 id="外部依赖"><a href="#外部依赖" class="headerlink" title="外部依赖"></a>外部依赖</h3><p>Druid的集群需要有一些外部依赖。  </p>
 <ul>
 <li>Zookeeper<br>Druid依赖Zookeeper来保证集群内的信息一致。</li>
 <li>Metadata Storage<br>Druid依赖metadata storage存储segments的元数据和配置。创建segments的服务在元数据中记录信息, coordinator监听着元数据以便了解什么时候需要下载新数据或者删除旧数据。 元数据的存储不涉及查询的路径。MySQL和PostgreSQL非常有利于生产环境下元数据的存储, 但Derby在你部署单机版做测试的时候非常好用。</li>
@@ -480,7 +495,7 @@
 <h3 id="元数据存储挂掉"><a href="#元数据存储挂掉" class="headerlink" title="元数据存储挂掉"></a>元数据存储挂掉</h3><p>协调节点就无法找到集群中新的Segments(因为新的Segment一定会写入记录到元数据存储中)。但仍然可以提供当前集群的数据视图.</p>
 <h3 id="ZooKeeper挂掉"><a href="#ZooKeeper挂掉" class="headerlink" title="ZooKeeper挂掉"></a>ZooKeeper挂掉</h3><p>数据拓扑不会被更新(同协调节点挂掉),但是Broker仍然可以维护最近的数据拓扑,并继续提供查询的服务。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a><br><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a><br><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a><br><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a><br><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
-</the></excerpt>
+</the>
       
     </div>
     
@@ -488,13 +503,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/29/druid.io_3---druid集群/">druid.io 3---druid集群</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/29/druid.io_3---druid介绍/">druid.io 3---druid介绍</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-29, 11:53:00</p>
-        <p><span>最后更新:</span>2016-10-29, 15:35:53</p>
+        <p><span>最后更新:</span>2016-10-30, 11:31:16</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io_3---druid集群/" title="druid.io 3---druid集群">https://fangyeqing.github.io/2016/10/29/druid.io_3---druid集群/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io_3---druid集群/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io_3---druid介绍/" title="druid.io 3---druid介绍">https://fangyeqing.github.io/2016/10/29/druid.io_3---druid介绍/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io_3---druid介绍/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -527,7 +542,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#节点组成"><span class="toc-number">1.</span> <span class="toc-text">节点组成</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据生产"><span class="toc-number">1.1.</span> <span class="toc-text">数据生产</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据存储"><span class="toc-number">1.2.</span> <span class="toc-text">数据存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据查询"><span class="toc-number">1.3.</span> <span class="toc-text">数据查询</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#外部依赖"><span class="toc-number">2.</span> <span class="toc-text">外部依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Indexing-Service"><span class="toc-number">3.</span> <span class="toc-text">Indexing Service</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#结构"><span class="toc-number">3.1.</span> <span class="toc-text">结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#流程："><span class="toc-number">3.2.</span> <span class="toc-text">流程：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置说明"><span class="toc-number">3.3.</span> <span class="toc-text">配置说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#real-time-node"><span class="toc-number">4.</span> <span class="toc-text">real-time node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#realtime-node与indexing-service导入数据的区别"><span class="toc-number">4.1.</span> <span class="toc-text">realtime node与indexing service导入数据的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Coordinator-Node"><span class="toc-number">5.</span> <span class="toc-text">Coordinator Node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#负载均衡"><span class="toc-number">5.1.</span> <span class="toc-text">负载均衡</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#例子："><span class="toc-number">5.1.1.</span> <span class="toc-text">例子：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Historical-Node"><span class="toc-number">6.</span> <span class="toc-text">Historical Node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Historical节点segment创建流程"><span class="toc-number">6.1.</span> <span class="toc-text">Historical节点segment创建流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Broker-Node"><span class="toc-number">7.</span> <span class="toc-text">Broker Node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#转发查询"><span class="toc-number">7.1.</span> <span class="toc-text">转发查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缓存策略"><span class="toc-number">7.2.</span> <span class="toc-text">缓存策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#外部依赖-1"><span class="toc-number">8.</span> <span class="toc-text">外部依赖</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Metadata-Storage（Mysql）"><span class="toc-number">8.1.</span> <span class="toc-text">Metadata Storage（Mysql）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deep-storage"><span class="toc-number">8.2.</span> <span class="toc-text">Deep storage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZooKeeper"><span class="toc-number">8.3.</span> <span class="toc-text">ZooKeeper</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据流过程"><span class="toc-number">9.</span> <span class="toc-text">数据流过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#说明"><span class="toc-number">9.1.</span> <span class="toc-text">说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#容错性"><span class="toc-number">10.</span> <span class="toc-text">容错性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#历史节点挂掉"><span class="toc-number">10.1.</span> <span class="toc-text">历史节点挂掉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DeepStorage不可用"><span class="toc-number">10.2.</span> <span class="toc-text">DeepStorage不可用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#协调节点挂掉"><span class="toc-number">10.3.</span> <span class="toc-text">协调节点挂掉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Broker挂掉"><span class="toc-number">10.4.</span> <span class="toc-text">Broker挂掉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实时节点"><span class="toc-number">10.5.</span> <span class="toc-text">实时节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#元数据存储挂掉"><span class="toc-number">10.6.</span> <span class="toc-text">元数据存储挂掉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZooKeeper挂掉"><span class="toc-number">10.7.</span> <span class="toc-text">ZooKeeper挂掉</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">11.</span> <span class="toc-text">参考</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Druid概念"><span class="toc-number">1.</span> <span class="toc-text">Druid概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集群组成"><span class="toc-number">2.</span> <span class="toc-text">集群组成</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据生产"><span class="toc-number">2.1.</span> <span class="toc-text">数据生产</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据存储"><span class="toc-number">2.2.</span> <span class="toc-text">数据存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据查询"><span class="toc-number">2.3.</span> <span class="toc-text">数据查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#外部依赖"><span class="toc-number">2.4.</span> <span class="toc-text">外部依赖</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Indexing-Service"><span class="toc-number">3.</span> <span class="toc-text">Indexing Service</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#结构"><span class="toc-number">3.1.</span> <span class="toc-text">结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#流程："><span class="toc-number">3.2.</span> <span class="toc-text">流程：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置说明"><span class="toc-number">3.3.</span> <span class="toc-text">配置说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#real-time-node"><span class="toc-number">4.</span> <span class="toc-text">real-time node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#realtime-node与indexing-service导入数据的区别"><span class="toc-number">4.1.</span> <span class="toc-text">realtime node与indexing service导入数据的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Coordinator-Node"><span class="toc-number">5.</span> <span class="toc-text">Coordinator Node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#负载均衡"><span class="toc-number">5.1.</span> <span class="toc-text">负载均衡</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#例子："><span class="toc-number">5.1.1.</span> <span class="toc-text">例子：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Historical-Node"><span class="toc-number">6.</span> <span class="toc-text">Historical Node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Historical节点segment创建流程"><span class="toc-number">6.1.</span> <span class="toc-text">Historical节点segment创建流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Broker-Node"><span class="toc-number">7.</span> <span class="toc-text">Broker Node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#转发查询"><span class="toc-number">7.1.</span> <span class="toc-text">转发查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缓存策略"><span class="toc-number">7.2.</span> <span class="toc-text">缓存策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#外部依赖-1"><span class="toc-number">8.</span> <span class="toc-text">外部依赖</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Metadata-Storage（Mysql）"><span class="toc-number">8.1.</span> <span class="toc-text">Metadata Storage（Mysql）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deep-storage"><span class="toc-number">8.2.</span> <span class="toc-text">Deep storage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZooKeeper"><span class="toc-number">8.3.</span> <span class="toc-text">ZooKeeper</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据流过程"><span class="toc-number">9.</span> <span class="toc-text">数据流过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#说明"><span class="toc-number">9.1.</span> <span class="toc-text">说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#容错性"><span class="toc-number">10.</span> <span class="toc-text">容错性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#历史节点挂掉"><span class="toc-number">10.1.</span> <span class="toc-text">历史节点挂掉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DeepStorage不可用"><span class="toc-number">10.2.</span> <span class="toc-text">DeepStorage不可用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#协调节点挂掉"><span class="toc-number">10.3.</span> <span class="toc-text">协调节点挂掉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Broker挂掉"><span class="toc-number">10.4.</span> <span class="toc-text">Broker挂掉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实时节点"><span class="toc-number">10.5.</span> <span class="toc-text">实时节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#元数据存储挂掉"><span class="toc-number">10.6.</span> <span class="toc-text">元数据存储挂掉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZooKeeper挂掉"><span class="toc-number">10.7.</span> <span class="toc-text">ZooKeeper挂掉</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">11.</span> <span class="toc-text">参考</span></a></li></ol>
         
     </div>
     <style>
@@ -563,7 +578,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"druid.io 3---druid集群　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"druid.io 3---druid介绍　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -579,7 +594,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/29/druid.io_3---druid集群/" data-title="druid.io 3---druid集群" data-url="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid集群/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/29/druid.io_3---druid介绍/" data-title="druid.io 3---druid介绍" data-url="https://fangyeqing.github.io/2016/10/29/druid.io_3---druid介绍/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -616,7 +631,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---提高查询速度/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid集群/">druid.io 3---druid集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP&druid概念/">druid.io 1---概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid介绍/">druid.io 3---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid数据相关/">druid.io 2---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
 
 
 
