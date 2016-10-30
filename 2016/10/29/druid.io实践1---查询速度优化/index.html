@@ -17,13 +17,13 @@
 
 <meta name="description" content="当数据维度比较多，存储时间比较长时，数据量会增加到到T级别。如果historical节点只是单机版，查询会特别慢。在生产过程中，主要做了以下几点优化：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="druid.io实践1---提高查询速度">
+<meta property="og:title" content="druid.io实践1---查询速度优化">
 <meta property="og:url" content="https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/index.html">
 <meta property="og:site_name" content="小懒的博客">
 <meta property="og:description" content="当数据维度比较多，存储时间比较长时，数据量会增加到到T级别。如果historical节点只是单机版，查询会特别慢。在生产过程中，主要做了以下几点优化：">
-<meta property="og:updated_time" content="2016-10-30T02:58:31.000Z">
+<meta property="og:updated_time" content="2016-10-30T03:58:47.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="druid.io实践1---提高查询速度">
+<meta name="twitter:title" content="druid.io实践1---查询速度优化">
 <meta name="twitter:description" content="当数据维度比较多，存储时间比较长时，数据量会增加到到T级别。如果historical节点只是单机版，查询会特别慢。在生产过程中，主要做了以下几点优化：">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
@@ -56,7 +56,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>druid.io实践1---提高查询速度 | 小懒的博客</title>
+<title>druid.io实践1---查询速度优化 | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -288,7 +288,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      druid.io实践1---提高查询速度
+      druid.io实践1---查询速度优化
     </h1>
   
 
@@ -344,12 +344,12 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---提高查询速度</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-29, 11:57:00</p>
-        <p><span>最后更新:</span>2016-10-30, 10:58:31</p>
+        <p><span>最后更新:</span>2016-10-30, 11:58:47</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io实践1---查询速度优化/" title="druid.io实践1---提高查询速度">https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/</a>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io实践1---查询速度优化/" title="druid.io实践1---查询速度优化">https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -413,7 +413,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"druid.io实践1---提高查询速度　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"druid.io实践1---查询速度优化　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -429,7 +429,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/29/druid.io实践1---查询速度优化/" data-title="druid.io实践1---提高查询速度" data-url="https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/29/druid.io实践1---查询速度优化/" data-title="druid.io实践1---查询速度优化" data-url="https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -464,7 +464,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---提高查询速度</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
 
 
 
