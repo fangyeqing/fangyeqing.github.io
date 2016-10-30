@@ -54,9 +54,10 @@
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
-<h2 id="broker-节点"><a href="#broker-节点" class="headerlink" title="broker 节点"></a>broker 节点</h2><p>配置缓存，加大缓存大小，或者从local替换成memcached。</p>
+<h2 id="增加缓存"><a href="#增加缓存" class="headerlink" title="增加缓存"></a>增加缓存</h2><p>当集群机器较少时(官方文档推荐&lt;20台)，在broker节点配置缓存，可以适当增加缓存大小，或者从local替换成memcached。</p>
+<p>当集群机器较多时，应当只配置historical节点缓存，减轻broker节点压力。</p>
 <h3 id="附：broker部分配置"><a href="#附：broker部分配置" class="headerlink" title="附：broker部分配置"></a>附：broker部分配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># Query cache</div><div class="line">druid.broker.cache.useCache=true</div><div class="line">druid.broker.cache.populateCache=true</div><div class="line">druid.cache.type=local</div><div class="line">druid.cache.sizeInBytes=2000000000</div></pre></td></tr></table></figure>
-<h2 id="historical集群"><a href="#historical集群" class="headerlink" title="historical集群"></a>historical集群</h2><p>查询为CPU密集型，通过合理的数据分配策略，使数据尽量分散在不同的历史节点。</p>
+<h2 id="historical节点集群化"><a href="#historical节点集群化" class="headerlink" title="historical节点集群化"></a>historical节点集群化</h2><p>查询为CPU密集型，通过合理的数据分配策略，使数据尽量分散在不同的历史节点。</p>
 <h3 id="集群分片"><a href="#集群分片" class="headerlink" title="集群分片"></a>集群分片</h3><p>可以根据查询频率的高低分为冷热数据，公司经常查40天内的数据，40天内的数据显然是hot数据。 </p>
 <p>这里涉及到coordinate节点的Load Rules配置，druid 0.9版本有coordinator的UI界面，可以设置每个dataSource的Load Rules。如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;type&quot; : &quot;loadByPeriod&quot;,</div><div class="line">  &quot;period&quot; : &quot;P40D&quot;,</div><div class="line">  &quot;tieredReplicants&quot;: &#123;</div><div class="line">      &quot;hot&quot;: 1,</div><div class="line">      &quot;_default_tier&quot; : 1</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">&#123;</div><div class="line">  &quot;type&quot; : &quot;loadForever&quot;,  </div><div class="line">  &quot;tieredReplicants&quot;: &#123;</div><div class="line">    &quot;_default_tier&quot; : 1</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>这里设置了两个Load Rules，loadByPeriod部分表示40天内的数据在hot和_default_tier分片各保存一份副本。loadForever部分表示所有数据在_default_tier保存一份。</p>
@@ -266,7 +267,7 @@
 <h3 id="缓存策略"><a href="#缓存策略" class="headerlink" title="缓存策略"></a>缓存策略</h3><p>Broker节点包含一个支持LRU失效策略的缓存。</p>
 <ul>
 <li>首先将这个查询映射到一组Segments，这些Segment结果的子集可能在缓存中已经存在，在缓存中已经存在的结果可以被直接拉取。  </li>
-<li>对于一些缓存中不存在的结果。代理节点会转发查询到历史节点。一旦历史节点返回其结果，代理节点将结果存储到缓存中。  s</li>
+<li>对于一些缓存中不存在的结果。代理节点会转发查询到历史节点。一旦历史节点返回其结果，代理节点将结果存储到缓存中。  </li>
 <li>实时节点返回的结果将永远不会被缓存，因此实时节点的查询请求将永远被转发到实时节点。实时节点的数据是不断变化的，缓存实时节点的结果是不可靠的。</li>
 </ul>
 <h2 id="外部依赖-1"><a href="#外部依赖-1" class="headerlink" title="外部依赖"></a>外部依赖</h2><p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0E59F34342744B8ABBDCE92DA750B186" alt="image"></p>

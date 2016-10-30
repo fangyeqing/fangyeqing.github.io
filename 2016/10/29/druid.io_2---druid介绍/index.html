@@ -29,7 +29,7 @@ Druid 是一个开源的，分布式的，列存储的，适用于实时数据�
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/5D9BEA80D1E642C88D707A330CC9D618">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0E59F34342744B8ABBDCE92DA750B186">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/69D6BCF5B4A3476898CF5599ED461232">
-<meta property="og:updated_time" content="2016-10-30T04:17:53.000Z">
+<meta property="og:updated_time" content="2016-10-30T08:53:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="druid.io 2---druid介绍">
 <meta name="twitter:description" content="Druid概念Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。  
@@ -441,7 +441,7 @@ Druid 是一个开源的，分布式的，列存储的，适用于实时数据�
 <h3 id="缓存策略"><a href="#缓存策略" class="headerlink" title="缓存策略"></a>缓存策略</h3><p>Broker节点包含一个支持LRU失效策略的缓存。</p>
 <ul>
 <li>首先将这个查询映射到一组Segments，这些Segment结果的子集可能在缓存中已经存在，在缓存中已经存在的结果可以被直接拉取。  </li>
-<li>对于一些缓存中不存在的结果。代理节点会转发查询到历史节点。一旦历史节点返回其结果，代理节点将结果存储到缓存中。  s</li>
+<li>对于一些缓存中不存在的结果。代理节点会转发查询到历史节点。一旦历史节点返回其结果，代理节点将结果存储到缓存中。  </li>
 <li>实时节点返回的结果将永远不会被缓存，因此实时节点的查询请求将永远被转发到实时节点。实时节点的数据是不断变化的，缓存实时节点的结果是不可靠的。</li>
 </ul>
 <h2 id="外部依赖-1"><a href="#外部依赖-1" class="headerlink" title="外部依赖"></a>外部依赖</h2><p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0E59F34342744B8ABBDCE92DA750B186" alt="image"></p>
@@ -493,7 +493,7 @@ Druid 是一个开源的，分布式的，列存储的，适用于实时数据�
         <p><span>本文标题:</span><a href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-29, 11:52:00</p>
-        <p><span>最后更新:</span>2016-10-30, 12:17:53</p>
+        <p><span>最后更新:</span>2016-10-30, 16:53:46</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io_2---druid介绍/" title="druid.io 2---druid介绍">https://fangyeqing.github.io/2016/10/29/druid.io_2---druid介绍/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io_2---druid介绍/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
