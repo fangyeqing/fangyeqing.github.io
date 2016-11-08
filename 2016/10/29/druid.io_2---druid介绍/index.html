@@ -29,7 +29,7 @@ Druid 是一个开源的，分布式的，列存储的，适用于实时数据�
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/5D9BEA80D1E642C88D707A330CC9D618">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0E59F34342744B8ABBDCE92DA750B186">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/69D6BCF5B4A3476898CF5599ED461232">
-<meta property="og:updated_time" content="2016-10-30T08:53:46.000Z">
+<meta property="og:updated_time" content="2016-11-08T10:04:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="druid.io 2---druid介绍">
 <meta name="twitter:description" content="Druid概念Druid是一个为大型冷数据集上实时探索查询而设计的开源数据分析和存储系统，提供极具成本效益并且永远在线的实时数据摄取和任意数据处理。  
@@ -206,7 +206,7 @@ Druid 是一个开源的，分布式的，列存储的，适用于实时数据�
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
                     </div>
                 </section>
                 
@@ -478,7 +478,7 @@ Druid 是一个开源的，分布式的，列存储的，适用于实时数据�
 <h3 id="协调节点挂掉"><a href="#协调节点挂掉" class="headerlink" title="协调节点挂掉"></a>协调节点挂掉</h3><p>数据的拓扑(data topology)停止服务,就不会有新的数据以及数据的负载均衡。因为协调节点会通知历史节点下载新数据。   </p>
 <p>如果实时节点将Segment转存到DeepStorage,而没有历史节点去下载这些数据,会导致实时节点最终会丢弃这份过期的数据。</p>
 <h3 id="Broker挂掉"><a href="#Broker挂掉" class="headerlink" title="Broker挂掉"></a>Broker挂掉</h3><p>还会有其他的Broker接管请求,但是要至少保证有多余的Broker。<br>当然如果不向Broker发送请求,而只关心最新的实时数据,可以直接访问实时节点. 不过这种情况是很少见的.</p>
-<h3 id="实时节点"><a href="#实时节点" class="headerlink" title="实时节点"></a>实时节点</h3><p>根据发送流的语义,可以有多个实时节点同时运行,处理同一个输入流. 每个实时节点分担输入流的一部分数据.</p>
+<h3 id="实时节点"><a href="#实时节点" class="headerlink" title="实时节点"></a>实时节点</h3><p>根据发送流的语义,可以有多个实时节点或者tranquility同时运行,处理同一个输入流,每个实时节点分担输入流的一部分数据.</p>
 <h3 id="元数据存储挂掉"><a href="#元数据存储挂掉" class="headerlink" title="元数据存储挂掉"></a>元数据存储挂掉</h3><p>协调节点就无法找到集群中新的Segments(因为新的Segment一定会写入记录到元数据存储中)。但仍然可以提供当前集群的数据视图.</p>
 <h3 id="ZooKeeper挂掉"><a href="#ZooKeeper挂掉" class="headerlink" title="ZooKeeper挂掉"></a>ZooKeeper挂掉</h3><p>数据拓扑不会被更新(同协调节点挂掉),但是Broker仍然可以维护最近的数据拓扑,并继续提供查询的服务。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://druid.io/docs/0.9.1.1/design/index.html" target="_blank" rel="external">druid.io</a><br><a href="http://druidio.cn/docs/0.9.0/design/" target="_blank" rel="external">druidio.cn</a><br><a href="http://lxw1234.com/archives/2015/11/563.htm" target="_blank" rel="external">lxw的大数据田地–Druid.io实时OLAP数据分析存储系统介绍</a><br><a href="http://dj1211.com/?p=702" target="_blank" rel="external">萌の宇博客–realtime node与index server区别</a><br><a href="http://zqhxuyuan.github.io/2015/12/03/2015-12-03-Druid-Design/#Concepts" target="_blank" rel="external">zqhxuyuan博客–Druid OLAP架构设计</a></p>
@@ -493,7 +493,7 @@ Druid 是一个开源的，分布式的，列存储的，适用于实时数据�
         <p><span>本文标题:</span><a href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-29, 11:52:00</p>
-        <p><span>最后更新:</span>2016-10-30, 16:53:46</p>
+        <p><span>最后更新:</span>2016-11-08, 18:04:44</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io_2---druid介绍/" title="druid.io 2---druid介绍">https://fangyeqing.github.io/2016/10/29/druid.io_2---druid介绍/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io_2---druid介绍/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -618,7 +618,7 @@ Druid 是一个开源的，分布式的，列存储的，适用于实时数据�
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
 
 
 

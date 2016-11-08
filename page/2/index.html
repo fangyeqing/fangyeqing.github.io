@@ -200,7 +200,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
                     </div>
                 </section>
                 
@@ -274,6 +274,148 @@
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-Samza_2---基本概念" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/28/Samza_2---基本概念/" class="article-date">
+      <time datetime="2016-10-28T09:41:00.000Z" itemprop="datePublished">2016-10-28</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/28/Samza_2---基本概念/">Samza 2---基本概念</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <Excerpt in index | 首页摘要>   
+
+<p>samza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。</p>
+<h2 id="为什么需要samza"><a href="#为什么需要samza" class="headerlink" title="为什么需要samza"></a>为什么需要samza</h2><p>kafka作为一个分布式的消息队列系统，已经实现了流式处理框架底层的许多核心基础架构，把消息串联流动起来就是Streaming了。</p>
+<p>但是要构建一个可用的流式数据处理框架，还是有许多事情要做。例如生产者和消费者进程的管理，作业调度和容错处理，辅助工具和监控管理手段，更友好方便的用户接口等等，本质上说，Samza是在消息队列系统上的更高层的抽象，是一种应用流式处理框架在消息队列系统上的一种应用模式的实现。  </p>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/samza/">samza</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/samza/">samza</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/流处理/">流处理</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a href="/2016/10/28/Samza_2---基本概念/#more">阅读全文 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Samza_1---Hello_Samza" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/28/Samza_1---Hello_Samza/" class="article-date">
+      <time datetime="2016-10-28T09:40:00.000Z" itemprop="datePublished">2016-10-28</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/28/Samza_1---Hello_Samza/">Samza1---Hello Samza</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <Excerpt in index | 首页摘要>   
+
+<p><a href="http://samza.apache.org/startup/hello-samza/0.10/">hello-samza</a>是官方给的例子，包括一整套运行环境，包括zookeeper、kafka、yarn、samza。虽然例子看起来很容易，但是跑起来感觉全是坑，毕竟用的公司的集群，没有root权限，然后例子给的都是国外的地址，访问速度很慢或者根本被墙了。想say hello不容易！<br>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/samza/">samza</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/samza/">samza</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/流处理/">流处理</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a href="/2016/10/28/Samza_1---Hello_Samza/#more">阅读全文 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-hexo+github_page搭建博客" class="article article-type-post" itemscope itemprop="blogPost">
   
