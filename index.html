@@ -452,11 +452,8 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <Excerpt in index | 首页摘要>   
-
-<h2 id="背景交代"><a href="#背景交代" class="headerlink" title="背景交代"></a>背景交代</h2><p>druid数据存储采用hdfs。</p>
-<p>实时输入流通过tranquility从kafka消费topic进行realtime indexing。<br>批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  </p>
-<p>数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。</p>
+              <p><Excerpt in index | 首页摘要><br>数据迁移指的是两套Druid、kafka、HDFS集群之间的数据迁移。其中会用到流处理框架Samza，，Hadoop distcp命令，Druid重建索引的insert segment-to-db工具。</p>
+<h2 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h2><p><img src="http://note.youdao.com/yws/public/resource/eb83866d6603d9a10ca5134681ab7970/xmlnote/5525411332C94BC395CFC3E7EF21F06A/23416" alt="image"></p>
           
       
     </div>
