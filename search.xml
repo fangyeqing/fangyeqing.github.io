@@ -375,7 +375,8 @@
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
-<h2 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路"></a>大体思路</h2><ul>
+<h2 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路"></a>大体思路</h2><p><img src="http://note.youdao.com/yws/public/resource/eb83866d6603d9a10ca5134681ab7970/xmlnote/5525411332C94BC395CFC3E7EF21F06A/23416" alt="image"></p>
+<ul>
 <li>kafka镜像流：<br>启动samza任务，从老的kafka集群consume消息，produce到新的kafka集群。直接使用kafka的mirror也可以，由于项目使用的arvo编解码，涉及到schema-id的问题，所以只能通过samza任务。</li>
 <li>druid批量数据获取&amp;index：<br>给新druid集群提交任务，camus批量拉取数据，发送post请求提交配置json到overload执行batch index。 </li>
 <li>脏数据覆盖(批量路线稳定、数据正确之后)  <ul>

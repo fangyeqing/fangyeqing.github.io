@@ -25,12 +25,14 @@
 <meta property="og:description" content="背景交代druid数据存储采用hdfs。
 实时输入流通过tranquility从kafka消费topic进行realtime indexing。批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  
 数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。">
-<meta property="og:updated_time" content="2016-10-31T03:04:21.000Z">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/eb83866d6603d9a10ca5134681ab7970/xmlnote/5525411332C94BC395CFC3E7EF21F06A/23416">
+<meta property="og:updated_time" content="2016-11-14T09:59:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="druid.io实践2---集群数据迁移">
 <meta name="twitter:description" content="背景交代druid数据存储采用hdfs。
 实时输入流通过tranquility从kafka消费topic进行realtime indexing。批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  
 数据迁移指的是完全两套druid、kafka、hdfs集群之间的数据迁移。">
+<meta name="twitter:image" content="http://note.youdao.com/yws/public/resource/eb83866d6603d9a10ca5134681ab7970/xmlnote/5525411332C94BC395CFC3E7EF21F06A/23416">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -327,7 +329,8 @@
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
-<h2 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路"></a>大体思路</h2><ul>
+<h2 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路"></a>大体思路</h2><p><img src="http://note.youdao.com/yws/public/resource/eb83866d6603d9a10ca5134681ab7970/xmlnote/5525411332C94BC395CFC3E7EF21F06A/23416" alt="image"></p>
+<ul>
 <li>kafka镜像流：<br>启动samza任务，从老的kafka集群consume消息，produce到新的kafka集群。直接使用kafka的mirror也可以，由于项目使用的arvo编解码，涉及到schema-id的问题，所以只能通过samza任务。</li>
 <li>druid批量数据获取&amp;index：<br>给新druid集群提交任务，camus批量拉取数据，发送post请求提交配置json到overload执行batch index。 </li>
 <li>脏数据覆盖(批量路线稳定、数据正确之后)  <ul>
@@ -366,7 +369,7 @@
         <p><span>本文标题:</span><a href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-29, 11:58:00</p>
-        <p><span>最后更新:</span>2016-10-31, 11:04:21</p>
+        <p><span>最后更新:</span>2016-11-14, 17:59:43</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io实践2---集群数据迁移/" title="druid.io实践2---集群数据迁移">https://fangyeqing.github.io/2016/10/29/druid.io实践2---集群数据迁移/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io实践2---集群数据迁移/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
