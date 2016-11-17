@@ -31,7 +31,7 @@ Producer消息的生产者。负责发布消息到Kafka broker">
 <meta property="og:image" content="http://kafka.apache.org/090/images/log_anatomy.png">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/41CC44BBC283484B9E01F28C50A8991D/23720">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/A6002CC243CC471FBF51E6BFDE0E1BA2/23687">
-<meta property="og:updated_time" content="2016-11-17T08:21:57.000Z">
+<meta property="og:updated_time" content="2016-11-17T08:27:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kafka---介绍">
 <meta name="twitter:description" content="Kafka是一种分布式的消息系统。本文基于0.9.0版本，新版kafka加入了流处理组件kafka stream，最新的官方文档又自称分布式流处理平台。
@@ -376,7 +376,7 @@ Producer消息的生产者。负责发布消息到Kafka broker">
 </tbody>
 </table>
 <p>增减consumer，broker，partition会导致rebalance，rebalance后consumer对应的partition会发生变化，在后面的实例中也可以看到。</p>
-<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>利用kafka中自带的生产者和消费者例子来做个简单的测试。具体步骤在另一篇kakfa部署。</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>利用kafka中自带的生产者和消费者例子来做个简单的测试。具体步骤在另一篇<a href="https://fangyeqing.github.io/2016/10/28/kafka---%E9%83%A8%E7%BD%B2/">kakfa部署</a>中。</p>
 <p>kafka集群有3个broker节点。新建一个partitions数量为3的topic。启动一个A终端为生产者，启动B、C、D、E终端为消费者。C、D、E终端为一个consumer group，B为单独的一个consumer group。</p>
 <p>在producer终端输入消息从1-20。可以看到B终端会输出1-20全部消息，图中B所示。而C、D、E终端由于属于同一个Consumer Group，partitions数量等于consumer，每个consumer消费了一个partition里的消息。图中为C、D、E。</p>
 <p>将C终端断开，剩下B、D、E去消费消息。B终端还是会输出1-20全部消息，图中为B1所示。而D、E属于同一个Consumer Group，且consumer数量少于partition数，可以看到D消费了两个partition中的数据，见图中D1所示。<br><img src="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/A6002CC243CC471FBF51E6BFDE0E1BA2/23687" alt="image">  </p>
@@ -399,7 +399,7 @@ Producer消息的生产者。负责发布消息到Kafka broker">
 <li>可用性高：选择第一个“活”过来的replica（不一定是ISR中的）作为leader。有可能会丢失数据</li>
 </ul>
 <p>kafka采用第二种方案，可以通过配置unclean.leader.election.enable来关闭这种方案。</p>
-<h3 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h3><p>kafka集群有3个broker节点。具体部署在另一篇kafka部署中。</p>
+<h3 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h3><p>kafka集群有3个broker节点。具体部署在另一篇<a href="https://fangyeqing.github.io/2016/10/28/kafka---%E9%83%A8%E7%BD%B2/">kafka部署</a>中。</p>
 <p>做个简单的测试，创建一个3分区的topic，不指定副本数，可以看到默认一个副本，Partition均匀分布在各broker。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[fangyeqing@xxxx kafka_2.11-0.9.0.0]$bin/kafka-topics.sh --create --zookeeper localhost:2181 --partitions 3 --topic test3partitions</div><div class="line">[fangyeqing@xxxx kafka_2.11-0.9.0.0]$bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic test3partitions</div><div class="line">Topic:test3partitions	PartitionCount:3	ReplicationFactor:1	Configs:</div><div class="line">	Topic: test3partitions	Partition: 0	Leader: 1	Replicas: 1	Isr: 1</div><div class="line">	Topic: test3partitions	Partition: 1	Leader: 2	Replicas: 2	Isr: 2</div><div class="line">	Topic: test3partitions	Partition: 2	Leader: 0	Replicas: 0	Isr: 0</div></pre></td></tr></table></figure></p>
 <p>创建一个3分区2副本的topic，可以看到Replicas和Isr中有1个follower。例如Partitions：0的Leader为broker：1,follower为broker：2，并且2在Isr中，理论上当Leader挂掉之后，2会顶上。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[fangyeqing@xxxx kafka_2.11-0.9.0.0]$bin/kafka-topics.sh --create --zookeeper localhost:2181 --partitions 3 --topic test3partition2replication --replication-factor 2</div><div class="line">[fangyeqing@xxxx kafka_2.11-0.9.0.0]$ bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic test3partition2replication</div><div class="line">Topic:test3partition2replication	PartitionCount:3	ReplicationFactor:2	Configs:</div><div class="line">	Topic: test3partition2replication	Partition: 0	Leader: 1	Replicas: 1,2	Isr: 1,2</div><div class="line">	Topic: test3partition2replication	Partition: 1	Leader: 2	Replicas: 2,0	Isr: 2,0</div><div class="line">	Topic: test3partition2replication	Partition: 2	Leader: 0	Replicas: 0,1	Isr: 0,1</div></pre></td></tr></table></figure></p>
 <p>创建一个3分区2副本的topic，可以看到Replicas和Isr中有2个follower<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[fangyeqing@xxxx kafka_2.11-0.9.0.0]$bin/kafka-topics.sh --create --zookeeper localhost:2181 --partitions 3 --topic test3partition3replication --replication-factor 3</div><div class="line">[fangyeqing@xxxx kafka_2.11-0.9.0.0]$ bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic test3partition3replication</div><div class="line">Topic:test3partition3replication	PartitionCount:3	ReplicationFactor:3	Configs:</div><div class="line">	Topic: test3partition3replication	Partition: 0	Leader: 1	Replicas: 1,0,2	Isr: 1,0,2</div><div class="line">	Topic: test3partition3replication	Partition: 1	Leader: 2	Replicas: 2,1,0	Isr: 2,1,0</div><div class="line">	Topic: test3partition3replication	Partition: 2	Leader: 0	Replicas: 0,2,1	Isr: 0,2,1</div></pre></td></tr></table></figure></p>
@@ -435,7 +435,7 @@ Producer消息的生产者。负责发布消息到Kafka broker">
         <p><span>本文标题:</span><a href="/2016/10/28/kafka---介绍/">kafka---介绍</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-28, 16:17:00</p>
-        <p><span>最后更新:</span>2016-11-17, 16:21:57</p>
+        <p><span>最后更新:</span>2016-11-17, 16:27:28</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/28/kafka---介绍/" title="kafka---介绍">https://fangyeqing.github.io/2016/10/28/kafka---介绍/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/kafka---介绍/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
