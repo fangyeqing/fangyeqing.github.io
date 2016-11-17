@@ -21,7 +21,7 @@
 <meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/hexo+github_page搭建博客/index.html">
 <meta property="og:site_name" content="小懒的博客">
 <meta property="og:description" content="环境安装在windows和linux下都配置了，感觉还是Linux方便一点">
-<meta property="og:updated_time" content="2016-10-31T03:04:21.000Z">
+<meta property="og:updated_time" content="2016-11-17T09:06:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hexo+github page搭建博客">
 <meta name="twitter:description" content="环境安装在windows和linux下都配置了，感觉还是Linux方便一点">
@@ -346,7 +346,9 @@
 <h3 id="站内搜索"><a href="#站内搜索" class="headerlink" title="站内搜索"></a>站内搜索</h3><p>需要先安装一个插件，然后修改配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-search --save</div><div class="line"></div><div class="line">#主题配置themes/yelee/_config.yml</div><div class="line">search: </div><div class="line">  on: true</div><div class="line">  onload: false</div><div class="line">#根目录配置_config.yml  </div><div class="line">search:</div><div class="line">  path: search.xml</div><div class="line">  field: all</div></pre></td></tr></table></figure></p>
 <h3 id="文章摘要"><a href="#文章摘要" class="headerlink" title="文章摘要"></a>文章摘要</h3><p>在首页显示摘要，非全文<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: Hello World</div><div class="line">date: 2015-12-03 00:00:00</div><div class="line">categories: samza</div><div class="line">tags: [samza,学习,hello world] </div><div class="line">toc: true</div><div class="line">---</div><div class="line">&lt;Excerpt in index | 首页摘要&gt; </div><div class="line">摘要内容...</div><div class="line">&lt;!-- more --&gt;</div><div class="line">&lt;The rest of contents | 余下全文&gt;</div><div class="line">余下的全文内容...</div></pre></td></tr></table></figure></p>
 <h3 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page about</div></pre></td></tr></table></figure>
+<p>在hexo\source\about\index.md中修改</p>
 <h3 id="标签云"><a href="#标签云" class="headerlink" title="标签云"></a>标签云</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page tags</div></pre></td></tr></table></figure>
+<p>会自动生成标签云</p>
 </the></excerpt>
       
     </div>
@@ -358,7 +360,7 @@
         <p><span>本文标题:</span><a href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-28, 13:44:00</p>
-        <p><span>最后更新:</span>2016-10-31, 11:04:21</p>
+        <p><span>最后更新:</span>2016-11-17, 17:06:36</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/28/hexo+github_page搭建博客/" title="hexo+github page搭建博客">https://fangyeqing.github.io/2016/10/28/hexo+github_page搭建博客/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/hexo+github_page搭建博客/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -475,7 +477,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
 
 
 
