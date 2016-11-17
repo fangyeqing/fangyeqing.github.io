@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="小懒" />
+
+
+
+<meta name="description" content="Kafka是一种分布式的消息系统。本文基于0.9.0版本，新版kafka加入了流处理组件kafka stream，最新的官方文档又自称分布式流处理平台。
+概念
+BrokerKafka的节点。kafka集群包含一个或多个broker
+Producer消息的生产者。负责发布消息到Kafka broker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kafka---介绍">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/kafka---介绍/index.html">
+<meta property="og:site_name" content="小懒的博客">
+<meta property="og:description" content="Kafka是一种分布式的消息系统。本文基于0.9.0版本，新版kafka加入了流处理组件kafka stream，最新的官方文档又自称分布式流处理平台。
+概念
+BrokerKafka的节点。kafka集群包含一个或多个broker
+Producer消息的生产者。负责发布消息到Kafka broker">
+<meta property="og:image" content="http://kafka.apache.org/090/images/producer_consumer.png">
+<meta property="og:image" content="http://kafka.apache.org/090/images/log_anatomy.png">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/41CC44BBC283484B9E01F28C50A8991D/23720">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/A6002CC243CC471FBF51E6BFDE0E1BA2/23687">
+<meta property="og:updated_time" content="2016-11-17T08:21:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="kafka---介绍">
+<meta name="twitter:description" content="Kafka是一种分布式的消息系统。本文基于0.9.0版本，新版kafka加入了流处理组件kafka stream，最新的官方文档又自称分布式流处理平台。
+概念
+BrokerKafka的节点。kafka集群包含一个或多个broker
+Producer消息的生产者。负责发布消息到Kafka broker">
+<meta name="twitter:image" content="http://kafka.apache.org/090/images/producer_consumer.png">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="小懒的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/xiaolan.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>kafka---介绍 | 小懒的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?7fb806568d59e1b131e6cd93134ab91e";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">小懒</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">小懒</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">小懒</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-kafka---介绍" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/28/kafka---介绍/" class="article-date">
+      <time datetime="2016-10-28T08:17:00.000Z" itemprop="datePublished">2016-10-28</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      kafka---介绍
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/kafka/">kafka</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/">kafka</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/流处理/">流处理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/消息系统/">消息系统</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in="" index="" |="" 首页摘要=""><br>Kafka是一种分布式的消息系统。本文基于0.9.0版本，新版kafka加入了流处理组件kafka stream，最新的官方文档又自称分布式流处理平台。</excerpt></p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li>Broker<br>Kafka的节点。kafka集群包含一个或多个broker</li>
+<li>Producer<br>消息的生产者。负责发布消息到Kafka broker</li>
+</ul>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文="">   
+
+<ul>
+<li>Consumer<br>消息的消费者。每个consumer属于一个特定的consumer group（若不指定group id则属于默认的group）。使用consumer high level API时，同一topic的一条消息只能被同一个consumer group内的一个consumer消费，但多个consumer group可同时消费这一消息。</li>
+<li>Topic<br>消息主题。例如pv日志、click日志、转化日志都可以作为topic。</li>
+<li>Partition<br>topic物理上的分组。每个topic包含一个或多个partition，创建topic时可指定parition数量。每个partition是一个有序的队列，对应于一个文件夹，该文件夹下存储该partition的数据和索引文件。在发送一条消息时，生产者可以指定这条消息的key和分区机制来发送到不同的分区。</li>
+<li>offset<br>每个partition中的每条消息被分配的有序id，是消息的唯一标识。每个partition都由一系列有序的、不可变的消息组成，这些消息被连续的追加到partition中。<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><img src="http://kafka.apache.org/090/images/producer_consumer.png" alt="image"><br>producers(生产者)通过网络将不同topic的messages(消息)发送到Kafka 集群，consumers(消费者)在集群订阅自己想要消费的topic。</li>
+</ul>
+<p>一个典型的kafka集群中包含若干producer（可以是web前端产生的page view，或者是服务器日志，系统CPU、memory等），若干broker（Kafka支持水平扩展，一般broker数量越多，集群吞吐率越高），若干consumer group，以及一个Zookeeper集群。Kafka通过Zookeeper管理集群配置，选举leader，以及在consumer group发生变化时进行rebalance。producer使用push模式将消息发布到broker，consumer使用pull模式从broker订阅并消费消息。 　</p>
+<h2 id="topic-amp-amp-partitions"><a href="#topic-amp-amp-partitions" class="headerlink" title="topic&amp;&amp;partitions"></a>topic&amp;&amp;partitions</h2><p>对于每个Topic，Kafka会为其维护一个如下图所示的分区的日志文件<br><img src="http://kafka.apache.org/090/images/log_anatomy.png" alt="image"><br>每个partition(分区)是一个有序的、不可修改的消息组成的队列；这些消息是被不断的appended到这个commit log（提交日志文件）上的。在这些patitions之中的每个消息都会被赋予一个叫做offset的顺序id编号，用来在partition之中唯一性的标示这个消息。</p>
+<p>Kafka集群会保存一个时间段内所有被发布出来的信息，无论这个消息是否已经被消费过。</p>
+<h3 id="partition内有序"><a href="#partition内有序" class="headerlink" title="partition内有序"></a>partition内有序</h3><p>Kafka仅仅提供提供partition之内的消息的全局有序，在不同的partition之间不能担保。partition的消息有序性加上可以按照指定的key划分消息的partition，这基本上满足了大部分应用的需求。如果你必须要实现一个全局有序的消息队列，那么可以采用Topic只划分1个partition来实现。但是这就意味着你的每个消费组只能有唯一的一个消费者进程。</p>
+<h2 id="Consumer-Group"><a href="#Consumer-Group" class="headerlink" title="Consumer Group"></a>Consumer Group</h2><p>每一个consumer实例都属于一个consumer group，每一条消息都会被所有订阅了该topic的consumer group消费。通过group id指定consumer group。</p>
+<p>并且使用high-level consumer时，同一个consumer group里只有一个consumer能消费到该消息。  </p>
+<p>因为high level不用client关心offset, 会自动的读zookeeper中该Consumer group的last offset，相当于所有consumer都公用这个offset。当其中一个consumer消费一条消息时，offset就移动到下一条。  </p>
+<p><img src="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/41CC44BBC283484B9E01F28C50A8991D/23720" alt="image">  </p>
+<h3 id="不同形式的消息播发"><a href="#不同形式的消息播发" class="headerlink" title="不同形式的消息播发"></a>不同形式的消息播发</h3><p>订阅模式:每个Consumer都采用不同的group，每一条消息都会发送给所有消费者<br>消息队列模式:所有的Consumer在同一个Group里，消费者之间负载均衡  </p>
+<h2 id="Producer-amp-amp-Consumer-amp-amp-partitions"><a href="#Producer-amp-amp-Consumer-amp-amp-partitions" class="headerlink" title="Producer&amp;&amp;Consumer&amp;&amp;partitions"></a>Producer&amp;&amp;Consumer&amp;&amp;partitions</h2><p>新建topic时，通过–partitions 可以设置分区数。可以指定partitions数为broker的整数倍，这样，每个broker会对应相同个数的partitions。</p>
+<p>生产者在生产数据的时候，可以为每条消息指定Key，这样消息被发送到broker时，会根据分区规则选择被存储到哪一个partitions中。如果分区规则设置的合理，那么所有的消息将会被均匀的分布到不同的partitions中，这样就实现了负载均衡和水平扩展。</p>
+<p>Kafka保证同一consumer group中只有一个consumer会消费某条消息，实际上，Kafka保证的是稳定状态下每一个consumer实例只会消费某一个或多个特定partition的数据，而某个partition的数据只会被某一个特定的consumer实例所消费。其中consumer和partition数量关系如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>consumer和partition数量关系</th>
+<th>消费情况</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>小于</td>
+<td>至少有一个consumer会消费多个partition的数据</td>
+</tr>
+<tr>
+<td>相等</td>
+<td>一个consumer消费一个partition的数据</td>
+</tr>
+<tr>
+<td>大于</td>
+<td>部分consumer无法消费该topic下任何一条消息，浪费</td>
+</tr>
+</tbody>
+</table>
+<p>增减consumer，broker，partition会导致rebalance，rebalance后consumer对应的partition会发生变化，在后面的实例中也可以看到。</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>利用kafka中自带的生产者和消费者例子来做个简单的测试。具体步骤在另一篇kakfa部署。</p>
+<p>kafka集群有3个broker节点。新建一个partitions数量为3的topic。启动一个A终端为生产者，启动B、C、D、E终端为消费者。C、D、E终端为一个consumer group，B为单独的一个consumer group。</p>
+<p>在producer终端输入消息从1-20。可以看到B终端会输出1-20全部消息，图中B所示。而C、D、E终端由于属于同一个Consumer Group，partitions数量等于consumer，每个consumer消费了一个partition里的消息。图中为C、D、E。</p>
+<p>将C终端断开，剩下B、D、E去消费消息。B终端还是会输出1-20全部消息，图中为B1所示。而D、E属于同一个Consumer Group，且consumer数量少于partition数，可以看到D消费了两个partition中的数据，见图中D1所示。<br><img src="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/A6002CC243CC471FBF51E6BFDE0E1BA2/23687" alt="image">  </p>
+<h2 id="Replication-amp-amp-broker节点故障处理"><a href="#Replication-amp-amp-broker节点故障处理" class="headerlink" title="Replication&amp;&amp;broker节点故障处理"></a>Replication&amp;&amp;broker节点故障处理</h2><h3 id="Replication"><a href="#Replication" class="headerlink" title="Replication"></a>Replication</h3><p>replication策略是基于partition。kafka通过创建topic时可以通过–replication-factor配置partition副本数。配置副本之后,每个partition都有一个唯一的leader，有0个或多个follower。</p>
+<p>所有的读写操作都在leader上完成，leader批量从leader上pull数据。followers从leader消费消息来复制message，就跟普通的consumer消费消息一样。</p>
+<p>一般情况下partition的数量大于等于broker的数量，并且所有partition的leader均匀分布在broker上。</p>
+<h3 id="follower故障处理"><a href="#follower故障处理" class="headerlink" title="follower故障处理"></a>follower故障处理</h3><p>broker是否alive包含两个条件：</p>
+<ul>
+<li>一是它必须维护与Zookeeper的session(这个通过Zookeeper的heartbeat机制来实现)。</li>
+<li>二是follower必须能够及时将leader的writing复制过来，不能“落后太多”。</li>
+</ul>
+<p>leader会track“in sync”的node list。如果一个follower宕机，或者落后太多，leader将把它从”in sync” list中移除。</p>
+<p>一条消息只有被“in sync” list里的所有follower都从leader复制过去才会被认为已提交。这样就避免了部分数据被写进了leader，还没来得及被任何follower复制就宕机了，而造成数据丢失（consumer无法消费这些数据）</p>
+<p>而对于producer而言，它可以选择是否等待消息commit，这可以通过producer的“acks”来设置。默认为acks=all ，这意味着leader将等待所有follower复制完消息。</p>
+<h3 id="leader故障处理"><a href="#leader故障处理" class="headerlink" title="leader故障处理"></a>leader故障处理</h3><p>leader挂掉后，怎样在follower中选举出新的leader？</p>
+<p>Kafka在Zookeeper中动态维护了一个ISR（in-sync replicas） set，这个set里的所有replica都跟上了leader，只有ISR里的成员才有被选为leader的可能。</p>
+<p>如果某一个partition的所有replica都挂了，就无法保证数据不丢失了。这种情况下有两种可行的方案：</p>
+<ul>
+<li>一致性高：等待ISR中的任一个replica“活”过来，并且选它作为leader。可能会等待比较长的时间</li>
+<li>可用性高：选择第一个“活”过来的replica（不一定是ISR中的）作为leader。有可能会丢失数据</li>
+</ul>
+<p>kafka采用第二种方案，可以通过配置unclean.leader.election.enable来关闭这种方案。</p>
+<h3 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h3><p>kafka集群有3个broker节点。具体部署在另一篇kafka部署中。</p>
+<p>做个简单的测试，创建一个3分区的topic，不指定副本数，可以看到默认一个副本，Partition均匀分布在各broker。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[fangyeqing@xxxx kafka_2.11-0.9.0.0]$bin/kafka-topics.sh --create --zookeeper localhost:2181 --partitions 3 --topic test3partitions</div><div class="line">[fangyeqing@xxxx kafka_2.11-0.9.0.0]$bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic test3partitions</div><div class="line">Topic:test3partitions	PartitionCount:3	ReplicationFactor:1	Configs:</div><div class="line">	Topic: test3partitions	Partition: 0	Leader: 1	Replicas: 1	Isr: 1</div><div class="line">	Topic: test3partitions	Partition: 1	Leader: 2	Replicas: 2	Isr: 2</div><div class="line">	Topic: test3partitions	Partition: 2	Leader: 0	Replicas: 0	Isr: 0</div></pre></td></tr></table></figure></p>
+<p>创建一个3分区2副本的topic，可以看到Replicas和Isr中有1个follower。例如Partitions：0的Leader为broker：1,follower为broker：2，并且2在Isr中，理论上当Leader挂掉之后，2会顶上。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[fangyeqing@xxxx kafka_2.11-0.9.0.0]$bin/kafka-topics.sh --create --zookeeper localhost:2181 --partitions 3 --topic test3partition2replication --replication-factor 2</div><div class="line">[fangyeqing@xxxx kafka_2.11-0.9.0.0]$ bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic test3partition2replication</div><div class="line">Topic:test3partition2replication	PartitionCount:3	ReplicationFactor:2	Configs:</div><div class="line">	Topic: test3partition2replication	Partition: 0	Leader: 1	Replicas: 1,2	Isr: 1,2</div><div class="line">	Topic: test3partition2replication	Partition: 1	Leader: 2	Replicas: 2,0	Isr: 2,0</div><div class="line">	Topic: test3partition2replication	Partition: 2	Leader: 0	Replicas: 0,1	Isr: 0,1</div></pre></td></tr></table></figure></p>
+<p>创建一个3分区2副本的topic，可以看到Replicas和Isr中有2个follower<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[fangyeqing@xxxx kafka_2.11-0.9.0.0]$bin/kafka-topics.sh --create --zookeeper localhost:2181 --partitions 3 --topic test3partition3replication --replication-factor 3</div><div class="line">[fangyeqing@xxxx kafka_2.11-0.9.0.0]$ bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic test3partition3replication</div><div class="line">Topic:test3partition3replication	PartitionCount:3	ReplicationFactor:3	Configs:</div><div class="line">	Topic: test3partition3replication	Partition: 0	Leader: 1	Replicas: 1,0,2	Isr: 1,0,2</div><div class="line">	Topic: test3partition3replication	Partition: 1	Leader: 2	Replicas: 2,1,0	Isr: 2,1,0</div><div class="line">	Topic: test3partition3replication	Partition: 2	Leader: 0	Replicas: 0,2,1	Isr: 0,2,1</div></pre></td></tr></table></figure></p>
+<h2 id="Message-delivery-guarantees"><a href="#Message-delivery-guarantees" class="headerlink" title="Message delivery guarantees"></a>Message delivery guarantees</h2><p>目前有下面几种消息确保机制：</p>
+<ul>
+<li>At most once 消息可能会丢，但绝不会重复传输</li>
+<li>At least one 消息绝不会丢，但可能会重复传输</li>
+<li>Exactly once 每条消息肯定会被传输一次且仅传输一次，很多时候这是用户所想要的。</li>
+</ul>
+<p>Kafka默认保证At least once，并且允许通过设置producer异步提交来实现At most once。下面分阶段分析：</p>
+<h3 id="Producer向broker发送消息"><a href="#Producer向broker发送消息" class="headerlink" title="Producer向broker发送消息"></a>Producer向broker发送消息</h3><p>当Producer向broker发送消息，由上述Replication的分析可知，一旦这条消息已经被commit，如果这个topic有多个replication（副本），某个broker挂掉也不会丢失消息。</p>
+<p>Producer发送数据给broker的过程中，如果遇到网络问题而造成通信中断：</p>
+<ul>
+<li>At least once：Producer就无法判断该条消息是否已经commit，再重复提交时就会是At least once。</li>
+<li>Exactly once：在以后的版本中producer可以生成一种类似于primary key的东西，发生故障时幂等性的retry多次</li>
+<li>At most once：Producer异步提交来实现At most once</li>
+</ul>
+<h3 id="Consumer从broker消费消息"><a href="#Consumer从broker消费消息" class="headerlink" title="Consumer从broker消费消息"></a>Consumer从broker消费消息</h3><p>当Consumer从broker消费消息时，consumer如果在消费消息时crash：</p>
+<ul>
+<li>At least once：读完消息先处理再commit消费状态(保存offset)</li>
+<li>At most once：读完消息先commit消费状态(保存offset)再处理消息</li>
+<li>Exactly once：需要协调offset和实际操作的输出，目前比较麻烦。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jasongj.com/2015/01/02/Kafka%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" target="_blank" rel="external">http://www.jasongj.com/2015/01/02/Kafka%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/</a><br><a href="http://kafkadoc.beanmr.com/010_getting_started/01_introduction_cn.html" target="_blank" rel="external">http://kafkadoc.beanmr.com/010_getting_started/01_introduction_cn.html</a><br><a href="http://tech.meituan.com/kafka-fs-design-theory.html" target="_blank" rel="external">http://tech.meituan.com/kafka-fs-design-theory.html</a>  </p>
+</the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/10/28/kafka---介绍/">kafka---介绍</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
+        <p><span>发布时间:</span>2016-10-28, 16:17:00</p>
+        <p><span>最后更新:</span>2016-11-17, 16:21:57</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/28/kafka---介绍/" title="kafka---介绍">https://fangyeqing.github.io/2016/10/28/kafka---介绍/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/kafka---介绍/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/10/28/kafka---部署/">
+                    kafka---部署
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/10/28/hexo+github_page搭建博客/">
+                    hexo+github page搭建博客
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概念"><span class="toc-number">1.</span> <span class="toc-text">概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#架构"><span class="toc-number">1.1.</span> <span class="toc-text">架构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#topic-amp-amp-partitions"><span class="toc-number">2.</span> <span class="toc-text">topic&&partitions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#partition内有序"><span class="toc-number">2.1.</span> <span class="toc-text">partition内有序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Consumer-Group"><span class="toc-number">3.</span> <span class="toc-text">Consumer Group</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#不同形式的消息播发"><span class="toc-number">3.1.</span> <span class="toc-text">不同形式的消息播发</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Producer-amp-amp-Consumer-amp-amp-partitions"><span class="toc-number">4.</span> <span class="toc-text">Producer&&Consumer&&partitions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#测试"><span class="toc-number">4.1.</span> <span class="toc-text">测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Replication-amp-amp-broker节点故障处理"><span class="toc-number">5.</span> <span class="toc-text">Replication&&broker节点故障处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Replication"><span class="toc-number">5.1.</span> <span class="toc-text">Replication</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#follower故障处理"><span class="toc-number">5.2.</span> <span class="toc-text">follower故障处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#leader故障处理"><span class="toc-number">5.3.</span> <span class="toc-text">leader故障处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试-1"><span class="toc-number">5.4.</span> <span class="toc-text">测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Message-delivery-guarantees"><span class="toc-number">6.</span> <span class="toc-text">Message delivery guarantees</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Producer向broker发送消息"><span class="toc-number">6.1.</span> <span class="toc-text">Producer向broker发送消息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Consumer从broker消费消息"><span class="toc-number">6.2.</span> <span class="toc-text">Consumer从broker消费消息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">7.</span> <span class="toc-text">参考</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"kafka---介绍　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/kafka---介绍/" data-title="kafka---介绍" data-url="https://fangyeqing.github.io/2016/10/28/kafka---介绍/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/10/28/kafka---部署/" title="上一篇: kafka---部署">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/10/28/hexo+github_page搭建博客/" title="下一篇: hexo+github page搭建博客">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_5---Samza_API/">Samza 5---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_4---核心部件/">Samza 4---核心部件</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---架构/">Samza 3---架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---基本概念/">Samza 2---基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016 小懒
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

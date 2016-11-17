@@ -15,21 +15,19 @@
 
 
 
-<meta name="description" content="数据迁移指的是两套Druid、kafka、HDFS集群之间的数据迁移。其中会用到流处理框架Samza，Hadoop distcp命令，Druid重建索引的insert-segment-to-db工具。
-整体流程">
+<meta name="description" content="Kafka是一种分布式的消息系统。本文基于0.9.0版本，利用自带的zookeeper，部署了3个broker节点的kafka集群。
+下载、配置下载or拷贝123wget http://mirrors.cnnic.cn/apache/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgztar -xzf kafka_2.11-0.9.0.0.tgzcd kafka_2.11-0.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="druid.io实践2---集群数据迁移">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/29/druid.io实践2---集群数据迁移/index.html">
+<meta property="og:title" content="kafka---部署">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/kafka---部署/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="数据迁移指的是两套Druid、kafka、HDFS集群之间的数据迁移。其中会用到流处理框架Samza，Hadoop distcp命令，Druid重建索引的insert-segment-to-db工具。
-整体流程">
-<meta property="og:image" content="http://note.youdao.com/yws/public/resource/eb83866d6603d9a10ca5134681ab7970/xmlnote/5525411332C94BC395CFC3E7EF21F06A/23416">
-<meta property="og:updated_time" content="2016-11-14T10:43:12.000Z">
+<meta property="og:description" content="Kafka是一种分布式的消息系统。本文基于0.9.0版本，利用自带的zookeeper，部署了3个broker节点的kafka集群。
+下载、配置下载or拷贝123wget http://mirrors.cnnic.cn/apache/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgztar -xzf kafka_2.11-0.9.0.0.tgzcd kafka_2.11-0.">
+<meta property="og:updated_time" content="2016-11-17T08:21:42.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="druid.io实践2---集群数据迁移">
-<meta name="twitter:description" content="数据迁移指的是两套Druid、kafka、HDFS集群之间的数据迁移。其中会用到流处理框架Samza，Hadoop distcp命令，Druid重建索引的insert-segment-to-db工具。
-整体流程">
-<meta name="twitter:image" content="http://note.youdao.com/yws/public/resource/eb83866d6603d9a10ca5134681ab7970/xmlnote/5525411332C94BC395CFC3E7EF21F06A/23416">
+<meta name="twitter:title" content="kafka---部署">
+<meta name="twitter:description" content="Kafka是一种分布式的消息系统。本文基于0.9.0版本，利用自带的zookeeper，部署了3个broker节点的kafka集群。
+下载、配置下载or拷贝123wget http://mirrors.cnnic.cn/apache/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgztar -xzf kafka_2.11-0.9.0.0.tgzcd kafka_2.11-0.">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -61,7 +59,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>druid.io实践2---集群数据迁移 | 小懒的博客</title>
+<title>kafka---部署 | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -274,11 +272,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-druid.io实践2---集群数据迁移" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-kafka---部署" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/29/druid.io实践2---集群数据迁移/" class="article-date">
-      <time datetime="2016-10-29T03:58:00.000Z" itemprop="datePublished">2016-10-29</time>
+      <a href="/2016/10/28/kafka---部署/" class="article-date">
+      <time datetime="2016-10-28T08:19:00.000Z" itemprop="datePublished">2016-10-28</time>
 </a>
 
 
@@ -293,7 +291,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      druid.io实践2---集群数据迁移
+      kafka---部署
     </h1>
   
 
@@ -302,13 +300,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    <a class="article-category-link" href="/categories/kafka/">kafka</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/实践/">实践</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/经验/">经验</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/">kafka</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/流处理/">流处理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/消息系统/">消息系统</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -318,42 +316,59 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p><excerpt in="" index="" |="" 首页摘要=""><br>数据迁移指的是两套Druid、kafka、HDFS集群之间的数据迁移。其中会用到流处理框架Samza，Hadoop distcp命令，Druid重建索引的insert-segment-to-db工具。</excerpt></p>
-<h2 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h2><p><img src="http://note.youdao.com/yws/public/resource/eb83866d6603d9a10ca5134681ab7970/xmlnote/5525411332C94BC395CFC3E7EF21F06A/23416" alt="image"></p>
+        <p><excerpt in="" index="" |="" 首页摘要=""><br>Kafka是一种分布式的消息系统。本文基于0.9.0版本，利用自带的zookeeper，部署了3个broker节点的kafka集群。</excerpt></p>
+<h2 id="下载、配置"><a href="#下载、配置" class="headerlink" title="下载、配置"></a>下载、配置</h2><p>下载or拷贝<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget http://mirrors.cnnic.cn/apache/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgz</div><div class="line">tar -xzf kafka_2.11-0.9.0.0.tgz</div><div class="line">cd kafka_2.11-0.9.0.0</div></pre></td></tr></table></figure></p>
 <a id="more"></a>  
-<p><the rest="" of="" contents="" |="" 余下全文="">   </the></p>
-<h3 id="背景交代"><a href="#背景交代" class="headerlink" title="背景交代"></a>背景交代</h3><p>Druid的DeepStorage采用HDFS。</p>
-<p>实时输入流通过tranquility从kafka消费topic进行realtime indexing。<br>批量数据通过camus拉取kafka数据到hdfs，周期提交batch indexing。  </p>
-<h3 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路"></a>大体思路</h3><ul>
-<li>kafka镜像流：<br>启动samza任务，从老的kafka集群consume消息，produce到新的kafka集群。直接使用kafka的mirror也可以，由于项目使用的arvo编解码，涉及到schema-id的问题，所以只能通过samza任务。</li>
-<li>druid批量数据获取&amp;index：<br>给新druid集群提交任务，camus批量拉取数据，发送post请求提交配置json到overload执行batch index。 </li>
-<li>脏数据覆盖(批量路线稳定、数据正确之后)  <ul>
-<li>利用hadoop-distcp迁移老hdfs中之前所有的segment数据</li>
-<li>利用insert-segment-to-db工具在mysql生成这之前的元数据（索引）。</li>
-</ul>
-</li>
-<li>druid实时数据获取&amp;index：<br>Tranquility任务，获取实时数据，提交给overload执行realtime index   </li>
-<li>切换（稳定后）<br>将老的kafka的流的生产者逐个切换到新的kafka上</li>
-</ul>
-<h2 id="使用工具介绍"><a href="#使用工具介绍" class="headerlink" title="使用工具介绍"></a>使用工具介绍</h2><h3 id="Samza-Task"><a href="#Samza-Task" class="headerlink" title="Samza Task"></a>Samza Task</h3><p>可以参考博客中的<a href="https://fangyeqing.github.io/categories/samza/">Samza相关</a></p>
-<h3 id="hadoop-distcp"><a href="#hadoop-distcp" class="headerlink" title="hadoop-distcp"></a>hadoop-distcp</h3><p>迁移老hdfs中之前所有的segment数据  </p>
-<h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>DistCp（分布式拷贝）是用于大规模集群内部和集群之间拷贝的工具。 它使用Map/Reduce实现文件分发，错误处理和恢复，以及报告生成。 它把文件和目录的列表作为map任务的输入，每个任务会完成源列表中部分文件的拷贝</p>
-<p><a href="https://hadoop.apache.org/docs/r1.0.4/cn/distcp.html" target="_blank" rel="external">https://hadoop.apache.org/docs/r1.0.4/cn/distcp.html</a>  </p>
-<p><a href="http://hadoop.apache.org/docs/r2.7.3/hadoop-distcp/DistCp.html" target="_blank" rel="external">http://hadoop.apache.org/docs/r2.7.3/hadoop-distcp/DistCp.html</a>  </p>
-<p><a href="http://stackoverflow.com/questions/31862904/how-to-do-i-copy-data-from-one-hdfs-to-another-hdfs" target="_blank" rel="external">http://stackoverflow.com/questions/31862904/how-to-do-i-copy-data-from-one-hdfs-to-another-hdfs</a>  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Usage: $ hadoop distcp &lt;src&gt; &lt;dst&gt;</div><div class="line"></div><div class="line">example: $ hadoop distcp hdfs://nn1:8020/file1 hdfs://nn2:8020/file2</div></pre></td></tr></table></figure>
-<p>默认情况下，如果在拷贝的目的地同名文件已经存在，则会默认跳过这些文件。  </p>
-<p>可以通过-overwrite选项指定覆盖掉同名文件，或者通过-update选项来更新同名文件。</p>
-<p>-overwrite来覆盖刚开启批量任务时的数据不完整那个小时的数据。</p>
-<h3 id="insert-segment-to-db"><a href="#insert-segment-to-db" class="headerlink" title="insert-segment-to-db"></a>insert-segment-to-db</h3><h4 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h4><p>HDFS上Segment在新的mysql中生成索引    </p>
-<p><a href="https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ" target="_blank" rel="external">https://groups.google.com/forum/#!searchin/druid-user/migration$20cluster|sort:relevance/druid-user/1dOMkCrQGmE/b8exkaI4CwAJ</a><br><a href="https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU" target="_blank" rel="external">https://groups.google.com/forum/#!topic/druid-user/yvnXsDEOkDU</a><br><a href="http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html" target="_blank" rel="external">http://druid.io/docs/0.9.1.1/operations/insert-segment-to-db.html</a></p>
-<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><p>–workingDir：segment位置  </p>
-<p>–updateDescriptor：默认true，如果desciptor.json的实际路径与“loadSpec”中的路径是不同的，该工具将更新“loadSpec”字段的描述符。 </p>
-<p>例如：将老集群的数据迁移过去之后，desciptor.json中的路径没变，生成索引时会更新成现在的路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">hadoop fs -cat hdfs://nn1:port/.../dataSource/20161025T060000.000+0800_20161025T070000.000+0800/2016-10-25T07_33_53.379+08_00/0/descriptor.json</div><div class="line"></div><div class="line">其中loadSpec部分：</div><div class="line"></div><div class="line">&quot;loadSpec&quot;: &#123;</div><div class="line">    &quot;type&quot;: &quot;hdfs&quot;,</div><div class="line">    &quot;path&quot;: &quot;hdfs://nn1:port/.../dataSource/20161025T060000.000+0800_20161025T070000.000+0800/2016-10-25T07_33_53.379+08_00/0/index.zip&quot;</div><div class="line">&#125;,</div></pre></td></tr></table></figure></p>
-<h4 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h4><p>官方例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">java </div><div class="line">-Ddruid.metadata.storage.type=mysql </div><div class="line">-Ddruid.metadata.storage.connector.connectURI=jdbc:mysql://mysql-db:3306/druid</div><div class="line">-Ddruid.metadata.storage.connector.user=userxxx</div><div class="line">-Ddruid.metadata.storage.connector.password=passxxxx</div><div class="line">-Ddruid.extensions.loadList=[\&quot;mysql-metadata-storage\&quot;,\&quot;druid-hdfs-storage\&quot;] </div><div class="line">-Ddruid.storage.type=hdfs</div><div class="line">-cp $DRUID_CLASSPATH </div><div class="line">io.druid.cli.Main tools insert-segment-to-db --workingDir hdfs://nn1:port/.../dataSource</div></pre></td></tr></table></figure></p>
-<p>打印的日志：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2016-10-25T17:15:49,342 INFO [main] io.druid.storage.hdfs.HdfsDataSegmentFinder - Found segment [dataSource_2016-01-13T09:00:00.000+08:00_2016-01-13T10:00:00.000+08:00_2016-01-13T10:34:03.820+08:00_6] located at [hdfs://nn1:port/.../dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/index.zip]</div><div class="line">2016-10-25T17:15:49,342 INFO [main] io.druid.storage.hdfs.HdfsDataSegmentFinder - Updating loadSpec in descriptor.json at [hdfs://nn1:port/.../dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/descriptor.json] with new path [dataSource/20160113T090000.000+0800_20160113T100000.000+0800/2016-01-13T10_34_03.820+08_00/6/index.zip]</div></pre></td></tr></table></figure></p>
-<p>会先更新descriptor.json中的路径：由之前的老集群的绝对路径—新集群的相对路径</p>
+<the rest="" of="" contents="" |="" 余下全文=""> 
 
+<h2 id="启动zookeeper"><a href="#启动zookeeper" class="headerlink" title="启动zookeeper"></a>启动zookeeper</h2><ul>
+<li><p>config/zookeeper.properties,配置可以改数据目录，端口可以不改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">dataDir=data/zookeeper              #数据目录，默认/tmp/zookeeper</div><div class="line">clientPort=2181                     #默认2181</div></pre></td></tr></table></figure>
+</li>
+<li><p>启动zk</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nohup bin/zookeeper-server-start.sh config/zookeeper.properties &gt;&gt; zk.log &amp;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="启动kafka-broker"><a href="#启动kafka-broker" class="headerlink" title="启动kafka-broker"></a>启动kafka-broker</h2><h3 id="broker配置"><a href="#broker配置" class="headerlink" title="broker配置"></a>broker配置</h3><ul>
+<li>配置可以改一下日志目录，端口冲突了可以改一下端口。</li>
+<li>kafka配置：config/server.properties<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">log.dirs=data/kafka-logs            #数据目录，默认/tmp/kafka-logs</div><div class="line">broker.id=0</div><div class="line">listeners=PLAINTEXT://:9092         #默认PLAINTEXT://:9092</div><div class="line">port=9092                           #端口默认为9092</div><div class="line">zookeeper.connect=localhost:2181    #zk连接信息</div><div class="line">delete.topic.enable=true            #在最后添加：可以删除topic</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>另外两个broker配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cp config/server.properties config/server-1.properties</div><div class="line">cp config/server.properties config/server-2.properties</div></pre></td></tr></table></figure></p>
+<p>config/server-1.properties:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">broker.id=1</div><div class="line">port=9093</div><div class="line">listeners=PLAINTEXT://:9093</div><div class="line">log.dir=data/kafka-logs-1</div></pre></td></tr></table></figure></p>
+<p>config/server-2.properties:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">broker.id=2</div><div class="line">port=9094</div><div class="line">listeners=PLAINTEXT://:9094</div><div class="line">log.dir=data/kafka-logs-2</div><div class="line">```   </div><div class="line">### 启动broker</div></pre></td></tr></table></figure></p>
+<p>nohup bin/kafka-server-start.sh config/server.properties &gt;&gt; broker1.log &amp;<br>nohup bin/kafka-server-start.sh config/server-1.properties &gt;&gt; broker2.log &amp;<br>nohup bin/kafka-server-start.sh config/server-2.properties &gt;&gt; broker3.log &amp;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## 创建topic</div><div class="line">- 创建topic：</div></pre></td></tr></table></figure></p>
+<p>bin/kafka-topics.sh –create –zookeeper localhost:2181 –partitions 3 –topic test3partitions –replication-factor 1  #包含3个分区，1个副本<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">为Topic创建分区时，分区数最好是broker数量的整数倍,这样才能是一个Topic的分区均匀的分布在整个Kafka集群中。  </div><div class="line"></div><div class="line">- 查看已经创建的topic：</div></pre></td></tr></table></figure></p>
+<p>bin/kafka-topics.sh –list –zookeeper localhost:2181<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- 查看某个topic：</div></pre></td></tr></table></figure></p>
+<p>bin/kafka-topics.sh –describe –zookeeper localhost:2181 –topic test3partitions<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- 删除topic：</div></pre></td></tr></table></figure></p>
+<p>bin/kafka-topics.sh –delete –topic test3partitions –zookeeper localhost:2181<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">## producer</div><div class="line">在一终端A启动producer</div></pre></td></tr></table></figure></p>
+<p>bin/kafka-console-producer.sh –broker-list localhost:9092,localhost:9093,localhost:9094 –topic test3partitions<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">## consumer</div><div class="line">config/consumer.properties修改：</div></pre></td></tr></table></figure></p>
+<p>zookeeper.connect=localhost:2181    #zookeeper，后面以host:port,host port,….<br>group.id=test-consumer-group          #消费者group-id<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">在另外的终端B、C、D启动consumer：</div></pre></td></tr></table></figure></p>
+<p>bin/kafka-console-consumer.sh –zookeeper localhost:2181 –topic test3partitions</p>
+<p>bin/kafka-console-consumer.sh –zookeeper localhost:2181 –consumer.config config/consumer.properties –topic test3partitions</p>
+<p>bin/kafka-console-consumer.sh –zookeeper localhost:2181 –consumer.config config/consumer.properties –topic test3partitions</p>
+<p>bin/kafka-console-consumer.sh –zookeeper localhost:2181 –consumer.config config/consumer.properties –topic test3partitions<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">后面加 --from-beginning表示从头开始收消息</div><div class="line"></div><div class="line">其中，B终端不配置group-id,将会为console-consumer-，加上随机数字。C、D、E终端读取配置文件中的group.id，为tet-consumer-group。</div><div class="line"></div><div class="line">### 测试</div><div class="line">在producer终端输入消息从1-20。可以看到B终端会输出1-20全部消息，图中B所示。而C、D、E终端由于属于同一个Consumer Group，partitions数量等于consumer，每个consumer消费了一个partition里的消息。图中为C、D、E。</div><div class="line"></div><div class="line">将C终端断开，剩下B、D、E去消费消息。B终端还是会输出1-20全部消息，图中为B1所示。而D、E属于同一个Consumer Group，且consumer数量少于partition数，可以看到D消费了两个partition中的数据，见图中D1所示。    </div><div class="line">![image](http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/A6002CC243CC471FBF51E6BFDE0E1BA2/23687)  </div><div class="line"></div><div class="line">### Java api 测试</div><div class="line">利用Java api自己写一个与上面测试用例相同的例子。</div><div class="line"></div><div class="line">Producer</div></pre></td></tr></table></figure></p>
+<p>public class NewProducerSimple {<br>    public static void main(String [] args) {<br>        Properties props = new Properties();<br>        props.put(“bootstrap.servers”, “localhost:9092,localhost:9093,localhost:9094”);<br>        props.put(“acks”, “all”);<br>        props.put(“retries”, 0);<br>        props.put(“batch.size”, 16384);<br>        props.put(“linger.ms”, 1);<br>        props.put(“buffer.memory”, 33554432);<br>        props.put(“key.serializer”, “org.apache.kafka.common.serialization.StringSerializer”);<br>        props.put(“value.serializer”, “org.apache.kafka.common.serialization.StringSerializer”);<br>        props.put(“partitioner.class”,”com.youdao.newClient.SimplePartitioner”);<br>        Producer<string, string=""> producer = new KafkaProducer&lt;&gt;(props);<br>        for(int i = 0; i &lt; 20; i++)<br>            producer.send(new ProducerRecord<string, string="">(“test3partitions”, Integer.toString(i), Integer.toString(i)));</string,></string,></p>
+<pre><code>    producer.close();
+}
+</code></pre><p>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">分区规则，key.hash%3</div></pre></td></tr></table></figure></p>
+<p>public class SimplePartitioner implements Partitioner {</p>
+<pre><code>@Override
+public int partition(String topic, Object key, byte[] keyBytes, Object value, byte[] valueBytes, Cluster cluster) {
+    int partitionNum = 3;
+    String k = (String)key;
+    int partition = Math.abs(k.hashCode()) % partitionNum;
+    return partition;
+}
+@Override
+public void close() {
+}
+@Override
+public void configure(Map&lt;String, ?&gt; map) {
+}
+</code></pre><p>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Consumer,同样，可以启动3个相同的consumer</div></pre></td></tr></table></figure></p>
+<p>public class NewConsumerSimple {<br>    public static void main(String [] args) {<br>        Properties props = new Properties();<br>        props.put(“bootstrap.servers”, “localhost:9092,localhost:9093,localhost:9094”);<br>        props.put(“group.id”, “test”);<br>        props.put(“enable.auto.commit”, “true”);<br>        props.put(“auto.commit.interval.ms”, “1000”);<br>        props.put(“key.deserializer”, “org.apache.kafka.common.serialization.StringDeserializer”);<br>        props.put(“value.deserializer”, “org.apache.kafka.common.serialization.StringDeserializer”);<br>        KafkaConsumer<string, string=""> consumer = new KafkaConsumer&lt;&gt;(props);<br>        consumer.subscribe(Arrays.asList(“test3partitions”));<br>        while (true) {<br>            ConsumerRecords<string, string=""> records = consumer.poll(100);<br>            for (ConsumerRecord<string, string=""> record : records)<br>                System.out.printf(“offset = %d, key = %s, value = %s%n”, record.offset(), record.key(), record.value());<br>        }<br>    }<br>}<br>```</string,></string,></string,></p>
+</the>
       
     </div>
     
@@ -361,13 +376,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/28/kafka---部署/">kafka---部署</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
-        <p><span>发布时间:</span>2016-10-29, 11:58:00</p>
-        <p><span>最后更新:</span>2016-11-14, 18:43:12</p>
+        <p><span>发布时间:</span>2016-10-28, 16:19:00</p>
+        <p><span>最后更新:</span>2016-11-17, 16:21:42</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io实践2---集群数据迁移/" title="druid.io实践2---集群数据迁移">https://fangyeqing.github.io/2016/10/29/druid.io实践2---集群数据迁移/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io实践2---集群数据迁移/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/28/kafka---部署/" title="kafka---部署">https://fangyeqing.github.io/2016/10/28/kafka---部署/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/kafka---部署/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -380,15 +395,15 @@
     <nav id="article-nav">
         
             <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/11/05/Java程序员学python3.0--入门篇/">
-                    Java程序员学python3.0--入门篇
+                <a href="/2016/10/29/druid.io_1---OLAP概念/">
+                    druid.io 1---OLAP概念
                 </a>
             </div>
         
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/29/druid.io实践1---查询速度优化/">
-                    druid.io实践1---查询速度优化
+                <a href="/2016/10/28/kafka---介绍/">
+                    kafka---介绍
                 </a>
             </div>
         
@@ -400,7 +415,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#整体流程"><span class="toc-number">1.</span> <span class="toc-text">整体流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#背景交代"><span class="toc-number">1.1.</span> <span class="toc-text">背景交代</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#大体思路"><span class="toc-number">1.2.</span> <span class="toc-text">大体思路</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用工具介绍"><span class="toc-number">2.</span> <span class="toc-text">使用工具介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Samza-Task"><span class="toc-number">2.1.</span> <span class="toc-text">Samza Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hadoop-distcp"><span class="toc-number">2.2.</span> <span class="toc-text">hadoop-distcp</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#介绍"><span class="toc-number">2.2.1.</span> <span class="toc-text">介绍</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#insert-segment-to-db"><span class="toc-number">2.3.</span> <span class="toc-text">insert-segment-to-db</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#介绍-1"><span class="toc-number">2.3.1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#参数说明"><span class="toc-number">2.3.2.</span> <span class="toc-text">参数说明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#具体操作"><span class="toc-number">2.3.3.</span> <span class="toc-text">具体操作</span></a></li></ol></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#下载、配置"><span class="toc-number">1.</span> <span class="toc-text">下载、配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动zookeeper"><span class="toc-number">2.</span> <span class="toc-text">启动zookeeper</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动kafka-broker"><span class="toc-number">3.</span> <span class="toc-text">启动kafka-broker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#broker配置"><span class="toc-number">3.1.</span> <span class="toc-text">broker配置</span></a></li></ol></li></ol>
         
     </div>
     <style>
@@ -436,7 +451,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"druid.io实践2---集群数据迁移　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"kafka---部署　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -452,7 +467,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/29/druid.io实践2---集群数据迁移/" data-title="druid.io实践2---集群数据迁移" data-url="https://fangyeqing.github.io/2016/10/29/druid.io实践2---集群数据迁移/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/kafka---部署/" data-title="kafka---部署" data-url="https://fangyeqing.github.io/2016/10/28/kafka---部署/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -475,7 +490,7 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/11/05/Java程序员学python3.0--入门篇/" title="上一篇: Java程序员学python3.0--入门篇">
+            <a href="/2016/10/29/druid.io_1---OLAP概念/" title="上一篇: druid.io 1---OLAP概念">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -483,7 +498,7 @@
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/29/druid.io实践1---查询速度优化/" title="下一篇: druid.io实践1---查询速度优化">
+            <a href="/2016/10/28/kafka---介绍/" title="下一篇: kafka---介绍">
                 <i class="fa fa-angle-right"></i>
             </a>
         
