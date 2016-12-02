@@ -31,7 +31,7 @@ Producer消息的生产者。负责发布消息到Kafka broker">
 <meta property="og:image" content="http://kafka.apache.org/090/images/log_anatomy.png">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/41CC44BBC283484B9E01F28C50A8991D/23720">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/A6002CC243CC471FBF51E6BFDE0E1BA2/23687">
-<meta property="og:updated_time" content="2016-11-17T08:27:28.000Z">
+<meta property="og:updated_time" content="2016-12-02T11:45:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kafka---介绍">
 <meta name="twitter:description" content="Kafka是一种分布式的消息系统。本文基于0.9.0版本，新版kafka加入了流处理组件kafka stream，最新的官方文档又自称分布式流处理平台。
@@ -205,7 +205,7 @@ Producer消息的生产者。负责发布消息到Kafka broker">
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
                     </div>
                 </section>
                 
@@ -409,14 +409,14 @@ Producer消息的生产者。负责发布消息到Kafka broker">
 <p>Producer发送数据给broker的过程中，如果遇到网络问题而造成通信中断：</p>
 <ul>
 <li>At least once：Producer就无法判断该条消息是否已经commit，再重复提交时就会是At least once。</li>
-<li>Exactly once：在以后的版本中producer可以生成一种类似于primary key的东西，发生故障时幂等性的retry多次</li>
+<li>Exactly once：在以后的版本中producer可以生成一种类似于primary key的东西，发生故障时幂等性的retry多次。</li>
 <li>At most once：Producer异步提交来实现At most once</li>
 </ul>
 <h3 id="Consumer从broker消费消息"><a href="#Consumer从broker消费消息" class="headerlink" title="Consumer从broker消费消息"></a>Consumer从broker消费消息</h3><p>当Consumer从broker消费消息时，consumer如果在消费消息时crash：</p>
 <ul>
 <li>At least once：读完消息先处理再commit消费状态(保存offset)</li>
 <li>At most once：读完消息先commit消费状态(保存offset)再处理消息</li>
-<li>Exactly once：需要协调offset和实际操作的输出，目前比较麻烦。</li>
+<li>Exactly once：需要协调offset和实际操作的输出，目前比较麻烦。离线数据可以做到去重，利用Camus或者Gobbin将kafka topic落地到HDFS，然后做去重即可。其中Camus可以参考我的另一篇博客<a href="https://fangyeqing.github.io/2016/12/01/Camus%E4%BB%8B%E7%BB%8D/">Camus介绍</a>。</li>
 </ul>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jasongj.com/2015/01/02/Kafka%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" target="_blank" rel="external">http://www.jasongj.com/2015/01/02/Kafka%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/</a><br><a href="http://kafkadoc.beanmr.com/010_getting_started/01_introduction_cn.html" target="_blank" rel="external">http://kafkadoc.beanmr.com/010_getting_started/01_introduction_cn.html</a><br><a href="http://tech.meituan.com/kafka-fs-design-theory.html" target="_blank" rel="external">http://tech.meituan.com/kafka-fs-design-theory.html</a>  </p>
 </the>
@@ -430,7 +430,7 @@ Producer消息的生产者。负责发布消息到Kafka broker">
         <p><span>本文标题:</span><a href="/2016/10/28/kafka---介绍/">kafka---介绍</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-28, 16:17:00</p>
-        <p><span>最后更新:</span>2016-11-17, 16:27:28</p>
+        <p><span>最后更新:</span>2016-12-02, 19:45:16</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/28/kafka---介绍/" title="kafka---介绍">https://fangyeqing.github.io/2016/10/28/kafka---介绍/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/kafka---介绍/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -555,7 +555,7 @@ Producer消息的生产者。负责发布消息到Kafka broker">
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
 
 
 

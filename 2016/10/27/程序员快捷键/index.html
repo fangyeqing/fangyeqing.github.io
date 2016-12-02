@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="小懒" />
+
+
+
+<meta name="description" content="工欲善其事必先利其器，程序员通常需要通过摆脱鼠标或者触摸板提高效率，各种插件或者快捷键必不可少。
+
+通常出现问题会去google一发，浏览器插件Vimium值得拥有，常用的vim操作就可以玩转浏览器。
+Intellij IDEA中常用的AceJump可以实现光标眼球定位，IdeaVim类似于Vim操作，可以解放你的鼠标。
+公司配了两三个显示屏幕，需要切来切去，windows切屏快捷键也需">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序员快捷键">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/27/程序员快捷键/index.html">
+<meta property="og:site_name" content="小懒的博客">
+<meta property="og:description" content="工欲善其事必先利其器，程序员通常需要通过摆脱鼠标或者触摸板提高效率，各种插件或者快捷键必不可少。
+
+通常出现问题会去google一发，浏览器插件Vimium值得拥有，常用的vim操作就可以玩转浏览器。
+Intellij IDEA中常用的AceJump可以实现光标眼球定位，IdeaVim类似于Vim操作，可以解放你的鼠标。
+公司配了两三个显示屏幕，需要切来切去，windows切屏快捷键也需">
+<meta property="og:updated_time" content="2016-12-02T12:05:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="程序员快捷键">
+<meta name="twitter:description" content="工欲善其事必先利其器，程序员通常需要通过摆脱鼠标或者触摸板提高效率，各种插件或者快捷键必不可少。
+
+通常出现问题会去google一发，浏览器插件Vimium值得拥有，常用的vim操作就可以玩转浏览器。
+Intellij IDEA中常用的AceJump可以实现光标眼球定位，IdeaVim类似于Vim操作，可以解放你的鼠标。
+公司配了两三个显示屏幕，需要切来切去，windows切屏快捷键也需">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="小懒的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/xiaolan.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>程序员快捷键 | 小懒的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?7fb806568d59e1b131e6cd93134ab91e";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">小懒</a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">文章分类</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">小懒</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">小懒</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">文章分类</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-程序员快捷键" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/27/程序员快捷键/" class="article-date">
+      <time datetime="2016-10-27T12:41:00.000Z" itemprop="datePublished">2016-10-27</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      程序员快捷键
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/other/">other</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tools/">tools</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/实践/">实践</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <excerpt in="" index="" |="" 首页摘要="">   
+
+<p>工欲善其事必先利其器，程序员通常需要通过摆脱鼠标或者触摸板提高效率，各种插件或者快捷键必不可少。</p>
+<ul>
+<li>通常出现问题会去google一发，浏览器插件Vimium值得拥有，常用的vim操作就可以玩转浏览器。</li>
+<li>Intellij IDEA中常用的AceJump可以实现光标眼球定位，IdeaVim类似于Vim操作，可以解放你的鼠标。</li>
+<li>公司配了两三个显示屏幕，需要切来切去，windows切屏快捷键也需要掌握。</li>
+<li>linux和vim相关快捷键肯定也是必不可少的。</li>
+</ul>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<h2 id="chrome插件-Vimium"><a href="#chrome插件-Vimium" class="headerlink" title="chrome插件-Vimium"></a>chrome插件-Vimium</h2><h3 id="光标移动："><a href="#光标移动：" class="headerlink" title="光标移动："></a>光标移动：</h3><p>j/k/h/l ：上下左右移动。<br>gg/G    ：跳转到页面的上下。<br>u/d     ：向下翻页（PageUp/Down）  </p>
+<h3 id="各种模式"><a href="#各种模式" class="headerlink" title="各种模式"></a>各种模式</h3><h4 id="Hint-模式-f-F"><a href="#Hint-模式-f-F" class="headerlink" title="Hint 模式    f/F"></a>Hint 模式    f/F</h4><p>f/F : 在当前/新的页面打开一个新的链接。</p>
+<h4 id="查找模式-string"><a href="#查找模式-string" class="headerlink" title="查找模式    /string"></a>查找模式    /string</h4><p>n: 向下查找匹配内容<br>N：向上查找匹配内容</p>
+<h4 id="输入模式（i-如果发现命令不起作用，进入输入模式，按Esc回到命令模式）"><a href="#输入模式（i-如果发现命令不起作用，进入输入模式，按Esc回到命令模式）" class="headerlink" title="输入模式（i    如果发现命令不起作用，进入输入模式，按Esc回到命令模式）"></a>输入模式（i    如果发现命令不起作用，进入输入模式，按Esc回到命令模式）</h4><p>gi：将焦点集中到第一个输入框，Tab键在多个输入框切换<br>Ngi：则焦点集中到第N个输入框</p>
+<h4 id="visual-caret模式（目前用于复制粘贴）"><a href="#visual-caret模式（目前用于复制粘贴）" class="headerlink" title="visual/caret模式（目前用于复制粘贴）"></a>visual/caret模式（目前用于复制粘贴）</h4><p>v：进入visual模式，c 切换caret模式，然后jkhl可以选择复制起点。再v切换到visual模式，jkhl选择复制内容，y复制<br>V：进入visual-line模式，复制方法同上</p>
+<h3 id="标签页操作："><a href="#标签页操作：" class="headerlink" title="标签页操作："></a>标签页操作：</h3><p>t：创建一个新的标签页<br>yy：拷贝当前页面的URL到剪贴板<br>p/P：直接搜索clipboard中的内容<br>o/O：打开url，书签，历史<br>b/B：打开书签<br>T：标签页快速切换，Tab切换（Ctrl+Tab也可以）    </p>
+<p>J/K，gt/gT：跳转到左/右边的一个标签页<br>H/L：回退上/下一个历史页面（相当于浏览器中的左右箭头）<br>x/X：关闭当前/恢复关闭的标签页<br>r：重新载入该页（F5）<br>gu：跳转到父页面  </p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>？：显示命令的帮助提示（再按一次关闭）<br>F6：当前的标签页直接输入一个新的网址<br>Tab：输入、标签切换。（如果光标定位到地址栏，可以Tab或者F6跳出）</p>
+<h3 id="chrome自带快捷键："><a href="#chrome自带快捷键：" class="headerlink" title="chrome自带快捷键："></a>chrome自带快捷键：</h3><p>alt+F4 关闭chrome<br>ctrl+t 打开标签页<br>ctrl+F4/w 关闭标签页<br>ctrl+n 新建窗口<br>ctrl+1,2,3,4… 切换到相应标签页（在Vimium失效时使用）</p>
+<h2 id="Intellij-IDEA快捷键"><a href="#Intellij-IDEA快捷键" class="headerlink" title="Intellij IDEA快捷键"></a>Intellij IDEA快捷键</h2><h3 id="插件AceJump"><a href="#插件AceJump" class="headerlink" title="插件AceJump:"></a>插件AceJump:</h3><p>Ctrl+:  进入模式，输入想要跳转到的字母，类似于Chrome插件的Hint模式</p>
+<h3 id="插件IdeaVim："><a href="#插件IdeaVim：" class="headerlink" title="插件IdeaVim："></a>插件IdeaVim：</h3><p>安装之后，会有按键冲突，可以将常用的设置为Intellij IDEA自己的按键。</p>
+<p>还可以设置开启关闭快捷键：Setting-Keymap查找Vim Emulator，设置激活、关闭的快捷键为Ctrl+”</p>
+<h3 id="编辑："><a href="#编辑：" class="headerlink" title="编辑："></a>编辑：</h3><p>Alt+Enter  补全<br>Shift+F6 重命名  </p>
+<h3 id="查找："><a href="#查找：" class="headerlink" title="查找："></a>查找：</h3><p>Double Shift<br>Ctrl+F<br>Ctrl+Shift+F<br>Ctrl+R<br>Ctrl+Shift+R<br>Alt+F7     #找出用处  </p>
+<h3 id="调试："><a href="#调试：" class="headerlink" title="调试："></a>调试：</h3><p>F8  Step over<br>F7 Step into<br>Shift+F8 Step out<br>F9 Resume  </p>
+<h3 id="导航："><a href="#导航：" class="headerlink" title="导航："></a>导航：</h3><p>Esc：切换到编辑窗<br>Alt+1：切换到 project<br>Ctrl+Tab：切换编辑窗口和工具窗口  </p>
+<h3 id="跳转："><a href="#跳转：" class="headerlink" title="跳转："></a>跳转：</h3><p>Ctrl+B 进入定义（方法，类。。）<br>Ctrl+Alt+B 进入接口实现<br>Alt+Up/Down 跳转到下一个方法<br>Ctrl+Alt+左/右 跳转到上一个位置<br>Ctrl+Shift+回退 跳转到上一个编辑位置  </p>
+<h3 id="版本管理："><a href="#版本管理：" class="headerlink" title="版本管理："></a>版本管理：</h3><p>Ctrl+K  提交  </p>
+<h2 id="windows-7快捷键"><a href="#windows-7快捷键" class="headerlink" title="windows 7快捷键"></a>windows 7快捷键</h2><p>Win + 1,2,3,4…    #任务栏中任务切换，按几下相同的数字切换多个相同任务<br>Win+ T              #任务栏中任务切换，配合左右切换多个相同任务<br>Win+ b              #光标移动至右下角小图标  </p>
+<p>Win + 上下左右      #窗口在当前屏幕内移动<br>Win + Shift + 左右  #窗口在多屏之间移动  </p>
+<p>Ctrl + Shift + Esc  #快速打开 Windows 任务管理器<br>Win + L             #锁定屏幕  </p>
+<h2 id="xshell快捷键"><a href="#xshell快捷键" class="headerlink" title="xshell快捷键"></a>xshell快捷键</h2><p>Shift+Alt+N 新建选项卡<br>Alt+o 打开选项卡<br>Ctrl+Tab 切换窗体<br>Alt+N 切换到第几个窗体<br>open  打开session<br>exit 已连接则退出session，未连接则退出终端<br>Alt+Enter 切换到全屏模式<br>Shift+ ↑↓（PageUp，PageDown） 翻页  </p>
+<h2 id="linux-快捷键"><a href="#linux-快捷键" class="headerlink" title="linux 快捷键"></a>linux 快捷键</h2><p>sz afile：从服务器下载文件a到本机<br>sz path/* : 下载路径下所有的文件<br>rz：从本机上传到当前目录<br>history：显示历史指令<br>Ctrl+p\n：显示上/下一条指令<br>Ctrl+f/b光标向前/后移动一个字符,相当-&gt; &lt;-（forward，back）<br>Alt+f/b 光标向前/后移动一个单词<br>Ctrl+d 删除当前字符<br>Ctrl+a/e：移动到当前行开头/结尾<br>Ctrl+r/s：搜索之前/后的指令，继续按Ctrl+r为上一条  </p>
+<h2 id="vim快捷键"><a href="#vim快捷键" class="headerlink" title="vim快捷键"></a>vim快捷键</h2><p>vi filename 打开或者新建文件</p>
+<h3 id="visual-mode：可视化模式，用于复制一个矩形区域的内容"><a href="#visual-mode：可视化模式，用于复制一个矩形区域的内容" class="headerlink" title="visual mode：可视化模式，用于复制一个矩形区域的内容"></a>visual mode：可视化模式，用于复制一个矩形区域的内容</h3><p>v:字符选择，会将光标经过的地方反白选择；<br>V:行选择；<br>Ctrl+v：块选择；<br>y：复制反白的地方；<br>d：删除反白的地方。<br>p：粘贴复制的地方  </p>
+<h3 id="insert-mode：编辑模式"><a href="#insert-mode：编辑模式" class="headerlink" title="insert mode：编辑模式"></a>insert mode：编辑模式</h3><p>a/A，i/I ,o/O开始编辑，编辑完按esc<br>:wq回车保存退出，:q为直接退出  </p>
+<h3 id="一般模式：esc进入"><a href="#一般模式：esc进入" class="headerlink" title="一般模式：esc进入"></a>一般模式：esc进入</h3><p>/abc      #向下查找abc<br>?abc     #向上查找abc<br>n下一个目标，N上一个<br>jkhl：上下左右移动<br>ctrl +u/d上下翻页<br>gg/G:跳转到顶部/底部<br>：n　跳转到ｎ行<br>yy：复制当前行<br>p：在光标下行粘贴<br>x：删除当前光标<br>dd：删除当前行<br>u：撤销<br>Ctrl+r撤销的撤销  </p>
+<h3 id="删除操作：删除后按p可以复制删除内容。"><a href="#删除操作：删除后按p可以复制删除内容。" class="headerlink" title="删除操作：删除后按p可以复制删除内容。"></a>删除操作：删除后按p可以复制删除内容。</h3><p>daw 删除一个单词<br>d$删除至行尾<br>d0删除至行首（包括缩进）<br>d^删除至行首（保留缩进）<br>dd删除当前行。  </p>
+<p>J ：直接把下一行连接到本行末尾，去除缩进 </p>
+<h3 id="光标移动：-1"><a href="#光标移动：-1" class="headerlink" title="光标移动："></a>光标移动：</h3><p>10G : 直接移动到10行<br> H - 光标移动到屏幕第一行。<br>L - 光标移动到屏幕最后一行。<br>M - 光标移动到屏幕中间。<br> zz - 光标所在行居中。   </p>
+<h3 id="改变大小写"><a href="#改变大小写" class="headerlink" title="改变大小写"></a>改变大小写</h3><p>~ ：将光标下的字母改变大小写<br> g~aw ：改变当前单词的大小写</p>
+</the></excerpt>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/10/27/程序员快捷键/">程序员快捷键</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
+        <p><span>发布时间:</span>2016-10-27, 20:41:00</p>
+        <p><span>最后更新:</span>2016-12-02, 20:05:13</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/27/程序员快捷键/" title="程序员快捷键">https://fangyeqing.github.io/2016/10/27/程序员快捷键/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/27/程序员快捷键/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/10/28/hexo+github_page搭建博客/">
+                    hexo+github page搭建博客
+                </a>
+            </div>
+        
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#chrome插件-Vimium"><span class="toc-number">1.</span> <span class="toc-text">chrome插件-Vimium</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#光标移动："><span class="toc-number">1.1.</span> <span class="toc-text">光标移动：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#各种模式"><span class="toc-number">1.2.</span> <span class="toc-text">各种模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Hint-模式-f-F"><span class="toc-number">1.2.1.</span> <span class="toc-text">Hint 模式    f/F</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查找模式-string"><span class="toc-number">1.2.2.</span> <span class="toc-text">查找模式    /string</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#输入模式（i-如果发现命令不起作用，进入输入模式，按Esc回到命令模式）"><span class="toc-number">1.2.3.</span> <span class="toc-text">输入模式（i    如果发现命令不起作用，进入输入模式，按Esc回到命令模式）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#visual-caret模式（目前用于复制粘贴）"><span class="toc-number">1.2.4.</span> <span class="toc-text">visual/caret模式（目前用于复制粘贴）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#标签页操作："><span class="toc-number">1.3.</span> <span class="toc-text">标签页操作：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他"><span class="toc-number">1.4.</span> <span class="toc-text">其他</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chrome自带快捷键："><span class="toc-number">1.5.</span> <span class="toc-text">chrome自带快捷键：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Intellij-IDEA快捷键"><span class="toc-number">2.</span> <span class="toc-text">Intellij IDEA快捷键</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#插件AceJump"><span class="toc-number">2.1.</span> <span class="toc-text">插件AceJump:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#插件IdeaVim："><span class="toc-number">2.2.</span> <span class="toc-text">插件IdeaVim：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编辑："><span class="toc-number">2.3.</span> <span class="toc-text">编辑：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查找："><span class="toc-number">2.4.</span> <span class="toc-text">查找：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调试："><span class="toc-number">2.5.</span> <span class="toc-text">调试：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#导航："><span class="toc-number">2.6.</span> <span class="toc-text">导航：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#跳转："><span class="toc-number">2.7.</span> <span class="toc-text">跳转：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#版本管理："><span class="toc-number">2.8.</span> <span class="toc-text">版本管理：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#windows-7快捷键"><span class="toc-number">3.</span> <span class="toc-text">windows 7快捷键</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xshell快捷键"><span class="toc-number">4.</span> <span class="toc-text">xshell快捷键</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#linux-快捷键"><span class="toc-number">5.</span> <span class="toc-text">linux 快捷键</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#vim快捷键"><span class="toc-number">6.</span> <span class="toc-text">vim快捷键</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#visual-mode：可视化模式，用于复制一个矩形区域的内容"><span class="toc-number">6.1.</span> <span class="toc-text">visual mode：可视化模式，用于复制一个矩形区域的内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#insert-mode：编辑模式"><span class="toc-number">6.2.</span> <span class="toc-text">insert mode：编辑模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#一般模式：esc进入"><span class="toc-number">6.3.</span> <span class="toc-text">一般模式：esc进入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除操作：删除后按p可以复制删除内容。"><span class="toc-number">6.4.</span> <span class="toc-text">删除操作：删除后按p可以复制删除内容。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#光标移动：-1"><span class="toc-number">6.5.</span> <span class="toc-text">光标移动：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#改变大小写"><span class="toc-number">6.6.</span> <span class="toc-text">改变大小写</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"程序员快捷键　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/27/程序员快捷键/" data-title="程序员快捷键" data-url="https://fangyeqing.github.io/2016/10/27/程序员快捷键/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/10/28/hexo+github_page搭建博客/" title="上一篇: hexo+github page搭建博客">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016 小懒
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
