@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="小懒" />
+
+
+
+<meta name="description" content="Druid.io每次增加历史节点，经过一段时间的balance，数据总会均衡，下面从代码分析一下原因。Druid版本为0.9.11">
+<meta property="og:type" content="article">
+<meta property="og:title" content="druid.io---Coordinator balancer源码解析">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/11/01/druid.io---Coordinator_balancer源码解析/index.html">
+<meta property="og:site_name" content="小懒的博客">
+<meta property="og:description" content="Druid.io每次增加历史节点，经过一段时间的balance，数据总会均衡，下面从代码分析一下原因。Druid版本为0.9.11">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/B15CA2C4A2A9405F9A5E374F0EAB839D">
+<meta property="og:updated_time" content="2016-12-02T08:26:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="druid.io---Coordinator balancer源码解析">
+<meta name="twitter:description" content="Druid.io每次增加历史节点，经过一段时间的balance，数据总会均衡，下面从代码分析一下原因。Druid版本为0.9.11">
+<meta name="twitter:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/B15CA2C4A2A9405F9A5E374F0EAB839D">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="小懒的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/xiaolan.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>druid.io---Coordinator balancer源码解析 | 小懒的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?7fb806568d59e1b131e6cd93134ab91e";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">小懒</a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">文章分类</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">小懒</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">小懒</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">文章分类</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-druid.io---Coordinator_balancer源码解析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/11/01/druid.io---Coordinator_balancer源码解析/" class="article-date">
+      <time datetime="2016-11-01T03:54:00.000Z" itemprop="datePublished">2016-11-01</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      druid.io---Coordinator balancer源码解析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <excerpt in="" index="" |="" 首页摘要="">   
+
+<p>Druid.io每次增加历史节点，经过一段时间的balance，数据总会均衡，下面从代码分析一下原因。Druid版本为0.9.11</p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<h2 id="DruidCoordinatorBalancer-java"><a href="#DruidCoordinatorBalancer-java" class="headerlink" title="DruidCoordinatorBalancer.java"></a>DruidCoordinatorBalancer.java</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">public class DruidCoordinatorBalancer implements DruidCoordinatorHelper</div><div class="line">&#123;</div><div class="line"> @Override</div><div class="line">  public DruidCoordinatorRuntimeParams run(DruidCoordinatorRuntimeParams params)</div><div class="line">  &#123;</div><div class="line">    final BalancerStrategy strategy = params.getBalancerStrategyFactory().createBalancerStrategy(referenceTimestamp);</div><div class="line">    final int maxSegmentsToMove = params.getCoordinatorDynamicConfig().getMaxSegmentsToMove();</div><div class="line"></div><div class="line">    for (Map.Entry&lt;String, MinMaxPriorityQueue&lt;ServerHolder&gt;&gt; entry :</div><div class="line">        params.getDruidCluster().getCluster().entrySet()) &#123;//循环cluster中的所有server</div><div class="line"></div><div class="line">      final List&lt;ServerHolder&gt; serverHolderList = Lists.newArrayList(entry.getValue());</div><div class="line"></div><div class="line">      for (int iter = 0; iter &lt; maxSegmentsToMove; iter++) &#123;//循环maxSegmentsToMove次</div><div class="line">        //选择将要移动的segment</div><div class="line">        final BalancerSegmentHolder segmentToMove = strategy.pickSegmentToMove(serverHolderList);</div><div class="line">        </div><div class="line">        if (segmentToMove != null &amp;&amp; params.getAvailableSegments().contains(segmentToMove.getSegment())) &#123;</div><div class="line">        //选择将要移动到的server</div><div class="line">          final ServerHolder holder = strategy.findNewSegmentHomeBalancer(segmentToMove.getSegment(), serverHolderList);</div><div class="line"></div><div class="line">          if (holder != null) &#123;//执行移动</div><div class="line">            moveSegment(segmentToMove, holder.getServer(), params);</div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">  //移动单个segment，入参：segment、移动到哪个server，协调节点参数</div><div class="line">  protected void moveSegment(</div><div class="line">      final BalancerSegmentHolder segment,</div><div class="line">      final ImmutableDruidServer toServer,</div><div class="line">      final DruidCoordinatorRuntimeParams params</div><div class="line">    )&#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="选择将要移动的segment—pickSegmentToMove-方法"><a href="#选择将要移动的segment—pickSegmentToMove-方法" class="headerlink" title="选择将要移动的segment—pickSegmentToMove()方法"></a>选择将要移动的segment—pickSegmentToMove()方法</h3><p>所在类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public class RandomBalancerStrategy implements BalancerStrategy</div><div class="line">&#123;</div><div class="line">  @Override</div><div class="line">  public BalancerSegmentHolder pickSegmentToMove(List&lt;ServerHolder&gt; serverHolders)</div><div class="line">  &#123;</div><div class="line">    return sampler.getRandomBalancerSegmentHolder(serverHolders);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="getRandomBalancerSegmentHolder"><a href="#getRandomBalancerSegmentHolder" class="headerlink" title="getRandomBalancerSegmentHolder"></a>getRandomBalancerSegmentHolder</h4><p>循环遍历serverList中的每一个server中的每一个segment，每个segment都是等概率的1/N，所以当前已有segment越多的server选中segment的概率会越大。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">public class ReservoirSegmentSampler</div><div class="line">&#123;</div><div class="line"></div><div class="line">  public BalancerSegmentHolder getRandomBalancerSegmentHolder(final List&lt;ServerHolder&gt; serverHolders)</div><div class="line">  &#123;</div><div class="line">    final Random rand = new Random();</div><div class="line">    ServerHolder fromServerHolder = null;</div><div class="line">    DataSegment proposalSegment = null;</div><div class="line">    int numSoFar = 0;</div><div class="line">    </div><div class="line">    for (ServerHolder server : serverHolders) &#123;//serverList中循环每一个server</div><div class="line">      for (DataSegment segment : server.getServer().getSegments().values()) &#123;//循环每一个server中的segment</div><div class="line">        int randNum = rand.nextInt(numSoFar + 1);</div><div class="line">        // w.p. 1 / (numSoFar+1), swap out the server and segment</div><div class="line">        if (randNum == numSoFar) &#123;//循环过程中，后面的会覆盖前面的</div><div class="line">          fromServerHolder = server;</div><div class="line">          proposalSegment = segment;</div><div class="line">        &#125;</div><div class="line">        numSoFar++;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    if (fromServerHolder != null) &#123;</div><div class="line">      return new BalancerSegmentHolder(fromServerHolder.getServer(), proposalSegment);</div><div class="line">    &#125; else &#123;</div><div class="line">      return null;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>实现一个等概率的选择：<br>比如说一共有5个数，第2个选中的话，就需要第3、4、5选不中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">1/2 * 2/3 * 3/4 * 4/5 =1/5</div></pre></td></tr></table></figure></p>
+<p>第i个：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">1/(i+1)*(i+1)/(i+2)*……*(n-2)/(n-1)*(n-1)/n=1/n</div></pre></td></tr></table></figure></p>
+<h3 id="选择将要移动到的server—findNewSegmentHomeBalancer"><a href="#选择将要移动到的server—findNewSegmentHomeBalancer" class="headerlink" title="选择将要移动到的server—findNewSegmentHomeBalancer()"></a>选择将要移动到的server—findNewSegmentHomeBalancer()</h3><p>所在类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">public class CostBalancerStrategy implements BalancerStrategy</div><div class="line">&#123;</div><div class="line">  @Override</div><div class="line">  public ServerHolder findNewSegmentHomeBalancer(</div><div class="line">      DataSegment proposalSegment, List&lt;ServerHolder&gt; serverHolders</div><div class="line">  )</div><div class="line">  &#123;</div><div class="line">    return chooseBestServer(proposalSegment, serverHolders, true).rhs;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"> protected Pair&lt;Double, ServerHolder&gt; chooseBestServer(</div><div class="line">      final DataSegment proposalSegment,</div><div class="line">      final Iterable&lt;ServerHolder&gt; serverHolders,</div><div class="line">      final boolean includeCurrentServer</div><div class="line">  )</div><div class="line">  &#123;</div><div class="line">    Pair&lt;Double, ServerHolder&gt; bestServer = Pair.of(Double.POSITIVE_INFINITY, null);</div><div class="line"></div><div class="line">    ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(threadCount));</div><div class="line">    List&lt;ListenableFuture&lt;Pair&lt;Double, ServerHolder&gt;&gt;&gt; futures = Lists.newArrayList();</div><div class="line">    //开启一个线程池，将serverList中的每个server计算出computeCost的值</div><div class="line">    for (final ServerHolder server : serverHolders) &#123;</div><div class="line">      futures.add(</div><div class="line">          service.submit(</div><div class="line">              new Callable&lt;Pair&lt;Double, ServerHolder&gt;&gt;()</div><div class="line">              &#123;</div><div class="line">                @Override</div><div class="line">                public Pair&lt;Double, ServerHolder&gt; call() throws Exception</div><div class="line">                &#123;</div><div class="line">                  return Pair.of(computeCost(proposalSegment, server, includeCurrentServer), server);</div><div class="line">                &#125;</div><div class="line">              &#125;</div><div class="line">          )</div><div class="line">      );</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    final ListenableFuture&lt;List&lt;Pair&lt;Double, ServerHolder&gt;&gt;&gt; resultsFuture = Futures.allAsList(futures);</div><div class="line">    </div><div class="line">    try &#123;</div><div class="line">      for (Pair&lt;Double, ServerHolder&gt; server : resultsFuture.get()) &#123;</div><div class="line">        if (server.lhs &lt; bestServer.lhs) &#123;//比较computeCost计算出的值最小的为best</div><div class="line">          bestServer = server;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    catch (Exception e) &#123;</div><div class="line">      log.makeAlert(e, &quot;Cost Balancer Multithread strategy wasn&apos;t able to complete cost computation.&quot;).emit();</div><div class="line">    &#125;</div><div class="line">    service.shutdown();</div><div class="line">    return bestServer;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<h4 id="server的cost的计算方法"><a href="#server的cost的计算方法" class="headerlink" title="server的cost的计算方法"></a>server的cost的计算方法</h4><p>当前server已有的and将要加载的每个seg，与将要移动的seg的cost值之和。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">protected double computeCost(</div><div class="line">     final DataSegment proposalSegment, final ServerHolder server, final boolean includeCurrentServer</div><div class="line"> )</div><div class="line"> &#123;</div><div class="line">   final long proposalSegmentSize = proposalSegment.getSize();</div><div class="line"></div><div class="line">   //如果当前server已有该seg</div><div class="line">   if (!includeCurrentServer &amp;&amp; server.isServingSegment(proposalSegment)) &#123;</div><div class="line">     return Double.POSITIVE_INFINITY;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   //如果当前server正在load该segment或者存储空间不够</div><div class="line">   if (proposalSegmentSize &gt; server.getAvailableSize() || server.isLoadingSegment(proposalSegment)) &#123;</div><div class="line">     return Double.POSITIVE_INFINITY;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   double cost = 0d;</div><div class="line"></div><div class="line">    //将要balance的seg与当前server的cost和,不包括该seg</div><div class="line">   cost += computeJointSegmentsCost(</div><div class="line">       proposalSegment,</div><div class="line">       Iterables.filter(</div><div class="line">           server.getServer().getSegments().values(),</div><div class="line">           Predicates.not(Predicates.equalTo(proposalSegment))</div><div class="line">       )</div><div class="line">   );</div><div class="line"></div><div class="line">   //将要load的segment与当前server的cost和</div><div class="line">   cost += computeJointSegmentsCost(proposalSegment, server.getPeon().getSegmentsToLoad());</div><div class="line"></div><div class="line">   return cost;</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<h4 id="两个seg的cost的计算方法"><a href="#两个seg的cost的计算方法" class="headerlink" title="两个seg的cost的计算方法"></a>两个seg的cost的计算方法</h4><p>如果要提高查询速度，<strong>同一个查询查询的数据尽量分散在不同的server</strong>。而上述<strong>chooseBestServer中选择最佳server是选择cost最小的</strong>，即将要移动的seg移动到cost小的server。 </p>
+<h5 id="druid-0-9-0"><a href="#druid-0-9-0" class="headerlink" title="druid 0.9.0"></a>druid 0.9.0</h5><ul>
+<li>recencyPenalty: 离得越近的时间，越可能在同一个查询中  </li>
+<li>dataSourcePenalty: 同一个数据源的数据，越可能在同一个查询中</li>
+<li>gapPenalty: 重叠区域越多，越可能在同一个查询中   </li>
+</ul>
+<p>cost越大的因素：seg大小越大、七天内离现在越近、同一个数据源、两段seg的区间重叠或者间距越小。<br>cost越小的因素：seg大小越小、七天内离现在越远、非同一个数据源、两段seg的区间间距越大</p>
+<p>同一个server符合cost越小，即数据段离得越远、不重叠且间距大、来自不同的数据源。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">public double  computeJointSegmentCosts(final DataSegment segment1, final DataSegment segment2)</div><div class="line">&#123;</div><div class="line">    final Interval gap = segment1.getInterval().gap(segment2.getInterval());</div><div class="line"></div><div class="line">    final double baseCost = Math.min(segment1.getSize(), segment2.getSize());//取两个seg的最小值</div><div class="line">    double recencyPenalty = 1;//默认值为1，如果两个seg都为七天之内的数据，最大为4，离得越远则值越小</div><div class="line">    double dataSourcePenalty = 1;//默认为1，两个seg属于同一个数据源则为2</div><div class="line">    double gapPenalty = 1;//两个seg有重叠部分为2，否则最大为2，重叠区域越大值越小</div><div class="line"></div><div class="line">    if (segment1.getDataSource().equals(segment2.getDataSource())) &#123;</div><div class="line">      dataSourcePenalty = 2;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    double segment1diff = referenceTimestamp - segment1.getInterval().getEndMillis();</div><div class="line">    double segment2diff = referenceTimestamp - segment2.getInterval().getEndMillis();</div><div class="line">    if (segment1diff &lt; SEVEN_DAYS_IN_MILLIS &amp;&amp; segment2diff &lt; SEVEN_DAYS_IN_MILLIS) &#123;</div><div class="line">      recencyPenalty = (2 - segment1diff / SEVEN_DAYS_IN_MILLIS) * (2 - segment2diff / SEVEN_DAYS_IN_MILLIS);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /** gap是null如果两段区间重叠或者他们相邻 */</div><div class="line">    if (gap == null) &#123;</div><div class="line">      gapPenalty = 2;</div><div class="line">    &#125; else &#123;</div><div class="line">      long gapMillis = gap.toDurationMillis();</div><div class="line">      if (gapMillis &lt; THIRTY_DAYS_IN_MILLIS) &#123;</div><div class="line">        gapPenalty = 2 - gapMillis / THIRTY_DAYS_IN_MILLIS;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    final double cost = baseCost * recencyPenalty * dataSourcePenalty * gapPenalty;</div><div class="line"></div><div class="line">    return cost;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="druid-0-9-1改进"><a href="#druid-0-9-1改进" class="headerlink" title="druid 0.9.1改进"></a>druid 0.9.1改进</h5><p><a href="https://github.com/druid-io/druid/pull/2972" target="_blank" rel="external">https://github.com/druid-io/druid/pull/2972</a>  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">static double computeJointSegmentsCost(final DataSegment segment, final Iterable&lt;DataSegment&gt; segmentSet)</div><div class="line">  &#123;</div><div class="line">    double totalCost = 0;</div><div class="line">    for (DataSegment s : segmentSet) &#123;</div><div class="line">      totalCost += computeJointSegmentsCost(segment, s);</div><div class="line">    &#125;</div><div class="line">    return totalCost;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">   public static double computeJointSegmentsCost(final DataSegment segmentA, final DataSegment segmentB)</div><div class="line">  &#123;</div><div class="line">    final Interval intervalA = segmentA.getInterval();</div><div class="line">    final Interval intervalB = segmentB.getInterval();</div><div class="line"></div><div class="line">    final double t0 = intervalA.getStartMillis();</div><div class="line">    final double t1 = (intervalA.getEndMillis() - t0) / MILLIS_FACTOR;</div><div class="line">    final double start = (intervalB.getStartMillis() - t0) / MILLIS_FACTOR;</div><div class="line">    final double end = (intervalB.getEndMillis() - t0) / MILLIS_FACTOR;</div><div class="line"></div><div class="line">    // constant cost-multiplier for segments of the same datsource</div><div class="line">    final double multiplier = segmentA.getDataSource().equals(segmentB.getDataSource()) ? 2.0 : 1.0;</div><div class="line"></div><div class="line">    return INV_LAMBDA_SQUARE * intervalCost(t1, start, end) * multiplier;</div><div class="line">    //入参分别为：A区间的end，B区间的start、B区间的end</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>具体函数：<br>两个seg的时间区间 ：X = [x0=0, x1) and Y = [y0, y1)<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/B15CA2C4A2A9405F9A5E374F0EAB839D" alt="image">  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">public static double intervalCost(double x1, double y0, double y1)</div><div class="line">  &#123;</div><div class="line">    if (x1 == 0 || y1 == y0) &#123;</div><div class="line">      return 0;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (y0 &lt; 0) &#123;//y0&lt;x0交换两个区间，便于计算</div><div class="line">      double tmp = x1;</div><div class="line">      x1 = y1 - y0;</div><div class="line">      y1 = tmp - y0;</div><div class="line">      y0 = -y0;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 上述情况交换区间之后，肯定满足x0 &lt;= y0</div><div class="line">    if (y0 &lt; x1) &#123;//有重叠,两种情况</div><div class="line">    // X  = [ A )[ B )[ C )   or  [ A )[ B )</div><div class="line">    // Y  =      [   )                 [   )[ C )</div><div class="line">    // A is empty if y0 = 0</div><div class="line">    // C is empty if y1 = x1</div><div class="line">    </div><div class="line">    //cost(X, Y) = cost(A, Y) + cost(B, C) + cost(B, B)</div><div class="line">    </div><div class="line">    //cost(A, Y) and cost(B, C) can be calculated using the non-overlapping case</div><div class="line">    //which reduces the overlapping case to computing</div><div class="line">    </div><div class="line">    //cost(B, B) = \int_0^&#123;\beta&#125; \int_&#123;0&#125;^&#123;\beta&#125; e^&#123;-|x-y|&#125;dxdy</div><div class="line">    //           = 2 \cdot (\beta + e^&#123;-\beta&#125; - 1)</div><div class="line">    </div><div class="line">    //            where \beta is the length of interval B</div><div class="line">    </div><div class="line">      final double beta;  // b1 - y0, length of interval B</div><div class="line">      final double gamma; // c1 - y0, length of interval C</div><div class="line">      if (y1 &lt;= x1) &#123;</div><div class="line">        beta = y1 - y0;</div><div class="line">        gamma = x1 - y0;</div><div class="line">      &#125; else &#123;</div><div class="line">        beta = x1 - y0;</div><div class="line">        gamma = y1 - y0;</div><div class="line">      &#125;</div><div class="line">      return intervalCost(y0, y0, y1) + // cost(A, Y)</div><div class="line">             intervalCost(beta, beta, gamma) + // cost(B, C)</div><div class="line">             2 * (beta + FastMath.exp(-beta) - 1); // cost(B, B)</div><div class="line">    &#125; else &#123;//没有重叠</div><div class="line">    //cost(X, Y) = \int_0^&#123;x_1&#125; \int_&#123;y_0&#125;^&#123;y_1&#125; e^&#123;-|x-y|&#125; dxdy</div><div class="line">    //            = \int_0^&#123;x_1&#125; \int_&#123;y_0&#125;^&#123;y_1&#125; e^&#123;x-y&#125; dxdy</div><div class="line">    //           = (e^&#123;-y_1&#125; - e^&#123;-y_0&#125;) - (e^&#123;x_1-y_1&#125; - e^&#123;x_1-y_0&#125;)</div><div class="line">      final double exy0 = FastMath.exp(x1 - y0);</div><div class="line">      final double exy1 = FastMath.exp(x1 - y1);</div><div class="line">      final double ey0 = FastMath.exp(0f - y0);</div><div class="line">      final double ey1 = FastMath.exp(0f - y1);</div><div class="line"></div><div class="line">      return (ey1 - ey0) - (exy1 - exy0);</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+</the></excerpt>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
+        <p><span>发布时间:</span>2016-11-01, 11:54:00</p>
+        <p><span>最后更新:</span>2016-12-02, 16:26:50</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/" title="druid.io---Coordinator balancer源码解析">https://fangyeqing.github.io/2016/11/01/druid.io---Coordinator_balancer源码解析/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/11/01/druid.io---Coordinator_balancer源码解析/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/11/05/Java程序员学python3.0--入门篇/">
+                    Java程序员学python3.0--入门篇
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/10/29/druid.io实践2---集群数据迁移/">
+                    druid.io实践2---集群数据迁移
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#DruidCoordinatorBalancer-java"><span class="toc-number">1.</span> <span class="toc-text">DruidCoordinatorBalancer.java</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#选择将要移动的segment—pickSegmentToMove-方法"><span class="toc-number">1.1.</span> <span class="toc-text">选择将要移动的segment—pickSegmentToMove()方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#getRandomBalancerSegmentHolder"><span class="toc-number">1.1.1.</span> <span class="toc-text">getRandomBalancerSegmentHolder</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选择将要移动到的server—findNewSegmentHomeBalancer"><span class="toc-number">1.2.</span> <span class="toc-text">选择将要移动到的server—findNewSegmentHomeBalancer()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#server的cost的计算方法"><span class="toc-number">1.2.1.</span> <span class="toc-text">server的cost的计算方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#两个seg的cost的计算方法"><span class="toc-number">1.2.2.</span> <span class="toc-text">两个seg的cost的计算方法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#druid-0-9-0"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">druid 0.9.0</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#druid-0-9-1改进"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">druid 0.9.1改进</span></a></li></ol></li></ol></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"druid.io---Coordinator balancer源码解析　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/11/01/druid.io---Coordinator_balancer源码解析/" data-title="druid.io---Coordinator balancer源码解析" data-url="https://fangyeqing.github.io/2016/11/01/druid.io---Coordinator_balancer源码解析/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/11/05/Java程序员学python3.0--入门篇/" title="上一篇: Java程序员学python3.0--入门篇">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/10/29/druid.io实践2---集群数据迁移/" title="下一篇: druid.io实践2---集群数据迁移">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016 小懒
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
