@@ -1566,7 +1566,7 @@ public void configure(Map&lt;String, ?&gt; map) {
 <ul>
 <li>通常出现问题会去google一发，浏览器插件Vimium值得拥有，常用的vim操作就可以玩转浏览器。</li>
 <li>Intellij IDEA中常用的AceJump可以实现光标眼球定位，IdeaVim类似于Vim操作，可以解放你的鼠标。</li>
-<li>公司配了两三个显示屏幕，需要切来切去，windows切屏快捷键也需要掌握。</li>
+<li>公司配了两三个显示屏幕，需要切来切去，切屏快捷键也需要掌握。由于只有windows的笔记本，也只介绍windows相关的快捷键。</li>
 <li>linux和vim相关快捷键肯定也是必不可少的。</li>
 </ul>
 <a id="more"></a>  
