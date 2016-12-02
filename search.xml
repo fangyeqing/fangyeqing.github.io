@@ -4,6 +4,181 @@
   
     
     <entry>
+      <title><![CDATA[Camus介绍]]></title>
+      <url>https://fangyeqing.github.io/2016/12/01/Camus%E4%BB%8B%E7%BB%8D/</url>
+      <content type="html"><![CDATA[<p><excerpt in="" index="" |="" 首页摘要="">   </excerpt></p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>Linkedin/Camus是一个MapReduce作业，从Kafka拉取指定topic到HDFS，供批量/离线数据处理、分析。</p>
+<p>其中，Camus sweeper组件提供去重功能,可以对Kafka中由于“at least once”机制而存在重复数据的topic进行去重。</p>
+<p>目前<a href="https://github.com/linkedin/camus" target="_blank" rel="external">Camus</a>已经停止更新了，新项目为<a href="https://github.com/linkedin/gobblin" target="_blank" rel="external">gobblin</a>。</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><p>Camus有以下几个特点：</p>
+<ul>
+<li>自动发现topic</li>
+<li>Avro schema管理</li>
+<li>按时间分区  </li>
+</ul>
+<h3 id="Camus-job"><a href="#Camus-job" class="headerlink" title="Camus job"></a>Camus job</h3><p><img src="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/DDAAF70F0B1D4D329E7BDA5E49FC37D2/24715" alt="image"></p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文="">   
+
+<p>每个camus job分为三个阶段：  </p>
+<ul>
+<li>Setup Stage：从Kafka和Zookeeper获取可用的topics，partitions，offset等元信息（Metadata） </li>
+<li>Hadoop Job Stage：开启多个ETL map task执行topic的数据获取，并写到HDFS。每个task的流程如下：<ul>
+<li>Pulling the data：每个task根据Setup Stage获取到的元数据，消费Kafka的数据，在Schema注册服务查找Avro模式来反序列化。每个task都生成4个文件：Avro data files，Count statistics files，Updated offset files，Error files</li>
+<li>Committing the data：当一个task完成时，其拉取的数据都被提交到基于时间戳的output目录。</li>
+<li>Producing Audit Counts：执行成功的tasks会向HDFS写audit counts</li>
+<li>Storing the offset：每个partition都有offset，这些offset信息存储在HDFS中</li>
+</ul>
+</li>
+<li>Cleanup Stage：hadoop job完成后，收集HDFS中的audit counts并进行聚合，然后提交聚合结果到kafka</li>
+</ul>
+<h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><p>camus关键在于实现两个类，Decoder和Writer，使其满足我们的系统业务，并且稍加配置就可以嵌入到自己的系统中。</p>
+<h3 id="MessageDecoder"><a href="#MessageDecoder" class="headerlink" title="MessageDecoder"></a>MessageDecoder</h3><p>MessageDecoder对kafka消息进行解码。</p>
+<p>Camus自带了KafkaAvroMessageDecoder，JsonStringMessageDecoder等。也可以通过继承MessageDecoder实现符合自己业务的Decoder。通过camus.message.decoder.class配置。</p>
+<h3 id="RecordWriterProvider"><a href="#RecordWriterProvider" class="headerlink" title="RecordWriterProvider"></a>RecordWriterProvider</h3><p>RecordWriterProvider在数据写到HDFS之前进行编码。</p>
+<p>Camus自带AvroRecordWriterProvider，StringRecordWriterProvider等。也可以通过实现RecordWriterProvider实现自己的写入方法。并通过<br>etl.record.writer.provider.class来配置</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>解释</th>
+<th>是否必须</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Schema配置</td>
+<td></td>
+</tr>
+<tr>
+<td><code>schema.registry.url</code></td>
+<td>schema registry地址</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>max.schemas.per.subject</code></td>
+<td>subject下最大schema数量</td>
+<td>否</td>
+<td>1000</td>
+</tr>
+<tr>
+<td>Kafka配置</td>
+<td></td>
+</tr>
+<tr>
+<td><code>kafka.brokers</code></td>
+<td>kafka broker地址List</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>kafka.max.pull.hrs</code></td>
+<td>从每个分区拉取数据的最长历史小时数（相对于第一条未消费的消息的时间戳），-1表示没限制</td>
+<td>否</td>
+<td>-1</td>
+</tr>
+<tr>
+<td><code>kafka.max.historical.days</code></td>
+<td>Events的时间戳超过将被丢弃，-1表示没限制</td>
+<td>否</td>
+<td>-1</td>
+</tr>
+<tr>
+<td><code>kafka.max.pull.minutes.per.task</code></td>
+<td>MapReduce任务拉取消息的最大时间。超时就会停止，下一个camus job会继续从停止的offset消费</td>
+<td>否</td>
+<td>-1 </td>
+</tr>
+<tr>
+<td><code>kafka.blacklist.topics</code></td>
+<td>黑名单里的topic不会被消费</td>
+<td>否</td>
+<td>null</td>
+</tr>
+<tr>
+<td><code>kafka.whitelist.topics</code></td>
+<td>白名单里的topic会被消费</td>
+<td>否</td>
+<td>null</td>
+</tr>
+<tr>
+<td><code>etl.output.record.delimiter</code></td>
+<td>消息分隔符</td>
+<td>否</td>
+<td>“\n”</td>
+</tr>
+<tr>
+<td>Camus Job配置</td>
+<td></td>
+</tr>
+<tr>
+<td><code>camus.job.name</code></td>
+<td>camus job名</td>
+<td>否</td>
+<td>Camus Job</td>
+</tr>
+<tr>
+<td><code>camus.message.decoder.class</code></td>
+<td>解码器</td>
+<td>否</td>
+<td>AvroMessageDecoder</td>
+</tr>
+<tr>
+<td><code>etl.record.writer.provider.class</code></td>
+<td>编码器</td>
+<td>否</td>
+<td>AvroRecordWriterProvider</td>
+</tr>
+<tr>
+<td><code>etl.partitioner.class</code></td>
+<td>Camus输出分区，默认按小时</td>
+<td>否</td>
+<td>DefaultPartitioner</td>
+</tr>
+<tr>
+<td><code>camus.work.allocator.class</code></td>
+<td>Class for creating input splits from ETL requests</td>
+<td>否</td>
+<td>BaseAllocator</td>
+</tr>
+<tr>
+<td><code>etl.destination.path</code></td>
+<td>文件最终输出的文件夹，Top-level output directory, sub-directories will be dynamically created for each topic pulled.</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>etl.execution.base.path</code></td>
+<td>Camus运行信息临时存放的HDFS目录，offsets, error logs and count files等</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>etl.execution.history.path</code></td>
+<td>已完成的Job的运行信息存放的HDFS目录，通常是 <code>etl.execution.base.path</code>的子目录</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>hdfs.default.classpath.dir</code></td>
+<td>All files in this directory will be added to the distributed cache and placed on the classpath for Hadoop tasks.</td>
+<td>否</td>
+<td>null</td>
+</tr>
+<tr>
+<td><code>mapred.map.tasks</code></td>
+<td>最大hadoop任务数, 每个任务可以拉取多个topic partitions</td>
+<td>否</td>
+<td>30</td>
+</tr>
+</tbody>
+</table>
+<h4 id="配置讲解"><a href="#配置讲解" class="headerlink" title="配置讲解"></a>配置讲解</h4><p><img src="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/4134B32520014148A88F9AC1EB2B9663/24930" alt="image"><br>设ts是在<code>runTime-kafka.max.historical</code>之内的还未消费的第一条消息的时间戳。图中当前运行时间runTime为2015年12月5日0点，ts为2015年12月2日0点到5日0点之间还未消费的第一条消息的时间戳，即绿色区域的起点。</p>
+<p>如果消息的时间戳在<code>ts,ts + kafka.max.pull.hrs</code>之间）,将被camus任务消费，并且假设在<code>kafka.max.pull.minutes.per.task</code>内任务很快完成。显然图中绿色区域的都会被消费。</p>
+<h4 id="配置场景应用"><a href="#配置场景应用" class="headerlink" title="配置场景应用"></a>配置场景应用</h4><p><code>kafka.max.historical.days</code>:可以用于忽略过老的消息<br><code>kafka.max.pull.hrs</code>:将此值设置得比camus job的执行频率小，可以防止重复任务  </p>
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mvn clean package</div><div class="line"></div><div class="line">hadoop jar camus-example-&lt;version&gt;-SNAPSHOT.jar com.linkedin.camus.etl.kafka.CamusJob  </div><div class="line"> -D &lt;property=value&gt;   use value for given property  </div><div class="line"> -P &lt;arg&gt;              external properties filename  </div><div class="line"> -p &lt;arg&gt;              properties filename from the classpath</div></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://docs.confluent.io/1.0/camus/docs/intro.html" target="_blank" rel="external">http://docs.confluent.io/1.0/camus/docs/intro.html</a><br><a href="https://github.com/confluentinc/camus" target="_blank" rel="external">https://github.com/confluentinc/camus</a><br><a href="http://getindata.com/blog/post/time-related-configuration-settings-and-assumptions-in-camus/" target="_blank" rel="external">http://getindata.com/blog/post/time-related-configuration-settings-and-assumptions-in-camus/</a><br><a href="http://blog.csdn.net/amghost/article/details/44258817" target="_blank" rel="external">http://blog.csdn.net/amghost/article/details/44258817</a><br><a href="http://blog.csdn.net/amghost/article/details/44258841" target="_blank" rel="external">http://blog.csdn.net/amghost/article/details/44258841</a>  </p>
+</the>]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[Samza 3---Samza API]]></title>
       <url>https://fangyeqing.github.io/2016/11/17/Samza_3---Samza_API/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   

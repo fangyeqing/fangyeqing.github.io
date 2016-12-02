@@ -15,16 +15,37 @@
 
 
 
-<meta name="description" content="当数据维度比较多，存储时间比较长时，数据量会增加到到T级别。如果historical节点只是单机版，查询会特别慢。在生产过程中，主要做了以下几点优化：">
+<meta name="description" content="概念Linkedin/Camus是一个MapReduce作业，从Kafka拉取指定topic到HDFS，供批量/离线数据处理、分析。
+其中，Camus sweeper组件提供去重功能,可以对Kafka中由于“at least once”机制而存在重复数据的topic进行去重。
+目前Camus已经停止更新了，新项目为gobblin。
+特点Camus有以下几个特点：
+
+自动发现topic
+Av">
 <meta property="og:type" content="article">
-<meta property="og:title" content="druid.io实践1---查询速度优化">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/index.html">
+<meta property="og:title" content="Camus介绍">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/12/01/Camus介绍/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="当数据维度比较多，存储时间比较长时，数据量会增加到到T级别。如果historical节点只是单机版，查询会特别慢。在生产过程中，主要做了以下几点优化：">
-<meta property="og:updated_time" content="2016-10-31T03:04:21.000Z">
+<meta property="og:description" content="概念Linkedin/Camus是一个MapReduce作业，从Kafka拉取指定topic到HDFS，供批量/离线数据处理、分析。
+其中，Camus sweeper组件提供去重功能,可以对Kafka中由于“at least once”机制而存在重复数据的topic进行去重。
+目前Camus已经停止更新了，新项目为gobblin。
+特点Camus有以下几个特点：
+
+自动发现topic
+Av">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/DDAAF70F0B1D4D329E7BDA5E49FC37D2/24715">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/4134B32520014148A88F9AC1EB2B9663/24930">
+<meta property="og:updated_time" content="2016-12-02T07:48:59.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="druid.io实践1---查询速度优化">
-<meta name="twitter:description" content="当数据维度比较多，存储时间比较长时，数据量会增加到到T级别。如果historical节点只是单机版，查询会特别慢。在生产过程中，主要做了以下几点优化：">
+<meta name="twitter:title" content="Camus介绍">
+<meta name="twitter:description" content="概念Linkedin/Camus是一个MapReduce作业，从Kafka拉取指定topic到HDFS，供批量/离线数据处理、分析。
+其中，Camus sweeper组件提供去重功能,可以对Kafka中由于“at least once”机制而存在重复数据的topic进行去重。
+目前Camus已经停止更新了，新项目为gobblin。
+特点Camus有以下几个特点：
+
+自动发现topic
+Av">
+<meta name="twitter:image" content="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/DDAAF70F0B1D4D329E7BDA5E49FC37D2/24715">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -56,7 +77,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>druid.io实践1---查询速度优化 | 小懒的博客</title>
+<title>Camus介绍 | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -264,11 +285,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-druid.io实践1---查询速度优化" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Camus介绍" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/29/druid.io实践1---查询速度优化/" class="article-date">
-      <time datetime="2016-10-29T03:57:00.000Z" itemprop="datePublished">2016-10-29</time>
+      <a href="/2016/12/01/Camus介绍/" class="article-date">
+      <time datetime="2016-12-01T11:22:00.000Z" itemprop="datePublished">2016-12-01</time>
 </a>
 
 
@@ -283,7 +304,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      druid.io实践1---查询速度优化
+      Camus介绍
     </h1>
   
 
@@ -292,13 +313,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    <a class="article-category-link" href="/categories/Camus/">Camus</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/实践/">实践</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/性能优化/">性能优化</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Camus/">Camus</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/流处理/">流处理</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -308,31 +329,176 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <excerpt in="" index="" |="" 首页摘要="">   
-
-<p>当数据维度比较多，存储时间比较长时，数据量会增加到到T级别。如果historical节点只是单机版，查询会特别慢。在生产过程中，主要做了以下几点优化：</p>
+        <p><excerpt in="" index="" |="" 首页摘要="">   </excerpt></p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>Linkedin/Camus是一个MapReduce作业，从Kafka拉取指定topic到HDFS，供批量/离线数据处理、分析。</p>
+<p>其中，Camus sweeper组件提供去重功能,可以对Kafka中由于“at least once”机制而存在重复数据的topic进行去重。</p>
+<p>目前<a href="https://github.com/linkedin/camus" target="_blank" rel="external">Camus</a>已经停止更新了，新项目为<a href="https://github.com/linkedin/gobblin" target="_blank" rel="external">gobblin</a>。</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><p>Camus有以下几个特点：</p>
+<ul>
+<li>自动发现topic</li>
+<li>Avro schema管理</li>
+<li>按时间分区  </li>
+</ul>
+<h3 id="Camus-job"><a href="#Camus-job" class="headerlink" title="Camus job"></a>Camus job</h3><p><img src="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/DDAAF70F0B1D4D329E7BDA5E49FC37D2/24715" alt="image"></p>
 <a id="more"></a>  
-<the rest="" of="" contents="" |="" 余下全文=""> 
+<the rest="" of="" contents="" |="" 余下全文="">   
 
-<h2 id="增加缓存"><a href="#增加缓存" class="headerlink" title="增加缓存"></a>增加缓存</h2><p>当集群机器较少时(官方文档推荐&lt;20台)，在broker节点配置缓存，可以适当增加缓存大小，或者从local替换成memcached。</p>
-<p>当集群机器较多时，应当只配置historical节点缓存，减轻broker节点压力。</p>
-<h3 id="附：broker部分配置"><a href="#附：broker部分配置" class="headerlink" title="附：broker部分配置"></a>附：broker部分配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># Query cache</div><div class="line">druid.broker.cache.useCache=true</div><div class="line">druid.broker.cache.populateCache=true</div><div class="line">druid.cache.type=local</div><div class="line">druid.cache.sizeInBytes=2000000000</div></pre></td></tr></table></figure>
-<h2 id="historical节点集群化"><a href="#historical节点集群化" class="headerlink" title="historical节点集群化"></a>historical节点集群化</h2><p>查询为CPU密集型，通过合理的数据分配策略，使数据尽量分散在不同的历史节点。</p>
-<h3 id="集群分片"><a href="#集群分片" class="headerlink" title="集群分片"></a>集群分片</h3><p>可以根据查询频率的高低分为冷热数据，公司经常查40天内的数据，40天内的数据显然是hot数据。 </p>
-<p>这里涉及到coordinate节点的Load Rules配置，druid 0.9版本有coordinator的UI界面，可以设置每个dataSource的Load Rules。如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;type&quot; : &quot;loadByPeriod&quot;,</div><div class="line">  &quot;period&quot; : &quot;P40D&quot;,</div><div class="line">  &quot;tieredReplicants&quot;: &#123;</div><div class="line">      &quot;hot&quot;: 1,</div><div class="line">      &quot;_default_tier&quot; : 1</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">&#123;</div><div class="line">  &quot;type&quot; : &quot;loadForever&quot;,  </div><div class="line">  &quot;tieredReplicants&quot;: &#123;</div><div class="line">    &quot;_default_tier&quot; : 1</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这里设置了两个Load Rules，loadByPeriod部分表示40天内的数据在hot和_default_tier分片各保存一份副本。loadForever部分表示所有数据在_default_tier保存一份。</p>
-<h3 id="增加分片的节点数"><a href="#增加分片的节点数" class="headerlink" title="增加分片的节点数"></a>增加分片的节点数</h3><p>增加_default_tier和hot分片的节点数，并且节点存储空间尽量一致，使segment均匀分散在节点间，降低查询时每个historical节点的CPU负载。</p>
-<p>例如：_default_tier分片增加到2-3台，hot分片增加到5-10台机器，热数据分散到更多台。 </p>
-<h3 id="调整历史节点配置参数"><a href="#调整历史节点配置参数" class="headerlink" title="调整历史节点配置参数"></a>调整历史节点配置参数</h3><h4 id="druid-server-priority"><a href="#druid-server-priority" class="headerlink" title="druid.server.priority"></a>druid.server.priority</h4><p>默认为0。</p>
-<p>broker节点中，druid.broker.select.tier的配置默认为highestPriority，表示如果有重复的数据样本，优先查询优先级高的历史节点。</p>
-<p>例如：将hot分片的机器druid.server.priority设置为100，_default_tier分片的默认0，则查询热数据时，不会查询_default_tier，只会去查询hot，而hot集群机器比较多，查询速度快。</p>
-<h4 id="druid-processing-numThreads"><a href="#druid-processing-numThreads" class="headerlink" title="druid.processing.numThreads"></a>druid.processing.numThreads</h4><p>可以根据自己机器的情况进行调节，如果机器只用于历史节点，可以设置为（核心数-1），32核机器可以设置为31，或者默认值就是31。</p>
-<h4 id="druid-segmentCache-locations"><a href="#druid-segmentCache-locations" class="headerlink" title="druid.segmentCache.locations"></a>druid.segmentCache.locations</h4><p>可以将数据存储分散在不同的磁盘上，可以减轻磁盘的读写压力。</p>
-<h4 id="附：history节点部分配置"><a href="#附：history节点部分配置" class="headerlink" title="附：history节点部分配置"></a>附：history节点部分配置</h4><p>hot集群中调优查询速度的相关配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">#集群分片，不写默认_default_tier</div><div class="line">druid.server.tier=hot  </div><div class="line">#查询优先级，不写默认0，_default_tier分片的两个节点为0，hot节点的都改为100。这样，热数据只会查hot节点的机器。</div><div class="line">druid.server.priority=100</div><div class="line"></div><div class="line">#processing.buff，可以注释掉，默认是1G</div><div class="line">#processing.numThreads:默认是繁忙时core-1做process，剩余的1个进程做与zk通信和拉取seg等。</div><div class="line">druid.processing.buffer.sizeBytes=1073741824</div><div class="line">druid.processing.numThreads=31</div><div class="line"></div><div class="line">#segment路径和各路径的空间，例如：在disk1、2、3各配了200G</div><div class="line">druid.segmentCache.locations=[&#123;&quot;path&quot;: &quot;/disk1/druid-0.9.1.1-historical-data/persistent&quot;, &quot;maxSize&quot;: 200000000000&#125;,&#123;&quot;path&quot;: &quot;/disk2/druid-0.9.1.1-historical-data/persistent&quot;, &quot;maxSize&quot;: 200000000000&#125;,&#123;&quot;path&quot;: &quot;/disk3/druid-0.9.1.1-historical-data/persistent&quot;, &quot;maxSize&quot;: 200000000000&#125;]</div><div class="line">#segment总空间（字节）=上述空间之和</div><div class="line">druid.server.maxSize=600000000000</div></pre></td></tr></table></figure></p>
-<h2 id="老数据roll-up"><a href="#老数据roll-up" class="headerlink" title="老数据roll up"></a>老数据roll up</h2><p>进行实时和批量indexing的时候，一般配置的按小时的粒度进行roll up，最后存储的就是按小时聚合的数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&quot;granularitySpec&quot;: &#123;</div><div class="line">    &quot;type&quot;: &quot;uniform&quot;,</div><div class="line">    &quot;segmentGranularity&quot;: &quot;HOUR&quot;,</div><div class="line">    &quot;queryGranularity&quot;: &quot;HOUR&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>当数据积累较长时间后，按小时聚合必然数据量巨大，可以将不常用或者不太重要的数据，按天存储，数据量会大大减小，必然可以提高查询速度。</p>
-<p>例如：将40天之后的数据提交batch indexing任务按天roll up。</p>
-</the></excerpt>
+<p>每个camus job分为三个阶段：  </p>
+<ul>
+<li>Setup Stage：从Kafka和Zookeeper获取可用的topics，partitions，offset等元信息（Metadata） </li>
+<li>Hadoop Job Stage：开启多个ETL map task执行topic的数据获取，并写到HDFS。每个task的流程如下：<ul>
+<li>Pulling the data：每个task根据Setup Stage获取到的元数据，消费Kafka的数据，在Schema注册服务查找Avro模式来反序列化。每个task都生成4个文件：Avro data files，Count statistics files，Updated offset files，Error files</li>
+<li>Committing the data：当一个task完成时，其拉取的数据都被提交到基于时间戳的output目录。</li>
+<li>Producing Audit Counts：执行成功的tasks会向HDFS写audit counts</li>
+<li>Storing the offset：每个partition都有offset，这些offset信息存储在HDFS中</li>
+</ul>
+</li>
+<li>Cleanup Stage：hadoop job完成后，收集HDFS中的audit counts并进行聚合，然后提交聚合结果到kafka</li>
+</ul>
+<h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><p>camus关键在于实现两个类，Decoder和Writer，使其满足我们的系统业务，并且稍加配置就可以嵌入到自己的系统中。</p>
+<h3 id="MessageDecoder"><a href="#MessageDecoder" class="headerlink" title="MessageDecoder"></a>MessageDecoder</h3><p>MessageDecoder对kafka消息进行解码。</p>
+<p>Camus自带了KafkaAvroMessageDecoder，JsonStringMessageDecoder等。也可以通过继承MessageDecoder实现符合自己业务的Decoder。通过camus.message.decoder.class配置。</p>
+<h3 id="RecordWriterProvider"><a href="#RecordWriterProvider" class="headerlink" title="RecordWriterProvider"></a>RecordWriterProvider</h3><p>RecordWriterProvider在数据写到HDFS之前进行编码。</p>
+<p>Camus自带AvroRecordWriterProvider，StringRecordWriterProvider等。也可以通过实现RecordWriterProvider实现自己的写入方法。并通过<br>etl.record.writer.provider.class来配置</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>解释</th>
+<th>是否必须</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Schema配置</td>
+<td></td>
+</tr>
+<tr>
+<td><code>schema.registry.url</code></td>
+<td>schema registry地址</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>max.schemas.per.subject</code></td>
+<td>subject下最大schema数量</td>
+<td>否</td>
+<td>1000</td>
+</tr>
+<tr>
+<td>Kafka配置</td>
+<td></td>
+</tr>
+<tr>
+<td><code>kafka.brokers</code></td>
+<td>kafka broker地址List</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>kafka.max.pull.hrs</code></td>
+<td>从每个分区拉取数据的最长历史小时数（相对于第一条未消费的消息的时间戳），-1表示没限制</td>
+<td>否</td>
+<td>-1</td>
+</tr>
+<tr>
+<td><code>kafka.max.historical.days</code></td>
+<td>Events的时间戳超过将被丢弃，-1表示没限制</td>
+<td>否</td>
+<td>-1</td>
+</tr>
+<tr>
+<td><code>kafka.max.pull.minutes.per.task</code></td>
+<td>MapReduce任务拉取消息的最大时间。超时就会停止，下一个camus job会继续从停止的offset消费</td>
+<td>否</td>
+<td>-1 </td>
+</tr>
+<tr>
+<td><code>kafka.blacklist.topics</code></td>
+<td>黑名单里的topic不会被消费</td>
+<td>否</td>
+<td>null</td>
+</tr>
+<tr>
+<td><code>kafka.whitelist.topics</code></td>
+<td>白名单里的topic会被消费</td>
+<td>否</td>
+<td>null</td>
+</tr>
+<tr>
+<td><code>etl.output.record.delimiter</code></td>
+<td>消息分隔符</td>
+<td>否</td>
+<td>“\n”</td>
+</tr>
+<tr>
+<td>Camus Job配置</td>
+<td></td>
+</tr>
+<tr>
+<td><code>camus.job.name</code></td>
+<td>camus job名</td>
+<td>否</td>
+<td>Camus Job</td>
+</tr>
+<tr>
+<td><code>camus.message.decoder.class</code></td>
+<td>解码器</td>
+<td>否</td>
+<td>AvroMessageDecoder</td>
+</tr>
+<tr>
+<td><code>etl.record.writer.provider.class</code></td>
+<td>编码器</td>
+<td>否</td>
+<td>AvroRecordWriterProvider</td>
+</tr>
+<tr>
+<td><code>etl.partitioner.class</code></td>
+<td>Camus输出分区，默认按小时</td>
+<td>否</td>
+<td>DefaultPartitioner</td>
+</tr>
+<tr>
+<td><code>camus.work.allocator.class</code></td>
+<td>Class for creating input splits from ETL requests</td>
+<td>否</td>
+<td>BaseAllocator</td>
+</tr>
+<tr>
+<td><code>etl.destination.path</code></td>
+<td>文件最终输出的文件夹，Top-level output directory, sub-directories will be dynamically created for each topic pulled.</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>etl.execution.base.path</code></td>
+<td>Camus运行信息临时存放的HDFS目录，offsets, error logs and count files等</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>etl.execution.history.path</code></td>
+<td>已完成的Job的运行信息存放的HDFS目录，通常是 <code>etl.execution.base.path</code>的子目录</td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>hdfs.default.classpath.dir</code></td>
+<td>All files in this directory will be added to the distributed cache and placed on the classpath for Hadoop tasks.</td>
+<td>否</td>
+<td>null</td>
+</tr>
+<tr>
+<td><code>mapred.map.tasks</code></td>
+<td>最大hadoop任务数, 每个任务可以拉取多个topic partitions</td>
+<td>否</td>
+<td>30</td>
+</tr>
+</tbody>
+</table>
+<h4 id="配置讲解"><a href="#配置讲解" class="headerlink" title="配置讲解"></a>配置讲解</h4><p><img src="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/4134B32520014148A88F9AC1EB2B9663/24930" alt="image"><br>设ts是在<code>runTime-kafka.max.historical</code>之内的还未消费的第一条消息的时间戳。图中当前运行时间runTime为2015年12月5日0点，ts为2015年12月2日0点到5日0点之间还未消费的第一条消息的时间戳，即绿色区域的起点。</p>
+<p>如果消息的时间戳在<code>ts,ts + kafka.max.pull.hrs</code>之间）,将被camus任务消费，并且假设在<code>kafka.max.pull.minutes.per.task</code>内任务很快完成。显然图中绿色区域的都会被消费。</p>
+<h4 id="配置场景应用"><a href="#配置场景应用" class="headerlink" title="配置场景应用"></a>配置场景应用</h4><p><code>kafka.max.historical.days</code>:可以用于忽略过老的消息<br><code>kafka.max.pull.hrs</code>:将此值设置得比camus job的执行频率小，可以防止重复任务  </p>
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mvn clean package</div><div class="line"></div><div class="line">hadoop jar camus-example-&lt;version&gt;-SNAPSHOT.jar com.linkedin.camus.etl.kafka.CamusJob  </div><div class="line"> -D &lt;property=value&gt;   use value for given property  </div><div class="line"> -P &lt;arg&gt;              external properties filename  </div><div class="line"> -p &lt;arg&gt;              properties filename from the classpath</div></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://docs.confluent.io/1.0/camus/docs/intro.html" target="_blank" rel="external">http://docs.confluent.io/1.0/camus/docs/intro.html</a><br><a href="https://github.com/confluentinc/camus" target="_blank" rel="external">https://github.com/confluentinc/camus</a><br><a href="http://getindata.com/blog/post/time-related-configuration-settings-and-assumptions-in-camus/" target="_blank" rel="external">http://getindata.com/blog/post/time-related-configuration-settings-and-assumptions-in-camus/</a><br><a href="http://blog.csdn.net/amghost/article/details/44258817" target="_blank" rel="external">http://blog.csdn.net/amghost/article/details/44258817</a><br><a href="http://blog.csdn.net/amghost/article/details/44258841" target="_blank" rel="external">http://blog.csdn.net/amghost/article/details/44258841</a>  </p>
+</the>
       
     </div>
     
@@ -340,13 +506,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></p>
+        <p><span>本文标题:</span><a href="/2016/12/01/Camus介绍/">Camus介绍</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
-        <p><span>发布时间:</span>2016-10-29, 11:57:00</p>
-        <p><span>最后更新:</span>2016-10-31, 11:04:21</p>
+        <p><span>发布时间:</span>2016-12-01, 19:22:00</p>
+        <p><span>最后更新:</span>2016-12-02, 15:48:59</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io实践1---查询速度优化/" title="druid.io实践1---查询速度优化">https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/12/01/Camus介绍/" title="Camus介绍">https://fangyeqing.github.io/2016/12/01/Camus介绍/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/12/01/Camus介绍/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -358,16 +524,10 @@
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/10/29/druid.io实践2---集群数据迁移/">
-                    druid.io实践2---集群数据迁移
-                </a>
-            </div>
-        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/29/druid.io_3---druid数据相关/">
-                    druid.io 3---druid数据
+                <a href="/2016/11/17/Samza_3---Samza_API/">
+                    Samza 3---Samza API
                 </a>
             </div>
         
@@ -379,7 +539,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#增加缓存"><span class="toc-number">1.</span> <span class="toc-text">增加缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#附：broker部分配置"><span class="toc-number">1.1.</span> <span class="toc-text">附：broker部分配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#historical节点集群化"><span class="toc-number">2.</span> <span class="toc-text">historical节点集群化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#集群分片"><span class="toc-number">2.1.</span> <span class="toc-text">集群分片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增加分片的节点数"><span class="toc-number">2.2.</span> <span class="toc-text">增加分片的节点数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调整历史节点配置参数"><span class="toc-number">2.3.</span> <span class="toc-text">调整历史节点配置参数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#druid-server-priority"><span class="toc-number">2.3.1.</span> <span class="toc-text">druid.server.priority</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#druid-processing-numThreads"><span class="toc-number">2.3.2.</span> <span class="toc-text">druid.processing.numThreads</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#druid-segmentCache-locations"><span class="toc-number">2.3.3.</span> <span class="toc-text">druid.segmentCache.locations</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#附：history节点部分配置"><span class="toc-number">2.3.4.</span> <span class="toc-text">附：history节点部分配置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#老数据roll-up"><span class="toc-number">3.</span> <span class="toc-text">老数据roll up</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概念"><span class="toc-number">1.</span> <span class="toc-text">概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#特点"><span class="toc-number">1.1.</span> <span class="toc-text">特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Camus-job"><span class="toc-number">1.2.</span> <span class="toc-text">Camus job</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#操作"><span class="toc-number">2.</span> <span class="toc-text">操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MessageDecoder"><span class="toc-number">2.1.</span> <span class="toc-text">MessageDecoder</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RecordWriterProvider"><span class="toc-number">2.2.</span> <span class="toc-text">RecordWriterProvider</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置"><span class="toc-number">2.3.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#配置讲解"><span class="toc-number">2.3.1.</span> <span class="toc-text">配置讲解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置场景应用"><span class="toc-number">2.3.2.</span> <span class="toc-text">配置场景应用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运行"><span class="toc-number">2.4.</span> <span class="toc-text">运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">3.</span> <span class="toc-text">参考</span></a></li></ol>
         
     </div>
     <style>
@@ -415,7 +575,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"druid.io实践1---查询速度优化　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Camus介绍　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -431,7 +591,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/29/druid.io实践1---查询速度优化/" data-title="druid.io实践1---查询速度优化" data-url="https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/12/01/Camus介绍/" data-title="Camus介绍" data-url="https://fangyeqing.github.io/2016/12/01/Camus介绍/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -454,15 +614,13 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/10/29/druid.io实践2---集群数据迁移/" title="上一篇: druid.io实践2---集群数据迁移">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/29/druid.io_3---druid数据相关/" title="下一篇: druid.io 3---druid数据">
+            <a href="/2016/11/17/Samza_3---Samza_API/" title="下一篇: Samza 3---Samza API">
                 <i class="fa fa-angle-right"></i>
             </a>
         
