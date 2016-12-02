@@ -226,6 +226,18 @@
 <h3 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h3><p>Samza的一个job的基本处理流程是一个用户任务从一个或多个输入流中读取数据，再输出到一个或多个输出流中，具体映射到kafka上就是从一个或多个topic读入数据，再写出到另一个或多个topic中去。多个job串联起来就完成了流式的数据处理流程。</p>
 <p>这种模式其实有点像MapReduce的过程，stream输入部分由kafka的partition决定了分区和task数目，类似于一个Map过程，输出时由用户task指定topic和分区（或者框架自动由Key决定分区），这相当于一次shuffle的过程，下一个job读取新的stream时，可以认为是一个reduce，也可以认为是下一个map过程的开始。</p>
 <p>不同之处在于job之间的串联无需等待上一个job的结束，类实时的消息分发机制决定了整个串联的job是连续不间断的，亦即流式的。</p>
+<h3 id="应用场景举例"><a href="#应用场景举例" class="headerlink" title="应用场景举例"></a>应用场景举例</h3><ul>
+<li>流处理方面<ul>
+<li>处理topic：最常见的对kafka中的topic进行消费，然后对消息进行处理，生成新的topic发送到kafka。</li>
+<li>镜像topic：对kafka中的数据流直接进行消费，然后不经过处理，直接在另一个kafka集群上生成一个镜像的kafka topic。</li>
+<li>关联topic：利用samza的状态管理，可以将kafka中的两个topic进行关联。例如，广告的点击topic和转化topic可以通过samza的状态管理中的key-value存储，然后merge起来。</li>
+</ul>
+</li>
+<li>有状态的分布式事件驱动服务<ul>
+<li>有状态的事件驱动服务的状态管理，利用远程数据库或者系统内部维护状态。利用远程数据库会有I/O或者CPU瓶颈，系统内部维护状态在分布式的情况下容错处理实现也比较麻烦。而Samza集成本地的key-value数据库RocksDB，state的change会生成changelog stream放在kafka上，容错性好。</li>
+</ul>
+</li>
+</ul>
 <h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><p>Samza是一个流式计算框架，它有以下特性：</p>
 <ul>
 <li>简单的API：和绝大多数低层次消息系统API不同，相比MapReduce，Samza提供了一个非常简单的“基于回调（callback-based）”的消息处理API</li>
@@ -266,7 +278,6 @@
 <p>另外一个值得注意的是分配给task的分区的任务绝不会改变：如果有一个任务在一台失效的机器上，这个task会被在其它地方重启，仍然会消费同一个流的分区。</p>
 <p><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/job_detail.png" alt="image"></p>
 <h3 id="Dataflow-Graphs"><a href="#Dataflow-Graphs" class="headerlink" title="Dataflow Graphs"></a>Dataflow Graphs</h3><p>我们能组合多个Jobs去创建一个数据流图（DAG 有向无环图），其中节点表示包含数据的流，而边则是进行数据传输。这个组合纯粹是通过Jobs作为输入和输出的流来完成。这些Jobs也是解耦的：他们不需要基于相同的代码库，并且添加、删除或者重启一个下游任务不会影响上游的任务。<br><img src="https://samza.apache.org/img/0.10/learn/documentation/introduction/dag.png" alt="image"></p>
-<p>### </p>
 <h3 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h3><ul>
 <li>Containers——分区Partitions和任务Tasks都是并行的逻辑单元。Containers是物理的并行单元，并且一个容器本质上是一个Unix进程（或者Linux cgroup）。每个容器跑着一个或多个Tasks。Tasks的数量是从输入的分区数自动确定和固定下来的，但是容器的数量（CPU、内存资源）是在运行时用户设定的并且能在任何时刻改变。</li>
 <li>TaskRunner——TaskRunner是Samza的流处理容器。它负责启动、执行以及关闭一个或多个StreamTask实例。</li>
