@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="小懒" />
+
+
+
+<meta name="description" content="概念Metrics是一个给JAVA服务的各项指标提供度量工具的包，在JAVA代码中嵌入Metrics代码，可以方便的对业务代码的各个指标进行监控
+目前最为流行的 metrics 库是来自 Coda Hale 的 dropwizard/metrics，该库被广泛地应用于各个知名的开源项目中。例如 Hadoop，Kafka，Spark，JStorm 中。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java程序监控---Metrics">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/12/14/Java程序监控---Metrics/index.html">
+<meta property="og:site_name" content="小懒的博客">
+<meta property="og:description" content="概念Metrics是一个给JAVA服务的各项指标提供度量工具的包，在JAVA代码中嵌入Metrics代码，可以方便的对业务代码的各个指标进行监控
+目前最为流行的 metrics 库是来自 Coda Hale 的 dropwizard/metrics，该库被广泛地应用于各个知名的开源项目中。例如 Hadoop，Kafka，Spark，JStorm 中。">
+<meta property="og:updated_time" content="2017-01-05T08:18:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java程序监控---Metrics">
+<meta name="twitter:description" content="概念Metrics是一个给JAVA服务的各项指标提供度量工具的包，在JAVA代码中嵌入Metrics代码，可以方便的对业务代码的各个指标进行监控
+目前最为流行的 metrics 库是来自 Coda Hale 的 dropwizard/metrics，该库被广泛地应用于各个知名的开源项目中。例如 Hadoop，Kafka，Spark，JStorm 中。">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="小懒的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/xiaolan.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Java程序监控---Metrics | 小懒的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?7fb806568d59e1b131e6cd93134ab91e";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">小懒</a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">文章分类</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/监控/">监控</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">小懒</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">小懒</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">文章分类</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Java程序监控---Metrics" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/12/14/Java程序监控---Metrics/" class="article-date">
+      <time datetime="2016-12-14T12:41:00.000Z" itemprop="datePublished">2016-12-14</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java程序监控---Metrics
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/java/">java</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/监控/">监控</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <excerpt in="" index="" |="" 首页摘要="">   
+
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>Metrics是一个给JAVA服务的各项指标提供度量工具的包，在JAVA代码中嵌入Metrics代码，可以方便的对业务代码的各个指标进行监控</p>
+<p>目前最为流行的 metrics 库是来自 Coda Hale 的 dropwizard/metrics，该库被广泛地应用于各个知名的开源项目中。例如 Hadoop，Kafka，Spark，JStorm 中。</p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<ul>
+<li>提供了对Ehcache、Apache HttpClient、JDBI、Jersey、Jetty、Log4J、Logback、JVM等的集成</li>
+<li>支持多种Metric指标：Gauges、Counters、Meters、Histograms和Timers</li>
+<li>支持多种Reporter发布指标<ul>
+<li>JMX、Console，CSV文件和SLF4J loggers</li>
+<li>Ganglia、Graphite，用于图形化展示</li>
+</ul>
+</li>
+</ul>
+<h2 id="MetricRegistry"><a href="#MetricRegistry" class="headerlink" title="MetricRegistry"></a>MetricRegistry</h2><p>MetricRegistry类是Metrics的核心，它是存放应用中所有metrics的容器。也是我们使用 Metrics 库的起点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">static final MetricRegistry metrics = new MetricRegistry();</div></pre></td></tr></table></figure></p>
+<h2 id="Reporter"><a href="#Reporter" class="headerlink" title="Reporter"></a>Reporter</h2><h3 id="控制台"><a href="#控制台" class="headerlink" title="控制台"></a>控制台</h3><p>直接打印在控制台<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public static void startReportConsole() &#123;</div><div class="line">    ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)</div><div class="line">            .convertRatesTo(TimeUnit.SECONDS)</div><div class="line">            .convertDurationsTo(TimeUnit.MILLISECONDS)</div><div class="line">            .build();</div><div class="line">    reporter.start(1, TimeUnit.SECONDS);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="JMX"><a href="#JMX" class="headerlink" title="JMX"></a>JMX</h3><p>从Jconsole中MBean中能看到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public static void startReportJmx()&#123;</div><div class="line">    JmxReporter reporterJmx = JmxReporter.forRegistry(metrics).build();</div><div class="line">    reporterJmx.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="Graphite"><a href="#Graphite" class="headerlink" title="Graphite"></a>Graphite</h3><p>从Graphite-web中能看到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public static void startReportGraphite()&#123;</div><div class="line">    Graphite graphite = new Graphite(new InetSocketAddress(&quot;graphite.xxx.com&quot;, 2003));</div><div class="line">    GraphiteReporter reporter = GraphiteReporter.forRegistry(metrics)</div><div class="line">            .prefixedWith(&quot;test.metrics&quot;)</div><div class="line">            .convertRatesTo(TimeUnit.SECONDS)</div><div class="line">            .convertDurationsTo(TimeUnit.MILLISECONDS)</div><div class="line">            .filter(MetricFilter.ALL)</div><div class="line">            .build(graphite);</div><div class="line">    reporter.start(1, TimeUnit.MINUTES);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="封装各种Reporter"><a href="#封装各种Reporter" class="headerlink" title="封装各种Reporter"></a>封装各种Reporter</h3><p>调用方式MetricCommon.getMetricAndStartReport();<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class MetricCommon &#123;</div><div class="line">    private static final MetricRegistry metricRegistry = new MetricRegistry();</div><div class="line"></div><div class="line">    public static MetricRegistry getMetricAndStartReport()&#123;</div><div class="line">        startReportConsole();</div><div class="line">        startReportJmx();</div><div class="line">        startReportGraphite();</div><div class="line">        return metricRegistry;</div><div class="line">    &#125;</div><div class="line">    public static void startReportConsole() &#123;...&#125;</div><div class="line">    public static void startReportJmx()&#123;...&#125;</div><div class="line">    public static void startReportGraphite()&#123;...&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="Metics指标"><a href="#Metics指标" class="headerlink" title="Metics指标"></a>Metics指标</h2><ul>
+<li>Gauges：记录一个瞬时值。例如一个待处理队列的长度。</li>
+<li>Counter：计数器，自带inc()和dec()方法计数，初始为0。</li>
+<li>Meters：统计某个函数被调用的频率（TPS），总的请求数，平均每秒的请求数，以及最近的1、5、15分钟的平均TPS</li>
+<li>Histograms：统计数据的分布情况，最大值、最小值、平均值、中位数，百分比（75%、90%、95%、98%、99%和99.9%）</li>
+<li>Timers：当我们既要统计TPS又要统计耗时分布情况，基于Histograms和Meters来实现的</li>
+<li>Health Checks：用于对Application、其子模块或者关联模块的运行是否正常做检测</li>
+</ul>
+<h3 id="Gauges"><a href="#Gauges" class="headerlink" title="Gauges"></a>Gauges</h3><p>最简单的度量指标，只有一个简单的返回值，例如，我们想衡量一个待处理队列中任务的个数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">public class GaugeTest &#123;</div><div class="line">    private static final MetricRegistry registry = MetricCommon.getMetricAndStartReport();</div><div class="line">    private static final Random random = new Random();</div><div class="line"></div><div class="line">    @Test</div><div class="line">    public void testOneGuage() throws InterruptedException &#123;</div><div class="line">        Queue queue= new LinkedList&lt;String&gt;();</div><div class="line">        registry.register(MetricRegistry.name(GaugeTest.class, &quot;testGauges-queue-size&quot;, &quot;size&quot;),</div><div class="line">                (Gauge&lt;Integer&gt;) () -&gt; queue.size());</div><div class="line">        while(true)&#123;</div><div class="line">            Thread.sleep(1000);</div><div class="line">            queue.add(&quot;Job-xxx&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Test</div><div class="line">    public void testMultiGuage() throws InterruptedException &#123;</div><div class="line">        Map&lt;Integer, Integer&gt; map = new ConcurrentHashMap&lt;&gt;();</div><div class="line">        while(true)&#123;</div><div class="line">            int i = random.nextInt(100);</div><div class="line">            int j = i % 10;</div><div class="line"></div><div class="line">            if(!map.containsKey(j))&#123;</div><div class="line">                map.put(j,i);</div><div class="line">                registry.register(MetricRegistry.name(GaugeTest.class, &quot;testGauges-number&quot;, String.valueOf(j)),</div><div class="line">                        (Gauge&lt;Integer&gt;) () -&gt; map.get(j));</div><div class="line">            &#125;else&#123;</div><div class="line">                map.put(j,i);</div><div class="line">            &#125;</div><div class="line">            Thread.sleep(1000);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>第一个测试用例，是用一个guage记录队列的长度<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-- Gauges ----------------------------------------------------------------------</div><div class="line">GaugeTest.testGauges-queue-size.size</div><div class="line">             value = 4</div></pre></td></tr></table></figure></p>
+<p>第二个测试用例，每次产生一个100以内的随机数，将这些数以个位数的数字分组，guage记录每一组现在是什么数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">-- Gauges ----------------------------------------------------------------------</div><div class="line">GaugeTest.testGauges-number.0</div><div class="line">             value = 60</div><div class="line">GaugeTest.testGauges-number.1</div><div class="line">             value = 1</div><div class="line">GaugeTest.testGauges-number.2</div><div class="line">             value = 82</div><div class="line">GaugeTest.testGauges-number.3</div><div class="line">             value = 23</div><div class="line">GaugeTest.testGauges-number.4</div><div class="line">             value = 74</div><div class="line">GaugeTest.testGauges-number.5</div><div class="line">             value = 25</div><div class="line">GaugeTest.testGauges-number.7</div><div class="line">             value = 17</div><div class="line">GaugeTest.testGauges-number.8</div><div class="line">             value = 78</div><div class="line">GaugeTest.testGauges-number.9</div><div class="line">             value = 69</div></pre></td></tr></table></figure></p>
+<h3 id="Histogram"><a href="#Histogram" class="headerlink" title="Histogram"></a>Histogram</h3><p>Histogram统计数据的分布情况。比如最小值，最大值，中间值，还有中位数，75百分位, 90百分位, 95百分位, 98百分位, 99百分位, 和 99.9百分位的值(percentiles)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public class HistogramTest &#123;</div><div class="line">    private static final MetricRegistry registry = MetricCommon.getMetricAndStartReport();</div><div class="line">    public static Random random = new Random();</div><div class="line"></div><div class="line">    @Test</div><div class="line">    public void test() throws InterruptedException &#123;</div><div class="line">        Histogram histogram = new Histogram(new ExponentiallyDecayingReservoir());</div><div class="line">        registry.register(MetricRegistry.name(HistogramTest.class, &quot;request&quot;, &quot;histogram&quot;), histogram);</div><div class="line"></div><div class="line">        while(true)&#123;</div><div class="line">            Thread.sleep(1000);</div><div class="line">            histogram.update(random.nextInt(100000));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>运行很长时间之后，相当于随机值取极限，会趋向于统计值，75%肯定是要&lt;=75000,99.9%肯定是要&lt;=999000。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">-- Histograms ------------------------------------------------------------------</div><div class="line">HistogramTest.request.histogram</div><div class="line">             count = 1336</div><div class="line">               min = 97</div><div class="line">               max = 99930</div><div class="line">              mean = 49816.49</div><div class="line">            stddev = 29435.27</div><div class="line">            median = 49368.00</div><div class="line">              75% &lt;= 75803.00</div><div class="line">              95% &lt;= 95340.00</div><div class="line">              98% &lt;= 98096.00</div><div class="line">              99% &lt;= 98724.00</div><div class="line">            99.9% &lt;= 99930.00</div></pre></td></tr></table></figure></p>
+<h3 id="Meters"><a href="#Meters" class="headerlink" title="Meters"></a>Meters</h3><p>Meter度量一系列事件发生的速率(rate)，例如TPS。Meters会统计最近1分钟，5分钟，15分钟，还有全部时间的速率。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">public class MetersTest &#123;</div><div class="line">    MetricRegistry registry = MetricCommon.getMetricAndStartAllReport(&quot;nc110x.corp.youdao.com&quot;,&quot;test.metrics&quot;);</div><div class="line">    public static Random random = new Random();</div><div class="line"></div><div class="line">    @Test</div><div class="line">    public void testOne() throws InterruptedException &#123;</div><div class="line">        Meter meterTps = registry.meter(MetricRegistry.name(MetersTest.class,&quot;request&quot;,&quot;tps&quot;));</div><div class="line">        while(true)&#123;</div><div class="line">            meterTps.mark();</div><div class="line">            Thread.sleep(random.nextInt(1000));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Test</div><div class="line">    public void testMulti() throws InterruptedException &#123;</div><div class="line">        while(true)&#123;</div><div class="line">            int i = random.nextInt(100);</div><div class="line">            int j = i % 10;</div><div class="line">            Meter meterTps = registry.meter(MetricRegistry.name(MetersTest.class,&quot;request&quot;,&quot;tps&quot;,String.valueOf(j)));</div><div class="line">            meterTps.mark();</div><div class="line">            Thread.sleep(10);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这里，多个注册多个meter与注册多个guage、Histograms用法会有不同，meter方法是getOrAdd<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public Meter meter(String name) &#123;</div><div class="line">        return (Meter)this.getOrAdd(name, MetricRegistry.MetricBuilder.METERS);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>一个meter的测试用例，运行结果如下。可以看到随着次数的增多，各种rate无限趋近于2次。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">-- Meters ----------------------------------------------------------------------</div><div class="line">MetersTest.request.tps</div><div class="line">             count = 452</div><div class="line">         mean rate = 1.99 events/second</div><div class="line">     1-minute rate = 2.03 events/second</div><div class="line">     5-minute rate = 2.00 events/second</div><div class="line">    15-minute rate = 2.00 events/second</div></pre></td></tr></table></figure></p>
+<p>多个meter的测试用例，运行结果取了数字个位数为6/7/8的三个如下。最后都会无限趋近于10。sleep时间为10ms，每秒有100份，平均到尾数不同的，每组就有10份。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">MetersTest.request.tps.6</div><div class="line">             count = 905</div><div class="line">         mean rate = 9.74 events/second</div><div class="line">     1-minute rate = 9.76 events/second</div><div class="line">     5-minute rate = 9.94 events/second</div><div class="line">    15-minute rate = 9.98 events/second</div><div class="line">MetersTest.request.tps.7</div><div class="line">             count = 935</div><div class="line">         mean rate = 10.07 events/second</div><div class="line">     1-minute rate = 10.62 events/second</div><div class="line">     5-minute rate = 11.82 events/second</div><div class="line">    15-minute rate = 12.19 events/second</div><div class="line">MetersTest.request.tps.8</div><div class="line">             count = 937</div><div class="line">         mean rate = 10.09 events/second</div><div class="line">     1-minute rate = 10.09 events/second</div><div class="line">     5-minute rate = 10.31 events/second</div><div class="line">    15-minute rate = 10.37 events/second</div></pre></td></tr></table></figure></p>
+<h3 id="Timer"><a href="#Timer" class="headerlink" title="Timer"></a>Timer</h3><p>Timer其实是 Histogram 和 Meter 的结合， histogram 某部分代码/调用的耗时， meter统计TPS。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">public class TimerTest &#123;</div><div class="line">    public static Random random = new Random();</div><div class="line">    private static final MetricRegistry registry = MetricCommon.getMetricAndStartAllReport(&quot;nc110x.corp.youdao.com&quot;,&quot;test.metrics&quot;);</div><div class="line">    private static final Map&lt;Integer,Timer&gt; timerMap = new ConcurrentHashMap&lt;&gt;();</div><div class="line"></div><div class="line">    @Test</div><div class="line">    public void testOneTimer() throws InterruptedException &#123;</div><div class="line">        Timer timer = registry.timer(MetricRegistry.name(TestTimer.class,&quot;get-latency&quot;));</div><div class="line">        Timer.Context ctx;</div><div class="line"></div><div class="line">        while(true)&#123;</div><div class="line">            ctx = timer.time();</div><div class="line">            Thread.sleep(random.nextInt(1000));</div><div class="line">            ctx.stop();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Test</div><div class="line">    public void testMultiTimer() throws InterruptedException &#123;</div><div class="line">        while(true)&#123;</div><div class="line">            int i = random.nextInt(100);</div><div class="line">            int j = i % 10;</div><div class="line"></div><div class="line">            Timer timer = registry.timer(MetricRegistry.name(TestTimer.class,&quot;get-latency&quot;,String.valueOf(j)));</div><div class="line">            Timer.Context ctx;</div><div class="line"></div><div class="line">            ctx = timer.time();</div><div class="line">            Thread.sleep(random.nextInt(1000));</div><div class="line">            ctx.stop();</div><div class="line"></div><div class="line">            Thread.sleep(1000);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>测试用例1是单个timer，结果如下。最后的时间都趋近于统计值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">-- Timers ----------------------------------------------------------------------</div><div class="line">com.testmetrics.TestTimer.get-latency</div><div class="line">             count = 657</div><div class="line">         mean rate = 2.05 calls/second</div><div class="line">     1-minute rate = 1.98 calls/second</div><div class="line">     5-minute rate = 2.02 calls/second</div><div class="line">    15-minute rate = 2.01 calls/second</div><div class="line">               min = 4.98 milliseconds</div><div class="line">               max = 998.93 milliseconds</div><div class="line">              mean = 496.79 milliseconds</div><div class="line">            stddev = 297.46 milliseconds</div><div class="line">            median = 501.02 milliseconds</div><div class="line">              75% &lt;= 765.09 milliseconds</div><div class="line">              95% &lt;= 952.03 milliseconds</div><div class="line">              98% &lt;= 974.12 milliseconds</div><div class="line">              99% &lt;= 989.02 milliseconds</div><div class="line">            99.9% &lt;= 998.93 milliseconds</div></pre></td></tr></table></figure></p>
+<h3 id="Counters"><a href="#Counters" class="headerlink" title="Counters"></a>Counters</h3><p>Counter 就是计数器，Counter 只是用 Gauge 封装了 AtomicLong 。我们可以使用如下的方法，使得获得队列大小更加高效。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">public class CounterTest &#123;</div><div class="line">    private static final MetricRegistry registry = MetricCommon.getMetricAndStartReport();</div><div class="line">    public static Queue&lt;String&gt; q = new LinkedBlockingQueue&lt;String&gt;();</div><div class="line">    public static Counter pendingJobs;</div><div class="line">    public static Random random = new Random();</div><div class="line"></div><div class="line">    public static void addJob(String job) &#123;</div><div class="line">        pendingJobs.inc();</div><div class="line">        q.offer(job);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static String takeJob() &#123;</div><div class="line">        pendingJobs.dec();</div><div class="line">        return q.poll();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Test</div><div class="line">    public void test() throws InterruptedException &#123;</div><div class="line">        pendingJobs = registry.counter(MetricRegistry.name(Queue.class,&quot;pending-jobs&quot;,&quot;size&quot;));</div><div class="line"></div><div class="line">        int num = 1;</div><div class="line">        while(true)&#123;</div><div class="line">            Thread.sleep(200);</div><div class="line">            if (random.nextDouble() &gt; 0.7)&#123;</div><div class="line">                String job = takeJob();</div><div class="line">                System.out.println(&quot;take job : &quot;+job);</div><div class="line">            &#125;else&#123;</div><div class="line">                String job = &quot;Job-&quot;+num;</div><div class="line">                addJob(job);</div><div class="line">                System.out.println(&quot;add job : &quot;+job);</div><div class="line">            &#125;</div><div class="line">            num++;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>job会越来越多，因为每次取走只取一个job，但是加入job是加入num个，num会一直增加，而概率是7:3。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-- Counters --------------------------------------------------------------------</div><div class="line">java.util.Queue.pending-jobs.size</div><div class="line">             count = 36</div></pre></td></tr></table></figure></p>
+<h2 id="maven依赖"><a href="#maven依赖" class="headerlink" title="maven依赖"></a>maven依赖</h2><ul>
+<li>metrics-core：必须添加</li>
+<li>metrics-healthchecks：用到healthchecks时添加</li>
+<li>metrics-graphite：用到graphite添加</li>
+<li>org.slf4j：不添加看不到metrics包的log<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">&lt;properties&gt;</div><div class="line">    &lt;metrics.version&gt;3.1.0&lt;/metrics.version&gt;</div><div class="line">    &lt;sl4j.version&gt;1.7.22&lt;/sl4j.version&gt;</div><div class="line">&lt;/properties&gt;</div><div class="line"></div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;io.dropwizard.metrics&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;metrics-core&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;$&#123;metrics.version&#125;&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;io.dropwizard.metrics&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;metrics-healthchecks&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;$&#123;metrics.version&#125;&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;io.dropwizard.metrics&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;metrics-graphite&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;$&#123;metrics.version&#125;&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.slf4j&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;$&#123;sl4j.version&#125;&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.slf4j&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;slf4j-simple&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;$&#123;sl4j.version&#125;&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://metrics.dropwizard.io/3.1.0/getting-started/" target="_blank" rel="external">http://metrics.dropwizard.io/3.1.0/getting-started/</a><br><a href="http://www.cnblogs.com/nexiyi/p/metrics_sample_1.html" target="_blank" rel="external">http://www.cnblogs.com/nexiyi/p/metrics_sample_1.html</a><br><a href="http://wuchong.me/blog/2015/08/01/getting-started-with-metrics/" target="_blank" rel="external">http://wuchong.me/blog/2015/08/01/getting-started-with-metrics/</a></p>
+</the></excerpt>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
+        <p><span>发布时间:</span>2016-12-14, 20:41:00</p>
+        <p><span>最后更新:</span>2017-01-05, 16:18:51</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/12/14/Java程序监控---Metrics/" title="Java程序监控---Metrics">https://fangyeqing.github.io/2016/12/14/Java程序监控---Metrics/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/12/14/Java程序监控---Metrics/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/12/01/Camus介绍/">
+                    Camus介绍
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概念"><span class="toc-number">1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MetricRegistry"><span class="toc-number">2.</span> <span class="toc-text">MetricRegistry</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reporter"><span class="toc-number">3.</span> <span class="toc-text">Reporter</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#控制台"><span class="toc-number">3.1.</span> <span class="toc-text">控制台</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JMX"><span class="toc-number">3.2.</span> <span class="toc-text">JMX</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Graphite"><span class="toc-number">3.3.</span> <span class="toc-text">Graphite</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#封装各种Reporter"><span class="toc-number">3.4.</span> <span class="toc-text">封装各种Reporter</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Metics指标"><span class="toc-number">4.</span> <span class="toc-text">Metics指标</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Gauges"><span class="toc-number">4.1.</span> <span class="toc-text">Gauges</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Histogram"><span class="toc-number">4.2.</span> <span class="toc-text">Histogram</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Meters"><span class="toc-number">4.3.</span> <span class="toc-text">Meters</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Timer"><span class="toc-number">4.4.</span> <span class="toc-text">Timer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Counters"><span class="toc-number">4.5.</span> <span class="toc-text">Counters</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#maven依赖"><span class="toc-number">5.</span> <span class="toc-text">maven依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">6.</span> <span class="toc-text">参考</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Java程序监控---Metrics　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/12/14/Java程序监控---Metrics/" data-title="Java程序监控---Metrics" data-url="https://fangyeqing.github.io/2016/12/14/Java程序监控---Metrics/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/12/01/Camus介绍/" title="下一篇: Camus介绍">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---OLAP概念/">druid.io 1---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 小懒
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
