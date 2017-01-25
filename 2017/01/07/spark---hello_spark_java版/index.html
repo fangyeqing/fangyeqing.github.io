@@ -29,7 +29,7 @@ hadoop版本：had">
 
 spark版本：spark-2.1.0
 hadoop版本：had">
-<meta property="og:updated_time" content="2017-01-25T08:37:32.000Z">
+<meta property="og:updated_time" content="2017-01-25T08:50:29.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spark---hello spark java版">
 <meta name="twitter:description" content="看了几个spark入门，大都是linux环境下scala和python版本的。自己在windows下折腾了一番才跑通，还是觉得有必要写一个windows/java版本的，希望对有相同需求的人有所帮助。
@@ -332,32 +332,105 @@ hadoop版本：had">
 
 <h2 id="linux下配置"><a href="#linux下配置" class="headerlink" title="linux下配置"></a>linux下配置</h2><h3 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h3><p><a href="http://spark.apache.org/downloads.html" target="_blank" rel="external">spark官网</a>、<a href="http://hadoop.apache.org/" target="_blank" rel="external">hadoop官网</a>找到下载链接，下载<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">wget http://d3kbcqa49mib13.cloudfront.net/spark-2.1.0-bin-hadoop2.7.tgz</div><div class="line">tar -zxvf spark-2.1.0-bin-hadoop2.7.tgz</div><div class="line"></div><div class="line">wget http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz </div><div class="line">tar -zxvf hadoop-2.7.3.tar.gz</div></pre></td></tr></table></figure></p>
 <h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><p>环境变量设置，修改~/.bash_profile<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># spark</div><div class="line">export SPARK_HOME=/disk2/fangyq/test/spark-2.1.0-bin-hadoop2.7</div><div class="line">export PATH=$SPARK_HOME/bin:$PATH</div><div class="line"># hadoop</div><div class="line">export HADOOP_HOME=/disk2/fangyq/test/hadoop-2.7.3</div><div class="line">export HADOOP_CONF_DIR=/home/fangyeqing/hadoop-conf</div><div class="line">export PATH=$PATH:$HADOOP_HOME/bin</div><div class="line">export HADOOP_CLASSPATH=$JAVA_HOME/lib/tools.jar</div></pre></td></tr></table></figure></p>
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>配置日志输出：编辑log4j文件，将log4j.rootCategory由INFO改为WARN，不然日志非常多<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">cd spark-2.1.0-bin-hadoop2.7.tgz</div><div class="line">cp conf/log4j.properties.template conf/log4j.properties</div><div class="line">vi log4j.properties</div><div class="line"></div><div class="line">log4j.rootCategory=WARN, console</div></pre></td></tr></table></figure></p>
-<h3 id="错误说明"><a href="#错误说明" class="headerlink" title="错误说明"></a>错误说明</h3><p>如果需要以yarn模式运行，没配置HADOOP_CONF_DIR，也可以修改env<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cp conf/spark-env.sh.template conf/spark-env.sh</div><div class="line">vi conf/spark-env/sh</div></pre></td></tr></table></figure></p>
-<p>增加的内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">HADOOP_CONF_DIR=&apos;/home/fangyeqing/hadoop-conf&apos;  </div><div class="line">``` </div><div class="line">如果不设置HADOOP_CONF_DIR</div><div class="line">&gt;Exception in thread &quot;main&quot; java.lang.Exception: When running with master &apos;yarn-client&apos; either HADOOP_CONF_DIR or YARN_CONF_DIR must be set in the environment.</div><div class="line"></div><div class="line">## windows下开发设置</div><div class="line"></div><div class="line">### 下载</div><div class="line">spark下载：[官网地址](http://spark.apache.org/downloads.html)，其中spark-2.1.0-bin-hadoop2.7.tgz[下载地址](http://d3kbcqa49mib13.cloudfront.net/spark-2.1.0-bin-hadoop2.7.tgz )  </div><div class="line">hadoop下载：[官网地址](http://hadoop.apache.org/releases.html)，其中hadoop-2.7.3.tar.gz[下载地址](http://d3kbcqa49mib13.cloudfront.net/spark-2.0.2-bin-hadoop2.7.tgz)  </div><div class="line">winutils下载：[github地址](https://github.com/steveloughran/winutils)，找到对应hadoop版本的，hadoop2.7.3用2.7.1的也可以。将winutils放在hadoop的bin目录下。  </div><div class="line">hadoop.dll下载：[github地址](https://github.com/steveloughran/winutils/tree/master/hadoop-2.7.1/bin)，同样放在hadoop的bin目录下。（跑hadoop任务需要，只跑spark不需要，看需下载）</div><div class="line"></div><div class="line">### 环境变量</div><div class="line">设置环境变量，将代码中的spark_dir,hadoop_dir换成自己的安装路径。将以下内容保存为ANSI编码的spark-evn.bat文件,运行即可</div></pre></td></tr></table></figure></p>
-<p>@echo off<br>color 02</p>
-<p>::设置spark安装路径，路径不能有空格<br>set spark_dir=D:\spark\spark-2.1.0-bin-hadoop2.7<br>set hadoop_dir=D:\spark\hadoop-2.7.3</p>
-<p>::环境变量如果有的话，先删除<br>wmic ENVIRONMENT where “name=’SPARK_HOME’” delete<br>wmic ENVIRONMENT where “name=’HADOOP_HOME’” delete</p>
-<p>::创建JAVA_HOME、HADOOP_HOME、PYTHONPATH<br>wmic ENVIRONMENT create name=”SPARK_HOME”,username=”<system>“,VariableValue=”%spark_dir%”<br>wmic ENVIRONMENT create name=”HADOOP_HOME”,username=”<system>“,VariableValue=”%hadoop_dir%”</system></system></p>
-<p>::设置Path环境变量<br>call set xx=%spark_dir%\bin;%hadoop_dir%\bin;%Path%<br>wmic ENVIRONMENT where “name=’Path’ and username=’<system>‘“ set VariableValue=”%xx%”</system></p>
-<p>pause<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## hello spark</div><div class="line">在idea中，可以通过将之前修改完的log4j.properties拷贝到resources目录下过滤掉多余的日志。</div><div class="line"></div><div class="line">本地运行时需要指定Master(&quot;local&quot;)。本例子是统计所有包含a或b的行。</div></pre></td></tr></table></figure></p>
-<p>public class SimpleApp {<br>    public static void main(String[] args) {<br>        SparkConf conf = new SparkConf().setAppName(“Simple Application”).setMaster(“local”).set(“spark.some.config”,”forRunInYarn”);<br>        JavaSparkContext sc = new JavaSparkContext(conf);<br>        String path = “file:///“+System.getenv(“SPARK_HOME”)+”/README.md”;</p>
-<pre><code>    JavaRDD&lt;String&gt; logData = sc.textFile(path).cache();
-    long numAs = logData.filter(s -&gt; s.contains(&quot;a&quot;)).count();
-    long numBs = logData.filter(s -&gt; s.contains(&quot;b&quot;)).count();
-    System.out.println(&quot;Lines with a: &quot; + numAs + &quot;, lines with b: &quot; + numBs);
-
-    sc.stop();
-}
-</code></pre><p>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">也可以打包之后运行</div></pre></td></tr></table></figure></p>
-<p>mvn package<br>spark-submit –class “com.fqy.spark.example.SimpleApp” –master local target/xxxx-SNAPSHOT.jar<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">### 执行方式配置</div><div class="line">- 程序内通过setMaster()指定，一般只有在idea中直接运行才这样设置。</div><div class="line">- spark-submit提交任务时，通过--master指定。如果不指定，程序里也没有setMaster()默认local模式。</div></pre></td></tr></table></figure></p>
-<p>spark-submit –master local<br>spark-submit –master yarn –deploy-mode client<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">Master URL|Meaning</div><div class="line">---|---</div><div class="line">local | local:1个线程，local[K]：K个线程，local[*]：与核心数相同的线程</div><div class="line">[yarn](http://spark.apache.org/docs/latest/running-on-yarn.html)   | 通过--deploy-mode client/cluster指定工作模式</div><div class="line">spark | Connect to the given Spark standalone cluster master</div><div class="line">mesos | Connect to the given Mesos cluster</div><div class="line"></div><div class="line">spark on yarn说明：</div><div class="line">- driver： 负责向YARN申请资源，并监督作业的运行情况</div><div class="line">- yarn-cluster: 适用于生产环境。driver运行在AM中。client可以离开。</div><div class="line">- yarn-client: 适用于交互和调试。driver运行在client中。client不能离开。</div><div class="line"></div><div class="line">### 其他配置</div><div class="line">根据实际情况配置</div><div class="line"></div><div class="line">配置名 | 默认值 </div><div class="line">---|---</div><div class="line">spark.driver.cores  | 1</div><div class="line">spark.driver.memory | 1G</div><div class="line">spark.executor.memory | 1G</div><div class="line"></div><div class="line">### 文件读取</div><div class="line">包括</div><div class="line">- 程序提交时额外的jar包通过--jar</div><div class="line">- 程序内部使用的文件、数据来源等</div><div class="line"></div><div class="line">读取方式 | 解释</div><div class="line">---|---</div><div class="line">file: | file:///表示本地的路径</div><div class="line">hdfs:,http:,https:,ftp: | 表示从hdfs等读取</div><div class="line">local: | 表示从集群中的一台读取</div><div class="line"></div><div class="line">说明：支持*通配符</div><div class="line"></div><div class="line">### maven依赖</div><div class="line">没用到spark-sql的话可以不添加spark-sql</div></pre></td></tr></table></figure></p>
-<dependency> <!-- Spark dependency, _2.1x表示scala版本 --><br>    <groupid>org.apache.spark</groupid><br>    <artifactid>spark-core_2.11</artifactid><br>    <version>2.1.0</version><br></dependency>
-
-<!-- https://mvnrepository.com/artifact/org.apache.spark/spark-sql_2.11 -->
-<dependency><br>    <groupid>org.apache.spark</groupid><br>    <artifactid>spark-sql_2.11</artifactid><br>    <version>2.1.0</version><br></dependency>
-
-<p><dependency><br>    <groupid>org.scala-lang</groupid><br>    <artifactid>scala-library</artifactid><br>    <version>2.11.8</version><br></dependency><br>```</p>
+<h3 id="日志配置"><a href="#日志配置" class="headerlink" title="日志配置"></a>日志配置</h3><p>配置日志输出：编辑log4j文件，将log4j.rootCategory由INFO改为WARN，不然日志非常多<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">cd spark-2.1.0-bin-hadoop2.7.tgz</div><div class="line">cp conf/log4j.properties.template conf/log4j.properties</div><div class="line">vi log4j.properties</div><div class="line"></div><div class="line">log4j.rootCategory=WARN, console</div></pre></td></tr></table></figure></p>
+<h4 id="错误说明"><a href="#错误说明" class="headerlink" title="错误说明"></a>错误说明</h4><p>如果需要以yarn模式运行，没配置HADOOP_CONF_DIR会出现如下错误</p>
+<blockquote>
+<p>Exception in thread “main” java.lang.Exception: When running with master ‘yarn-client’ either HADOOP_CONF_DIR or YARN_CONF_DIR must be set in the environment.</p>
+</blockquote>
+<h2 id="windows下开发设置"><a href="#windows下开发设置" class="headerlink" title="windows下开发设置"></a>windows下开发设置</h2><h3 id="下载-1"><a href="#下载-1" class="headerlink" title="下载"></a>下载</h3><p>spark下载：<a href="http://spark.apache.org/downloads.html" target="_blank" rel="external">官网地址</a>，其中spark-2.1.0-bin-hadoop2.7.tgz<a href="http://d3kbcqa49mib13.cloudfront.net/spark-2.1.0-bin-hadoop2.7.tgz" target="_blank" rel="external">下载地址</a><br>hadoop下载：<a href="http://hadoop.apache.org/releases.html" target="_blank" rel="external">官网地址</a>，其中hadoop-2.7.3.tar.gz<a href="http://d3kbcqa49mib13.cloudfront.net/spark-2.0.2-bin-hadoop2.7.tgz" target="_blank" rel="external">下载地址</a><br>winutils下载：<a href="https://github.com/steveloughran/winutils" target="_blank" rel="external">github地址</a>，找到对应hadoop版本的，hadoop2.7.3用2.7.1的也可以。将winutils放在hadoop的bin目录下。<br>hadoop.dll下载：<a href="https://github.com/steveloughran/winutils/tree/master/hadoop-2.7.1/bin" target="_blank" rel="external">github地址</a>，同样放在hadoop的bin目录下。（跑hadoop任务需要，只跑spark不需要，看需下载）</p>
+<h3 id="环境变量-1"><a href="#环境变量-1" class="headerlink" title="环境变量"></a>环境变量</h3><p>设置环境变量，将代码中的spark_dir,hadoop_dir换成自己的安装路径。将以下内容保存为ANSI编码的spark-evn.bat文件,运行即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">@echo off</div><div class="line">color 02</div><div class="line"></div><div class="line">::设置spark安装路径，路径不能有空格</div><div class="line">set spark_dir=D:\spark\spark-2.1.0-bin-hadoop2.7</div><div class="line">set hadoop_dir=D:\spark\hadoop-2.7.3</div><div class="line"></div><div class="line">::环境变量如果有的话，先删除</div><div class="line">wmic ENVIRONMENT where &quot;name=&apos;SPARK_HOME&apos;&quot; delete</div><div class="line">wmic ENVIRONMENT where &quot;name=&apos;HADOOP_HOME&apos;&quot; delete</div><div class="line"></div><div class="line">::创建JAVA_HOME、HADOOP_HOME、PYTHONPATH</div><div class="line">wmic ENVIRONMENT create name=&quot;SPARK_HOME&quot;,username=&quot;&lt;system&gt;&quot;,VariableValue=&quot;%spark_dir%&quot;</div><div class="line">wmic ENVIRONMENT create name=&quot;HADOOP_HOME&quot;,username=&quot;&lt;system&gt;&quot;,VariableValue=&quot;%hadoop_dir%&quot;</div><div class="line"></div><div class="line">::设置Path环境变量</div><div class="line">call set xx=%spark_dir%\bin;%hadoop_dir%\bin;%Path%</div><div class="line">wmic ENVIRONMENT where &quot;name=&apos;Path&apos; and username=&apos;&lt;system&gt;&apos;&quot; set VariableValue=&quot;%xx%&quot;</div><div class="line"></div><div class="line">pause</div></pre></td></tr></table></figure></p>
+<h2 id="hello-spark"><a href="#hello-spark" class="headerlink" title="hello spark"></a>hello spark</h2><p>在idea中，可以通过将之前修改完的log4j.properties拷贝到resources目录下过滤掉多余的日志。</p>
+<p>本地运行时需要指定Master(“local”)。本例子是统计所有包含a或b的行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public class SimpleApp &#123;</div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        SparkConf conf = new SparkConf().setAppName(&quot;Simple Application&quot;).setMaster(&quot;local&quot;).set(&quot;spark.some.config&quot;,&quot;forRunInYarn&quot;);</div><div class="line">        JavaSparkContext sc = new JavaSparkContext(conf);</div><div class="line">        String path = &quot;file:///&quot;+System.getenv(&quot;SPARK_HOME&quot;)+&quot;/README.md&quot;;</div><div class="line">        </div><div class="line">        JavaRDD&lt;String&gt; logData = sc.textFile(path).cache();</div><div class="line">        long numAs = logData.filter(s -&gt; s.contains(&quot;a&quot;)).count();</div><div class="line">        long numBs = logData.filter(s -&gt; s.contains(&quot;b&quot;)).count();</div><div class="line">        System.out.println(&quot;Lines with a: &quot; + numAs + &quot;, lines with b: &quot; + numBs);</div><div class="line"></div><div class="line">        sc.stop();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>也可以打包之后运行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mvn package</div><div class="line">spark-submit --class &quot;com.fqy.spark.example.SimpleApp&quot; --master local target/xxxx-SNAPSHOT.jar</div></pre></td></tr></table></figure></p>
+<h3 id="执行方式配置"><a href="#执行方式配置" class="headerlink" title="执行方式配置"></a>执行方式配置</h3><ul>
+<li>程序内通过setMaster()指定，一般只有在idea中直接运行才这样设置。</li>
+<li>spark-submit提交任务时，通过–master指定。如果不指定，程序里也没有setMaster()默认local模式。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">spark-submit --master local</div><div class="line">spark-submit --master yarn --deploy-mode client</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Master URL</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>local</td>
+<td>local:1个线程，local[K]：K个线程，local[*]：与核心数相同的线程</td>
+</tr>
+<tr>
+<td><a href="http://spark.apache.org/docs/latest/running-on-yarn.html" target="_blank" rel="external">yarn</a></td>
+<td>通过–deploy-mode client/cluster指定工作模式</td>
+</tr>
+<tr>
+<td>spark</td>
+<td>Connect to the given Spark standalone cluster master</td>
+</tr>
+<tr>
+<td>mesos</td>
+<td>Connect to the given Mesos cluster</td>
+</tr>
+</tbody>
+</table>
+<p>spark on yarn说明：</p>
+<ul>
+<li>driver： 负责向YARN申请资源，并监督作业的运行情况</li>
+<li>yarn-cluster: 适用于生产环境。driver运行在AM中。client可以离开。</li>
+<li>yarn-client: 适用于交互和调试。driver运行在client中。client不能离开。</li>
+</ul>
+<h3 id="其他配置"><a href="#其他配置" class="headerlink" title="其他配置"></a>其他配置</h3><p>根据实际情况配置</p>
+<table>
+<thead>
+<tr>
+<th>配置名</th>
+<th>默认值 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>spark.driver.cores</td>
+<td>1</td>
+</tr>
+<tr>
+<td>spark.driver.memory</td>
+<td>1G</td>
+</tr>
+<tr>
+<td>spark.executor.memory</td>
+<td>1G</td>
+</tr>
+</tbody>
+</table>
+<h3 id="文件读取"><a href="#文件读取" class="headerlink" title="文件读取"></a>文件读取</h3><p>包括</p>
+<ul>
+<li>程序提交时额外的jar包通过–jar</li>
+<li>程序内部使用的文件、数据来源等</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>读取方式</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file:</td>
+<td>file:///表示本地的路径</td>
+</tr>
+<tr>
+<td>hdfs:,http:,https:,ftp:</td>
+<td>表示从hdfs等读取</td>
+</tr>
+<tr>
+<td>local:</td>
+<td>表示从集群中的一台读取</td>
+</tr>
+</tbody>
+</table>
+<p>说明：支持*通配符</p>
+<h3 id="maven依赖"><a href="#maven依赖" class="headerlink" title="maven依赖"></a>maven依赖</h3><p>没用到spark-sql的话可以不添加spark-sql<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt; &lt;!-- Spark dependency, _2.1x表示scala版本 --&gt;</div><div class="line">    &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spark-core_2.11&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;2.1.0&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line"></div><div class="line">&lt;!-- https://mvnrepository.com/artifact/org.apache.spark/spark-sql_2.11 --&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spark-sql_2.11&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;2.1.0&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line"></div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.scala-lang&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;scala-library&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;2.11.8&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://spark.apache.org/" target="_blank" rel="external">spark官网</a><br><a href="http://www.codexiu.cn/spark/blog/14534/" target="_blank" rel="external">spark在windows下开发</a><br><a href="https://www.iteblog.com/archives/1223" target="_blank" rel="external">yarn-client和yarn-cluster区别</a></p>
 </the>
       
@@ -370,7 +443,7 @@ hadoop版本：had">
         <p><span>本文标题:</span><a href="/2017/01/07/spark---hello_spark_java版/">spark---hello spark java版</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2017-01-07, 15:15:00</p>
-        <p><span>最后更新:</span>2017-01-25, 16:37:32</p>
+        <p><span>最后更新:</span>2017-01-25, 16:50:29</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/01/07/spark---hello_spark_java版/" title="spark---hello spark java版">https://fangyeqing.github.io/2017/01/07/spark---hello_spark_java版/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/01/07/spark---hello_spark_java版/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -406,7 +479,7 @@ hadoop版本：had">
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#linux下配置"><span class="toc-number">1.</span> <span class="toc-text">linux下配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载"><span class="toc-number">1.1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#环境变量"><span class="toc-number">1.2.</span> <span class="toc-text">环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置"><span class="toc-number">1.3.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#错误说明"><span class="toc-number">1.4.</span> <span class="toc-text">错误说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">2.</span> <span class="toc-text">参考</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#linux下配置"><span class="toc-number">1.</span> <span class="toc-text">linux下配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载"><span class="toc-number">1.1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#环境变量"><span class="toc-number">1.2.</span> <span class="toc-text">环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#日志配置"><span class="toc-number">1.3.</span> <span class="toc-text">日志配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#错误说明"><span class="toc-number">1.3.1.</span> <span class="toc-text">错误说明</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#windows下开发设置"><span class="toc-number">2.</span> <span class="toc-text">windows下开发设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载-1"><span class="toc-number">2.1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#环境变量-1"><span class="toc-number">2.2.</span> <span class="toc-text">环境变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hello-spark"><span class="toc-number">3.</span> <span class="toc-text">hello spark</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#执行方式配置"><span class="toc-number">3.1.</span> <span class="toc-text">执行方式配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他配置"><span class="toc-number">3.2.</span> <span class="toc-text">其他配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件读取"><span class="toc-number">3.3.</span> <span class="toc-text">文件读取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#maven依赖"><span class="toc-number">3.4.</span> <span class="toc-text">maven依赖</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
         
     </div>
     <style>
