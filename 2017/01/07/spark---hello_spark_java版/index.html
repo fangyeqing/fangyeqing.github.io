@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="小懒" />
+
+
+
+<meta name="description" content="看了几个spark入门，大都是linux环境下scala和python版本的。自己在windows下折腾了一番才跑通，还是觉得有必要写一个windows/java版本的，希望对有相同需求的人有所帮助。
+由于开发在windows下进行，提交任务时在线上linux集群。需要配置linux线上环境和window的开发环境。各种版本如下：
+
+spark版本：spark-2.1.0
+hadoop版本：had">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spark---hello spark java版">
+<meta property="og:url" content="https://fangyeqing.github.io/2017/01/07/spark---hello_spark_java版/index.html">
+<meta property="og:site_name" content="小懒的博客">
+<meta property="og:description" content="看了几个spark入门，大都是linux环境下scala和python版本的。自己在windows下折腾了一番才跑通，还是觉得有必要写一个windows/java版本的，希望对有相同需求的人有所帮助。
+由于开发在windows下进行，提交任务时在线上linux集群。需要配置linux线上环境和window的开发环境。各种版本如下：
+
+spark版本：spark-2.1.0
+hadoop版本：had">
+<meta property="og:updated_time" content="2017-01-25T08:31:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spark---hello spark java版">
+<meta name="twitter:description" content="看了几个spark入门，大都是linux环境下scala和python版本的。自己在windows下折腾了一番才跑通，还是觉得有必要写一个windows/java版本的，希望对有相同需求的人有所帮助。
+由于开发在windows下进行，提交任务时在线上linux集群。需要配置linux线上环境和window的开发环境。各种版本如下：
+
+spark版本：spark-2.1.0
+hadoop版本：had">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="小懒的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/xiaolan.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>spark---hello spark java版 | 小懒的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?7fb806568d59e1b131e6cd93134ab91e";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">小懒</a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">文章分类</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/监控/">监控</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">小懒</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">小懒</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">文章分类</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-spark---hello_spark_java版" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/01/07/spark---hello_spark_java版/" class="article-date">
+      <time datetime="2017-01-07T07:15:00.000Z" itemprop="datePublished">2017-01-07</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      spark---hello spark java版
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/spark/">spark</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in="" index="" |="" 首页摘要=""><br>看了几个spark入门，大都是linux环境下scala和python版本的。自己在windows下折腾了一番才跑通，还是觉得有必要写一个windows/java版本的，希望对有相同需求的人有所帮助。</excerpt></p>
+<p>由于开发在windows下进行，提交任务时在线上linux集群。需要配置linux线上环境和window的开发环境。各种版本如下：</p>
+<ul>
+<li>spark版本：spark-2.1.0</li>
+<li>hadoop版本：hadoop-2.7.3</li>
+<li>jdk版本：1.8.0_65</li>
+</ul>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<h2 id="linux下配置"><a href="#linux下配置" class="headerlink" title="linux下配置"></a>linux下配置</h2><h3 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h3><p><a href="http://spark.apache.org/downloads.html" target="_blank" rel="external">spark官网</a>、<a href="http://hadoop.apache.org/" target="_blank" rel="external">hadoop官网</a>找到下载链接，下载<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">wget http://d3kbcqa49mib13.cloudfront.net/spark-2.1.0-bin-hadoop2.7.tgz</div><div class="line">tar -zxvf spark-2.1.0-bin-hadoop2.7.tgz</div><div class="line"></div><div class="line">wget http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz </div><div class="line">tar -zxvf hadoop-2.7.3.tar.gz</div></pre></td></tr></table></figure></p>
+<h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><p>环境变量设置，修改~/.bash_profile<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># spark</div><div class="line">export SPARK_HOME=/disk2/fangyq/test/spark-2.1.0-bin-hadoop2.7</div><div class="line">export PATH=$SPARK_HOME/bin:$PATH</div><div class="line"># hadoop</div><div class="line">export HADOOP_HOME=/disk2/fangyq/test/hadoop-2.7.3</div><div class="line">export HADOOP_CONF_DIR=/home/fangyeqing/hadoop-conf</div><div class="line">export PATH=$PATH:$HADOOP_HOME/bin</div><div class="line">export HADOOP_CLASSPATH=$JAVA_HOME/lib/tools.jar</div></pre></td></tr></table></figure></p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>配置日志输出：编辑log4j文件，将log4j.rootCategory由INFO改为WARN，不然日志非常多<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">cd spark-2.1.0-bin-hadoop2.7.tgz</div><div class="line">cp conf/log4j.properties.template conf/log4j.properties</div><div class="line">vi log4j.properties</div><div class="line"></div><div class="line">log4j.rootCategory=WARN, console</div></pre></td></tr></table></figure></p>
+<h3 id="错误说明"><a href="#错误说明" class="headerlink" title="错误说明"></a>错误说明</h3><p>如果需要以yarn模式运行，没配置HADOOP_CONF_DIR，也可以修改env<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">cp conf/spark-env.sh.template conf/spark-env.sh</div><div class="line">vi conf/spark-env/sh</div><div class="line"># 增加</div><div class="line">HADOOP_CONF_DIR=&apos;/home/fangyeqing/hadoop-conf&apos;  </div><div class="line">``` </div><div class="line">如果不设置HADOOP_CONF_DIR</div><div class="line">&gt;Exception in thread &quot;main&quot; java.lang.Exception: When running with master &apos;yarn-client&apos; either HADOOP_CONF_DIR or YARN_CONF_DIR must be set in the environment.</div><div class="line"></div><div class="line">## windows下开发设置</div><div class="line"></div><div class="line">### 下载</div><div class="line">spark下载：[官网地址](http://spark.apache.org/downloads.html)，其中spark-2.1.0-bin-hadoop2.7.tgz[下载地址](http://d3kbcqa49mib13.cloudfront.net/spark-2.1.0-bin-hadoop2.7.tgz )  </div><div class="line">hadoop下载：[官网地址](http://hadoop.apache.org/releases.html)，其中hadoop-2.7.3.tar.gz[下载地址](http://d3kbcqa49mib13.cloudfront.net/spark-2.0.2-bin-hadoop2.7.tgz)  </div><div class="line">winutils下载：[github地址](https://github.com/steveloughran/winutils)，找到对应hadoop版本的，hadoop2.7.3用2.7.1的也可以。将winutils放在hadoop的bin目录下。  </div><div class="line">hadoop.dll下载：[github地址](https://github.com/steveloughran/winutils/tree/master/hadoop-2.7.1/bin)，同样放在hadoop的bin目录下。（跑hadoop任务需要，只跑spark不需要，看需下载）</div><div class="line"></div><div class="line">### 环境变量</div><div class="line">设置环境变量，将代码中的spark_dir,hadoop_dir换成自己的安装路径。将以下内容保存为ANSI编码的spark-evn.bat文件,运行即可</div></pre></td></tr></table></figure></p>
+<p>@echo off<br>color 02</p>
+<p>::设置spark安装路径，路径不能有空格<br>set spark_dir=D:\spark\spark-2.1.0-bin-hadoop2.7<br>set hadoop_dir=D:\spark\hadoop-2.7.3</p>
+<p>::环境变量如果有的话，先删除<br>wmic ENVIRONMENT where “name=’SPARK_HOME’” delete<br>wmic ENVIRONMENT where “name=’HADOOP_HOME’” delete</p>
+<p>::创建JAVA_HOME、HADOOP_HOME、PYTHONPATH<br>wmic ENVIRONMENT create name=”SPARK_HOME”,username=”<system>“,VariableValue=”%spark_dir%”<br>wmic ENVIRONMENT create name=”HADOOP_HOME”,username=”<system>“,VariableValue=”%hadoop_dir%”</system></system></p>
+<p>::设置Path环境变量<br>call set xx=%spark_dir%\bin;%hadoop_dir%\bin;%Path%<br>wmic ENVIRONMENT where “name=’Path’ and username=’<system>‘“ set VariableValue=”%xx%”</system></p>
+<p>pause<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## hello spark</div><div class="line">在idea中，可以通过将之前修改完的log4j.properties拷贝到resources目录下过滤掉多余的日志。</div><div class="line"></div><div class="line">本地运行时需要指定Master(&quot;local&quot;)。本例子是统计所有包含a或b的行。</div></pre></td></tr></table></figure></p>
+<p>public class SimpleApp {<br>    public static void main(String[] args) {<br>        SparkConf conf = new SparkConf().setAppName(“Simple Application”).setMaster(“local”).set(“spark.some.config”,”forRunInYarn”);<br>        JavaSparkContext sc = new JavaSparkContext(conf);<br>        String path = “file:///“+System.getenv(“SPARK_HOME”)+”/README.md”;</p>
+<pre><code>    JavaRDD&lt;String&gt; logData = sc.textFile(path).cache();
+    long numAs = logData.filter(s -&gt; s.contains(&quot;a&quot;)).count();
+    long numBs = logData.filter(s -&gt; s.contains(&quot;b&quot;)).count();
+    System.out.println(&quot;Lines with a: &quot; + numAs + &quot;, lines with b: &quot; + numBs);
+
+    sc.stop();
+}
+</code></pre><p>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">也可以打包之后运行</div></pre></td></tr></table></figure></p>
+<p>mvn package<br>spark-submit –class “com.fqy.spark.example.SimpleApp” –master local target/xxxx-SNAPSHOT.jar<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">### 执行方式配置</div><div class="line">- 程序内通过setMaster()指定，一般只有在idea中直接运行才这样设置。</div><div class="line">- spark-submit提交任务时，通过--master指定。如果不指定，程序里也没有setMaster()默认local模式。</div></pre></td></tr></table></figure></p>
+<p>spark-submit –master local<br>spark-submit –master yarn –deploy-mode client<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">Master URL|Meaning</div><div class="line">---|---</div><div class="line">local | local:1个线程，local[K]：K个线程，local[*]：与核心数相同的线程</div><div class="line">[yarn](http://spark.apache.org/docs/latest/running-on-yarn.html)   | 通过--deploy-mode client/cluster指定工作模式</div><div class="line">spark | Connect to the given Spark standalone cluster master</div><div class="line">mesos | Connect to the given Mesos cluster</div><div class="line"></div><div class="line">spark on yarn说明：</div><div class="line">- driver： 负责向YARN申请资源，并监督作业的运行情况</div><div class="line">- yarn-cluster: 适用于生产环境。driver运行在AM中。client可以离开。</div><div class="line">- yarn-client: 适用于交互和调试。driver运行在client中。client不能离开。</div><div class="line"></div><div class="line">### 其他配置</div><div class="line">根据实际情况配置</div><div class="line"></div><div class="line">配置名 | 默认值 </div><div class="line">---|---</div><div class="line">spark.driver.cores  | 1</div><div class="line">spark.driver.memory | 1G</div><div class="line">spark.executor.memory | 1G</div><div class="line"></div><div class="line">### 文件读取</div><div class="line">包括</div><div class="line">- 程序提交时额外的jar包通过--jar</div><div class="line">- 程序内部使用的文件、数据来源等</div><div class="line"></div><div class="line">读取方式 | 解释</div><div class="line">---|---</div><div class="line">file: | file:///表示本地的路径</div><div class="line">hdfs:,http:,https:,ftp: | 表示从hdfs等读取</div><div class="line">local: | 表示从集群中的一台读取</div><div class="line"></div><div class="line">说明：支持*通配符</div><div class="line"></div><div class="line">### maven依赖</div><div class="line">没用到spark-sql的话可以不添加spark-sql</div></pre></td></tr></table></figure></p>
+<dependency> <!-- Spark dependency, _2.1x表示scala版本 --><br>    <groupid>org.apache.spark</groupid><br>    <artifactid>spark-core_2.11</artifactid><br>    <version>2.1.0</version><br></dependency>
+
+<!-- https://mvnrepository.com/artifact/org.apache.spark/spark-sql_2.11 -->
+<dependency><br>    <groupid>org.apache.spark</groupid><br>    <artifactid>spark-sql_2.11</artifactid><br>    <version>2.1.0</version><br></dependency>
+
+<p><dependency><br>    <groupid>org.scala-lang</groupid><br>    <artifactid>scala-library</artifactid><br>    <version>2.11.8</version><br></dependency><br>```</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://spark.apache.org/" target="_blank" rel="external">spark官网</a><br><a href="http://www.codexiu.cn/spark/blog/14534/" target="_blank" rel="external">spark在windows下开发</a><br><a href="https://www.iteblog.com/archives/1223" target="_blank" rel="external">yarn-client和yarn-cluster区别</a></p>
+</the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/01/07/spark---hello_spark_java版/">spark---hello spark java版</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
+        <p><span>发布时间:</span>2017-01-07, 15:15:00</p>
+        <p><span>最后更新:</span>2017-01-25, 16:31:25</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/01/07/spark---hello_spark_java版/" title="spark---hello spark java版">https://fangyeqing.github.io/2017/01/07/spark---hello_spark_java版/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/01/07/spark---hello_spark_java版/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/01/08/spark---RDD/">
+                    spark---RDD
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/12/14/Java程序监控---Metrics/">
+                    Java程序监控---Metrics
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#linux下配置"><span class="toc-number">1.</span> <span class="toc-text">linux下配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载"><span class="toc-number">1.1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#环境变量"><span class="toc-number">1.2.</span> <span class="toc-text">环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置"><span class="toc-number">1.3.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#错误说明"><span class="toc-number">1.4.</span> <span class="toc-text">错误说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">2.</span> <span class="toc-text">参考</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"spark---hello spark java版　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/01/07/spark---hello_spark_java版/" data-title="spark---hello spark java版" data-url="https://fangyeqing.github.io/2017/01/07/spark---hello_spark_java版/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/01/08/spark---RDD/" title="上一篇: spark---RDD">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/12/14/Java程序监控---Metrics/" title="下一篇: Java程序监控---Metrics">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/spark---RDD/">spark---RDD</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/spark---hello_spark_java版/">spark---hello spark java版</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 小懒
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

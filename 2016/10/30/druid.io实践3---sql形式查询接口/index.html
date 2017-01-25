@@ -18,7 +18,7 @@
 <meta name="description" content="druid提供http rest形式的查询接口，但是默认是json形式的，给没使用过druid的人用还是不太友好。这里介绍几种工具：
 
 plyql（推荐）:imply.io自家产品，持续更新中。
-Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。
+Sql4D：java客户端，yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。
 pydruid: python客户端，airbnb/superset使用pydruid。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="druid.io实践3---sql形式查询接口plyql">
@@ -27,15 +27,15 @@ pydruid: python客户端，airbnb/superset使用pydruid。">
 <meta property="og:description" content="druid提供http rest形式的查询接口，但是默认是json形式的，给没使用过druid的人用还是不太友好。这里介绍几种工具：
 
 plyql（推荐）:imply.io自家产品，持续更新中。
-Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。
+Sql4D：java客户端，yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。
 pydruid: python客户端，airbnb/superset使用pydruid。">
-<meta property="og:updated_time" content="2017-01-25T08:09:13.000Z">
+<meta property="og:updated_time" content="2017-01-25T08:12:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="druid.io实践3---sql形式查询接口plyql">
 <meta name="twitter:description" content="druid提供http rest形式的查询接口，但是默认是json形式的，给没使用过druid的人用还是不太友好。这里介绍几种工具：
 
 plyql（推荐）:imply.io自家产品，持续更新中。
-Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。
+Sql4D：java客户端，yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。
 pydruid: python客户端，airbnb/superset使用pydruid。">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
@@ -203,7 +203,7 @@ pydruid: python客户端，airbnb/superset使用pydruid。">
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/监控/">监控</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/监控/">监控</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
                     </div>
                 </section>
                 
@@ -323,7 +323,7 @@ pydruid: python客户端，airbnb/superset使用pydruid。">
         <p><excerpt in="" index="" |="" 首页摘要=""><br>druid提供http rest形式的查询接口，但是默认是json形式的，给没使用过druid的人用还是不太友好。这里介绍几种工具：</excerpt></p>
 <ul>
 <li>plyql（推荐）:imply.io自家产品，持续更新中。</li>
-<li>Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。</li>
+<li>Sql4D：java客户端，yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。</li>
 <li>pydruid: python客户端，airbnb/superset使用pydruid。</li>
 </ul>
 <a id="more"></a>  
@@ -367,7 +367,7 @@ pydruid: python客户端，airbnb/superset使用pydruid。">
         <p><span>本文标题:</span><a href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-30, 11:58:00</p>
-        <p><span>最后更新:</span>2017-01-25, 16:09:13</p>
+        <p><span>最后更新:</span>2017-01-25, 16:12:13</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/30/druid.io实践3---sql形式查询接口/" title="druid.io实践3---sql形式查询接口plyql">https://fangyeqing.github.io/2016/10/30/druid.io实践3---sql形式查询接口/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/30/druid.io实践3---sql形式查询接口/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -492,7 +492,7 @@ pydruid: python客户端，airbnb/superset使用pydruid。">
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/spark---RDD/">spark---RDD</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/spark---hello_spark_java版/">spark---hello spark java版</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
 
 
 

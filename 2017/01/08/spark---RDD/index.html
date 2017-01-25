@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="小懒" />
+
+
+
+<meta name="description" content="现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：
+
+迭代算法，图算法等需要重复利用数据的应用类型
+交互式数据挖掘工具，用户反复查询一个数据子集
+
+RDD针对上述情况，有一些改进：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spark---RDD">
+<meta property="og:url" content="https://fangyeqing.github.io/2017/01/08/spark---RDD/index.html">
+<meta property="og:site_name" content="小懒的博客">
+<meta property="og:description" content="现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：
+
+迭代算法，图算法等需要重复利用数据的应用类型
+交互式数据挖掘工具，用户反复查询一个数据子集
+
+RDD针对上述情况，有一些改进：">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/efa1b55d3bb99ae353eb25a3f422bc8c/xmlnote/9527EAE7B4204B02A3994CE89748115C/28417">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/efa1b55d3bb99ae353eb25a3f422bc8c/xmlnote/50D165CF707E4C1BB08B4F6C183A894A/28451">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/efa1b55d3bb99ae353eb25a3f422bc8c/xmlnote/D94936A5CC8044D7A95A59A7E9E0830D/28487">
+<meta property="og:updated_time" content="2017-01-25T08:24:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spark---RDD">
+<meta name="twitter:description" content="现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：
+
+迭代算法，图算法等需要重复利用数据的应用类型
+交互式数据挖掘工具，用户反复查询一个数据子集
+
+RDD针对上述情况，有一些改进：">
+<meta name="twitter:image" content="http://note.youdao.com/yws/public/resource/efa1b55d3bb99ae353eb25a3f422bc8c/xmlnote/9527EAE7B4204B02A3994CE89748115C/28417">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="小懒的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/xiaolan.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>spark---RDD | 小懒的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?7fb806568d59e1b131e6cd93134ab91e";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">小懒</a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">文章分类</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/监控/">监控</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">小懒</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">小懒</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">文章分类</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-spark---RDD" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/01/08/spark---RDD/" class="article-date">
+      <time datetime="2017-01-08T07:15:00.000Z" itemprop="datePublished">2017-01-08</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      spark---RDD
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/spark/">spark</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p><excerpt in="" index="" |="" 首页摘要=""><br>现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：</excerpt></p>
+<ul>
+<li>迭代算法，图算法等需要重复利用数据的应用类型</li>
+<li>交互式数据挖掘工具，用户反复查询一个数据子集</li>
+</ul>
+<p>RDD针对上述情况，有一些改进：</p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<h2 id="RDD"><a href="#RDD" class="headerlink" title="RDD"></a>RDD</h2><p>现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：</p>
+<ul>
+<li>迭代算法，图算法等需要重复利用数据的应用类型</li>
+<li>交互式数据挖掘工具，用户反复查询一个数据子集</li>
+</ul>
+<p>RDD针对上述情况，有一些改进：</p>
+<ul>
+<li>RDD可以被cache在内存中。这种机制无疑可以简单有效地解决MapReduce在迭代计算时反复读取写出磁盘的问题，但同时大大增大了内存开销。</li>
+<li>RDD帮助Fault Recovery. RDD可存储lineage信息来重建lost partitions. 比如记录RDD的转化过程。MapReduce采用的是checkpointing机制，代价要大很多。</li>
+<li>RDD是一个logical单元，甚至不需要实例化，而只需包含从磁盘重建workset的信息。</li>
+</ul>
+<h2 id="RDD组成"><a href="#RDD组成" class="headerlink" title="RDD组成"></a>RDD组成</h2><p>RDD，弹性分布式数据集。是设计用来表示数据集的一种数据结构。为了让 RDD 能 handle 更多的问题，规定 RDD 应该是只读的，分区记录的一种数据集合。</p>
+<p>每个RDD都包含：</p>
+<ul>
+<li>一组RDD分区（partition），即数据集的原子组成部分</li>
+<li>一个函数，即在父RDD上执行何种计算；</li>
+<li>对父RDD的一组依赖，这些依赖描述了RDD的Lineage</li>
+<li>元数据，描述分区模式和数据存放的位置，可选择的。</li>
+<li>一个对于key-value类型的RDD的Partitioner，可选择的。</li>
+</ul>
+<p>例如，一个表示HDFS文件的RDD包含：各个数据块的一个分区，并知道各个数据块放在哪些节点上。而且这个RDD上的map操作结果也具有同样的分区，map函数是在父数据上执行的。</p>
+<h2 id="RDD-产生"><a href="#RDD-产生" class="headerlink" title="RDD 产生"></a>RDD 产生</h2><p>RDD产生有两种方式：</p>
+<ul>
+<li>通过集合类生成：sc.parallelize。把 driver 端定义的一个数据集，或者一个获取数据集的生成器，分发到 worker 上的 executor 中，以供后续分析。这种方式在测试代码逻辑时经常用到。</li>
+<li>从数据源读取：本地文件，HDFS(hdfs://), Cassandra, HBase, Amazon S3(s3n://)等<ul>
+<li>文本文件：textFile方法</li>
+<li>SequenceFiles： sequenceFile[K, V]方法读取</li>
+<li>其他Hadoop输入格式：hadoopRDD方法  </li>
+</ul>
+</li>
+</ul>
+<p>RDD保存：  </p>
+<ul>
+<li>文本：JavaRDD.saveAsTextFile。<ul>
+<li>会按照执行task的多少生成多少个文件，比如part-00000到part-0000n，n是task的个数，亦是最后的stage的分区数。coalesce可以调整生成的文件数。</li>
+</ul>
+</li>
+<li>对象：JavaRDD.saveAsObjectFile、JavaSparkContext.objectFile</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">public class RDDInit &#123;</div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        SparkConf conf = new SparkConf().setAppName(&quot;RDDInit&quot;).setMaster(&quot;local&quot;).set(&quot;spark.some.config&quot;,&quot;forRunInYarn&quot;);</div><div class="line">        JavaSparkContext sc = new JavaSparkContext(conf);</div><div class="line">        //RDD生成</div><div class="line">        List&lt;Integer&gt; data = Arrays.asList(1, 2, 3, 4, 5);</div><div class="line">        JavaRDD&lt;Integer&gt; distData = sc.parallelize(data);</div><div class="line">        System.out.println(distData.take(5));</div><div class="line">        //RDD保存</div><div class="line">        distData.coalesce(1).saveAsTextFile(&quot;output/RDDWordCount/textFile&quot;);</div><div class="line">        distData.saveAsObjectFile(&quot;output/RDDWordCount/object&quot;);</div><div class="line">        //读取保存的RDD</div><div class="line">        JavaRDD&lt;Integer&gt; readObject = sc.objectFile(&quot;output/RDDWordCount/object/part-00000&quot;);</div><div class="line">        System.out.println(readObject.take(3));</div><div class="line">        sc.stop();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="RDD-操作"><a href="#RDD-操作" class="headerlink" title="RDD 操作"></a>RDD 操作</h2><h3 id="两类算子"><a href="#两类算子" class="headerlink" title="两类算子"></a>两类算子</h3><p>RDD存在两类算子:</p>
+<ul>
+<li>transformation,主要是用于对RDD进行数据转换，生成一个新的RDD。包括：map, flatMap, filter, union, sample, join, groupByKey, cogroup, ReduceByKey, cros, sortByKey, mapValues等</li>
+<li>action，是要将转换好的RDD再转换成原始数据。 包括：collect（返回元素本身）, reduce, count（返回RDD中的元素个数）, save（将RDD输出到存储系统）,first，take， lookupKey等。 </li>
+</ul>
+<h3 id="惰性运算"><a href="#惰性运算" class="headerlink" title="惰性运算"></a>惰性运算</h3><p>spark运算是一种懒惰运算，其程序执行逻辑是：</p>
+<ul>
+<li>对于一系列transformation算子，在遇到action算子之前，这些transformation是不会执行的，而会生成一个运算逻辑图。  </li>
+<li>当遇到一个action算子的时候，才根据前面的运算逻辑图执行程序。  </li>
+<li>这样如果有台机器宕机了之后，只需要根据逻辑图将宕机中的RDD进行重新计算就可以了（窄依赖的情况下，宽依赖的情况下计算代价要更高。）</li>
+</ul>
+<p>下面有一个求所有字符长度的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * length count:所有字符的length</div><div class="line"> */</div><div class="line">//生成RDD</div><div class="line">List&lt;String&gt; data = Arrays.asList(&quot;hello world&quot;, &quot;hello spark&quot;,&quot;hello rdd&quot;, &quot;hello spark rdd&quot;);</div><div class="line">JavaRDD&lt;String&gt; lines = sc.parallelize(data);</div><div class="line">//transformation算子</div><div class="line">JavaRDD&lt;Integer&gt; lineLengths = lines.map(s -&gt; s.length());</div><div class="line">//action算子</div><div class="line">int totalLength = lineLengths.reduce((a, b) -&gt; a + b);</div><div class="line">System.out.println(totalLength);//输出：46</div></pre></td></tr></table></figure></p>
+<h2 id="RDD关系"><a href="#RDD关系" class="headerlink" title="RDD关系"></a>RDD关系</h2><h3 id="DAG有向无环图"><a href="#DAG有向无环图" class="headerlink" title="DAG有向无环图"></a>DAG有向无环图</h3><p>DAG - Direct Acyclic Graph，有向无环图。假设图二中的A,B,C,D,E都代表spark里不同的RDD。 </p>
+<p><img src="http://note.youdao.com/yws/public/resource/efa1b55d3bb99ae353eb25a3f422bc8c/xmlnote/9527EAE7B4204B02A3994CE89748115C/28417" alt="image">    </p>
+<p>说明：</p>
+<ul>
+<li>图：图是表达RDD Lineage信息的一个结构。在spark中，大部分 RDD 都是通过其他 RDD 进行转换而来的，比如说图二中，B和D都是通过A转换而来的，而C是通过B转换而来，E的话是通过B和D一起转换来的。</li>
+<li>有向：有向就更容易理解了，简单来说就是 lineage 是一个 top-down 的结构，而且是时间序列上的 top-down 结构。一个时间上的先来后到，即祖先与子孙的关系，是不可逆的。</li>
+<li>无环：spark 的优化器在这里也发挥了很大的作用。假设有图三中左下 B,D,E 这样一个 RDD 转换图，那当我们的需要执行 D.collect 操作的时候，就会引发一个死循环了。</li>
+</ul>
+<h3 id="RDD依赖"><a href="#RDD依赖" class="headerlink" title="RDD依赖"></a>RDD依赖</h3><p>依赖主要分为两类：窄依赖和宽依赖。</p>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>窄依赖</th>
+<th>宽依赖</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>定义</td>
+<td>子RDD的每个分区依赖于常数个父分区（即与数据规模无关）</td>
+<td>子RDD的每个分区依赖于所有父RDD分区</td>
+</tr>
+<tr>
+<td>举例</td>
+<td>逐个元素地执行map、然后filter操作</td>
+<td>部分join，需要shuffle的依赖，与MapReduce类似</td>
+</tr>
+<tr>
+<td>计算</td>
+<td>可以在某一个计算节点上直接通过父RDD的某几块数据（通常是一块）计算得到子RDD某一块的数据</td>
+<td>子RDD某一块数据的计算必须等到它的父RDD所有数据都计算完成之后才可以进行，而且需要对父RDD的计算结果进行hash并传递到对应的节点之上</td>
+</tr>
+<tr>
+<td>容错性</td>
+<td>当父RDD的某分片丢失时，只有丢失的那一块数据需要被重新计算</td>
+<td>当父RDD的某分片丢失时，需要把父RDD的所有分区数据重新计算一次，计算量明显比窄依赖情况下大很多</td>
+</tr>
+</tbody>
+</table>
+<p>如下图：方框表示RDD，实心矩形表示分区<br><img src="http://note.youdao.com/yws/public/resource/efa1b55d3bb99ae353eb25a3f422bc8c/xmlnote/50D165CF707E4C1BB08B4F6C183A894A/28451" alt="image">  </p>
+<ul>
+<li>对于map和filter形式的转换来说，它们只是将Partition的数据根据转换的规则进行转化，并不涉及其他的处理，可以简单地认为只是将数据从一个形式转换到另一个形式。</li>
+<li>对于union，只是将多个RDD合并成一个，parent RDD的Partition(s)不会有任何的变化，可以认为只是把parent RDD的Partition(s)简单进行复制与合并。</li>
+<li>对于join，如果每个Partition仅仅和已知的、特定的Partition进行join，那么这个依赖关系也是窄依赖。对于这种有规则的数据的join，并不会引入昂贵的Shuffle。对于窄依赖，由于RDD每个Partition依赖固定数量的parent RDD(s)的Partition(s)，因此可以通过一个计算任务来处理这些Partition，并且这些Partition相互独立，这些计算任务也就可以并行执行了。</li>
+<li>对于groupByKey，子RDD的所有Partition(s)会依赖于parent RDD的所有Partition(s)，子RDD的Partition是parent RDD的所有Partition Shuffle的结果，因此这两个RDD是不能通过一个计算任务来完成的。同样，对于需要parent RDD的所有Partition进行join的转换，也是需要Shuffle，这类join的依赖就是宽依赖而不是前面提到的窄依赖了。</li>
+</ul>
+<h2 id="任务调度"><a href="#任务调度" class="headerlink" title="任务调度"></a>任务调度</h2><p>Spark调度器根据目标RDD的Lineage图创建一个由stage构成的无回路有向图（DAG）。每个stage内部尽可能多地包含一组具有窄依赖关系的转换，并将它们流水线并行化（pipeline）。stage的边界有两种情况：一是宽依赖上的Shuffle操作；二是已缓存分区，它可以缩短父RDD的计算过程。</p>
+<p><img src="http://note.youdao.com/yws/public/resource/efa1b55d3bb99ae353eb25a3f422bc8c/xmlnote/D94936A5CC8044D7A95A59A7E9E0830D/28487" alt="image"></p>
+<p>实线方框表示RDD，实心矩形表示分区（黑色表示该分区被缓存）。要在RDD G上执行一个动作，调度器根据宽依赖创建一组stage，并在每个stage内部将具有窄依赖的转换流水线化（pipeline）。 本例不用再执行stage 1，因为B已经存在于缓存中了，所以只需要运行2和3。</p>
+<h2 id="故障恢复"><a href="#故障恢复" class="headerlink" title="故障恢复"></a>故障恢复</h2><p>Spark故障恢复提供两种方式</p>
+<ul>
+<li>Linage：通过数据的血缘关系，再执行一遍前面的处理</li>
+<li>Checkpoint：Lineage链较长、宽依赖的RDD需要采用检查点机制。将数据集存储到持久存储中。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://litaotao.github.io/spark-what-is-rdd" target="_blank" rel="external">博客：spark 之 RDD</a>  </p>
+<p><a href="http://shiyanjun.cn/archives/744.html" target="_blank" rel="external">博客：RDD论文中文版</a>  </p>
+<p><a href="https://www.zhihu.com/question/26568496" target="_blank" rel="external">知乎：与 Hadoop 对比，如何看待 Spark 技术？</a></p>
+<p><a href="http://www.cnblogs.com/zlslch/p/5723403.html" target="_blank" rel="external">博客：RDD依赖关系</a></p>
+<p><a href="https://github.com/JerryLead/SparkInternals/blob/master/markdown/2-JobLogicalPlan.md" target="_blank" rel="external">博客：Job 逻辑执行图</a></p>
+</the>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/01/08/spark---RDD/">spark---RDD</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
+        <p><span>发布时间:</span>2017-01-08, 15:15:00</p>
+        <p><span>最后更新:</span>2017-01-25, 16:24:39</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/01/08/spark---RDD/" title="spark---RDD">https://fangyeqing.github.io/2017/01/08/spark---RDD/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/01/08/spark---RDD/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/01/07/spark---hello_spark_java版/">
+                    spark---hello spark java版
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RDD"><span class="toc-number">1.</span> <span class="toc-text">RDD</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RDD组成"><span class="toc-number">2.</span> <span class="toc-text">RDD组成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RDD-产生"><span class="toc-number">3.</span> <span class="toc-text">RDD 产生</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RDD-操作"><span class="toc-number">4.</span> <span class="toc-text">RDD 操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#两类算子"><span class="toc-number">4.1.</span> <span class="toc-text">两类算子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#惰性运算"><span class="toc-number">4.2.</span> <span class="toc-text">惰性运算</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RDD关系"><span class="toc-number">5.</span> <span class="toc-text">RDD关系</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DAG有向无环图"><span class="toc-number">5.1.</span> <span class="toc-text">DAG有向无环图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDD依赖"><span class="toc-number">5.2.</span> <span class="toc-text">RDD依赖</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#任务调度"><span class="toc-number">6.</span> <span class="toc-text">任务调度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#故障恢复"><span class="toc-number">7.</span> <span class="toc-text">故障恢复</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">8.</span> <span class="toc-text">参考</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"spark---RDD　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/01/08/spark---RDD/" data-title="spark---RDD" data-url="https://fangyeqing.github.io/2017/01/08/spark---RDD/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/01/07/spark---hello_spark_java版/" title="下一篇: spark---hello spark java版">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/spark---RDD/">spark---RDD</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/spark---hello_spark_java版/">spark---hello spark java版</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 小懒
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
