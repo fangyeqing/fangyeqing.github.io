@@ -17,30 +17,24 @@
 
 <meta name="description" content="应用场景
 OLTP类型的查询访问的行数比较少，但往往需要大部分的数据列。传统的行式数据库将一个个完整的数据行存储在数据页中。这种方式在磁盘IO上是比较高效的。
-OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数据量大需要进行压缩，且往往只关心少数几个数据列。这种情况下就需要列式存储。列式存储每一列单独存储，并且同一列里面的数据类型基本是相同，天生适合压缩。
-
-当然，列式数据库不是万能">
+OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数据量大需要进行压缩，且往往只关心少数几个数据列。这种情况下就需要列式存储。列式存储每一列单独存储，并且同一列里面的数据类型基本是相同，天生适合压缩。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="druid.io 1---列式存储概念">
 <meta property="og:url" content="https://fangyeqing.github.io/2016/10/29/druid.io_1---列式存储概念/index.html">
 <meta property="og:site_name" content="小懒的博客">
 <meta property="og:description" content="应用场景
 OLTP类型的查询访问的行数比较少，但往往需要大部分的数据列。传统的行式数据库将一个个完整的数据行存储在数据页中。这种方式在磁盘IO上是比较高效的。
-OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数据量大需要进行压缩，且往往只关心少数几个数据列。这种情况下就需要列式存储。列式存储每一列单独存储，并且同一列里面的数据类型基本是相同，天生适合压缩。
-
-当然，列式数据库不是万能">
+OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数据量大需要进行压缩，且往往只关心少数几个数据列。这种情况下就需要列式存储。列式存储每一列单独存储，并且同一列里面的数据类型基本是相同，天生适合压缩。">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0F29469CDE7443F8BD895003AA92432D">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/881EB576D1864CBAB00F56BB36B62F03">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/B2562E40B5A045BFB18DCD1DF911A803">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/AAAF33C2767A45C9A8C89FDA35D578F2">
-<meta property="og:updated_time" content="2017-01-25T06:18:39.000Z">
+<meta property="og:updated_time" content="2017-01-25T06:23:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="druid.io 1---列式存储概念">
 <meta name="twitter:description" content="应用场景
 OLTP类型的查询访问的行数比较少，但往往需要大部分的数据列。传统的行式数据库将一个个完整的数据行存储在数据页中。这种方式在磁盘IO上是比较高效的。
-OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数据量大需要进行压缩，且往往只关心少数几个数据列。这种情况下就需要列式存储。列式存储每一列单独存储，并且同一列里面的数据类型基本是相同，天生适合压缩。
-
-当然，列式数据库不是万能">
+OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数据量大需要进行压缩，且往往只关心少数几个数据列。这种情况下就需要列式存储。列式存储每一列单独存储，并且同一列里面的数据类型基本是相同，天生适合压缩。">
 <meta name="twitter:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0F29469CDE7443F8BD895003AA92432D">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
@@ -330,6 +324,9 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
 <li>OLTP类型的查询访问的行数比较少，但往往需要大部分的数据列。传统的行式数据库将一个个完整的数据行存储在数据页中。这种方式在磁盘IO上是比较高效的。</li>
 <li>OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数据量大需要进行压缩，且往往只关心少数几个数据列。这种情况下就需要列式存储。列式存储每一列单独存储，并且同一列里面的数据类型基本是相同，天生适合压缩。</li>
 </ul>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
 <p>当然，列式数据库不是万能的，每次读取某个数据行时，需要分别从不同的地方读取各个数据列的值，然后合并在一起形成数据行。因此，如果每次查询涉及的数据量较小或者大部分查询都需要整行的数据，列式数据库并不适用。</p>
 <h2 id="列式存储vs行式存储"><a href="#列式存储vs行式存储" class="headerlink" title="列式存储vs行式存储"></a>列式存储vs行式存储</h2><p>简单来说两者的区别就是如何组织表，具体区别如下：</p>
 <table>
@@ -395,7 +392,7 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
 <p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/AAAF33C2767A45C9A8C89FDA35D578F2" alt="image"></p>
 <p>“男”对应的位图为100101，表示第1、4、6行值为“男”；“女”对应的位图为011010，表示第2、3、5行值为“女”。如果需要查找男性或者女性的个数，只需要统计相应的位图中1出现的次数即可。另外，建立位图索引后0和1的重复度高，可以采用专门的编码方式对其进行压缩。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.csdn.net/dc_726/article/details/41143175" target="_blank" rel="external">http://blog.csdn.net/dc_726/article/details/41143175</a><br><a href="http://chattool.sinaapp.com/?p=1234" target="_blank" rel="external">http://chattool.sinaapp.com/?p=1234</a></p>
-
+</the>
       
     </div>
     
@@ -406,7 +403,7 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
         <p><span>本文标题:</span><a href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-29, 11:51:30</p>
-        <p><span>最后更新:</span>2017-01-25, 14:18:39</p>
+        <p><span>最后更新:</span>2017-01-25, 14:23:10</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io_1---列式存储概念/" title="druid.io 1---列式存储概念">https://fangyeqing.github.io/2016/10/29/druid.io_1---列式存储概念/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io_1---列式存储概念/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -531,7 +528,7 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid实践3---sql形式查询接口plyql、sql4D/">druid实践3---sql形式查询接口plyql、sql4D</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
 
 
 
