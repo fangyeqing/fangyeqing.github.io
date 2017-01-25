@@ -15,25 +15,28 @@
 
 
 
-<meta name="description" content="druid提供http rest形式的查询接口，但是默认是json形式的，给没使用过druid的人用还是不太友好。这里介绍两种工具：
+<meta name="description" content="druid提供http rest形式的查询接口，但是默认是json形式的，给没使用过druid的人用还是不太友好。这里介绍几种工具：
 
 plyql（推荐）:imply.io自家产品，持续更新中。
-Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。">
+Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。
+pydruid: python客户端，airbnb/superset使用pydruid。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="druid.io实践3---sql形式查询接口plyql、sql4D">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/30/druid.io实践3---sql形式查询接口plyql、sql4D/index.html">
+<meta property="og:title" content="druid.io实践3---sql形式查询接口plyql">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/30/druid.io实践3---sql形式查询接口/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="druid提供http rest形式的查询接口，但是默认是json形式的，给没使用过druid的人用还是不太友好。这里介绍两种工具：
+<meta property="og:description" content="druid提供http rest形式的查询接口，但是默认是json形式的，给没使用过druid的人用还是不太友好。这里介绍几种工具：
 
 plyql（推荐）:imply.io自家产品，持续更新中。
-Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。">
-<meta property="og:updated_time" content="2017-01-25T08:00:32.000Z">
+Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。
+pydruid: python客户端，airbnb/superset使用pydruid。">
+<meta property="og:updated_time" content="2017-01-25T08:09:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="druid.io实践3---sql形式查询接口plyql、sql4D">
-<meta name="twitter:description" content="druid提供http rest形式的查询接口，但是默认是json形式的，给没使用过druid的人用还是不太友好。这里介绍两种工具：
+<meta name="twitter:title" content="druid.io实践3---sql形式查询接口plyql">
+<meta name="twitter:description" content="druid提供http rest形式的查询接口，但是默认是json形式的，给没使用过druid的人用还是不太友好。这里介绍几种工具：
 
 plyql（推荐）:imply.io自家产品，持续更新中。
-Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。">
+Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。
+pydruid: python客户端，airbnb/superset使用pydruid。">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -65,7 +68,7 @@ Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lo
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>druid.io实践3---sql形式查询接口plyql、sql4D | 小懒的博客</title>
+<title>druid.io实践3---sql形式查询接口plyql | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -273,10 +276,10 @@ Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lo
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-druid.io实践3---sql形式查询接口plyql、sql4D" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-druid.io实践3---sql形式查询接口" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/30/druid.io实践3---sql形式查询接口plyql、sql4D/" class="article-date">
+      <a href="/2016/10/30/druid.io实践3---sql形式查询接口/" class="article-date">
       <time datetime="2016-10-30T03:58:00.000Z" itemprop="datePublished">2016-10-30</time>
 </a>
 
@@ -292,7 +295,7 @@ Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lo
         
   
     <h1 class="article-title" itemprop="name">
-      druid.io实践3---sql形式查询接口plyql、sql4D
+      druid.io实践3---sql形式查询接口plyql
     </h1>
   
 
@@ -317,10 +320,11 @@ Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lo
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p><excerpt in="" index="" |="" 首页摘要=""><br>druid提供http rest形式的查询接口，但是默认是json形式的，给没使用过druid的人用还是不太友好。这里介绍两种工具：</excerpt></p>
+        <p><excerpt in="" index="" |="" 首页摘要=""><br>druid提供http rest形式的查询接口，但是默认是json形式的，给没使用过druid的人用还是不太友好。这里介绍几种工具：</excerpt></p>
 <ul>
 <li>plyql（推荐）:imply.io自家产品，持续更新中。</li>
 <li>Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lookup等。</li>
+<li>pydruid: python客户端，airbnb/superset使用pydruid。</li>
 </ul>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文="">  
@@ -350,6 +354,7 @@ Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lo
 <p>连接上druid之后，操作如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">show tables           (显示datasources)</div><div class="line">describe TableName    (显示数据源的schema)</div><div class="line">trace=[true|false]    (打印转换后的json，默认false)</div><div class="line">querymode=[sql|json]  (查询模式，默认sql)</div><div class="line">quit                  (退出)</div><div class="line">select queries        (GroupBy, TimeSeries, TopN, Select, Search). See wiki for examples: https://github.com/srikalyc/Sql4D/wiki/Sql4DCompiler</div><div class="line">generatebean=BeanName (This command must be preceding a SQL, it generates a java source file BeanName.java which extends DruidBaseBean.</div></pre></td></tr></table></figure></p>
 <h3 id="程序-1"><a href="#程序-1" class="headerlink" title="程序"></a>程序</h3><p>maven依赖，可以直接用如下的，不过有一些bug。最好是用修改后的版本重新打包或者发布再添加依赖。<a href="https://github.com/fangyeqing/Sql4D" target="_blank" rel="external">https://github.com/fangyeqing/Sql4D</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;com.yahoo.sql4d&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;Sql4Ddriver&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;4.1.0&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
 <p>使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">@CommonsLog</div><div class="line">@Data</div><div class="line">public class DruidDataSource &#123;</div><div class="line">    private String bHost;</div><div class="line">    private int bPort;</div><div class="line">    private String cHost;</div><div class="line">    private int cPort;</div><div class="line">    private int maxConnsInPool;</div><div class="line">    private int maxBrokerConns;</div><div class="line">    private int maxCoordConns;</div><div class="line">    private int maxOverLordConns;</div><div class="line">    public static DDataSource driver;</div><div class="line">    @PostConstruct</div><div class="line">    public void init()&#123;</div><div class="line">        DDataSource.adjustPoolSettings(maxConnsInPool,maxBrokerConns,maxCoordConns,maxOverLordConns);</div><div class="line">        driver = new DDataSource(bHost, bPort, cHost, cPort);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public List&lt;DruidBaseBean&gt; query(String sql, Class type) &#123;</div><div class="line">        Either&lt;String, Either&lt;List&lt;DruidBaseBean&gt;, Map&lt;Object, DruidBaseBean&gt;&gt;&gt; response = driver.query(sql, null, type, null, false);</div><div class="line">        return response.right().get().left().get();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="pydruid"><a href="#pydruid" class="headerlink" title="pydruid"></a>pydruid</h2><p>null</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://plywood.imply.io/plyql#examples" target="_blank" rel="external">http://plywood.imply.io/plyql#examples</a><br><a href="http://imply.io/post/2016/05/04/programmatic-plyql.html" target="_blank" rel="external">http://imply.io/post/2016/05/04/programmatic-plyql.html</a><br><a href="https://github.com/implydata/plyql" target="_blank" rel="external">https://github.com/implydata/plyql</a><br><a href="https://github.com/srikalyc/Sql4D" target="_blank" rel="external">https://github.com/srikalyc/Sql4D</a></p>
 </the>
       
@@ -359,13 +364,13 @@ Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lo
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/30/druid.io实践3---sql形式查询接口plyql、sql4D/">druid.io实践3---sql形式查询接口plyql、sql4D</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-10-30, 11:58:00</p>
-        <p><span>最后更新:</span>2017-01-25, 16:00:32</p>
+        <p><span>最后更新:</span>2017-01-25, 16:09:13</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/30/druid.io实践3---sql形式查询接口plyql、sql4D/" title="druid.io实践3---sql形式查询接口plyql、sql4D">https://fangyeqing.github.io/2016/10/30/druid.io实践3---sql形式查询接口plyql、sql4D/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/30/druid.io实践3---sql形式查询接口plyql、sql4D/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/30/druid.io实践3---sql形式查询接口/" title="druid.io实践3---sql形式查询接口plyql">https://fangyeqing.github.io/2016/10/30/druid.io实践3---sql形式查询接口/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/30/druid.io实践3---sql形式查询接口/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -398,7 +403,7 @@ Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lo
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#http-rest接口"><span class="toc-number">1.</span> <span class="toc-text">http rest接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#plyql"><span class="toc-number">2.</span> <span class="toc-text">plyql</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#部署"><span class="toc-number">2.1.</span> <span class="toc-text">部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监控"><span class="toc-number">2.2.</span> <span class="toc-text">监控</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用"><span class="toc-number">2.3.</span> <span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#客户端"><span class="toc-number">2.3.1.</span> <span class="toc-text">客户端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#程序"><span class="toc-number">2.3.2.</span> <span class="toc-text">程序</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#语法说明"><span class="toc-number">2.4.</span> <span class="toc-text">语法说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sql4D"><span class="toc-number">3.</span> <span class="toc-text">Sql4D</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#客户端-1"><span class="toc-number">3.1.</span> <span class="toc-text">客户端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序-1"><span class="toc-number">3.2.</span> <span class="toc-text">程序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#http-rest接口"><span class="toc-number">1.</span> <span class="toc-text">http rest接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#plyql"><span class="toc-number">2.</span> <span class="toc-text">plyql</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#部署"><span class="toc-number">2.1.</span> <span class="toc-text">部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监控"><span class="toc-number">2.2.</span> <span class="toc-text">监控</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用"><span class="toc-number">2.3.</span> <span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#客户端"><span class="toc-number">2.3.1.</span> <span class="toc-text">客户端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#程序"><span class="toc-number">2.3.2.</span> <span class="toc-text">程序</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#语法说明"><span class="toc-number">2.4.</span> <span class="toc-text">语法说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sql4D"><span class="toc-number">3.</span> <span class="toc-text">Sql4D</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#客户端-1"><span class="toc-number">3.1.</span> <span class="toc-text">客户端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序-1"><span class="toc-number">3.2.</span> <span class="toc-text">程序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pydruid"><span class="toc-number">4.</span> <span class="toc-text">pydruid</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
         
     </div>
     <style>
@@ -434,7 +439,7 @@ Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lo
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"druid.io实践3---sql形式查询接口plyql、sql4D　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"druid.io实践3---sql形式查询接口plyql　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -450,7 +455,7 @@ Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lo
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/30/druid.io实践3---sql形式查询接口plyql、sql4D/" data-title="druid.io实践3---sql形式查询接口plyql、sql4D" data-url="https://fangyeqing.github.io/2016/10/30/druid.io实践3---sql形式查询接口plyql、sql4D/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/30/druid.io实践3---sql形式查询接口/" data-title="druid.io实践3---sql形式查询接口plyql" data-url="https://fangyeqing.github.io/2016/10/30/druid.io实践3---sql形式查询接口/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -487,7 +492,7 @@ Sql4D：yahoo的，很久都没跟新了，不支持druid新增功能，例如lo
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid.io实践3---sql形式查询接口plyql、sql4D/">druid.io实践3---sql形式查询接口plyql、sql4D</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
 
 
 
