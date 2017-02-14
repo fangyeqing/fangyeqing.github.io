@@ -1389,6 +1389,9 @@
 <h2 id="老数据roll-up"><a href="#老数据roll-up" class="headerlink" title="老数据roll up"></a>老数据roll up</h2><p>进行实时和批量indexing的时候，一般配置的按小时的粒度进行roll up，最后存储的就是按小时聚合的数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&quot;granularitySpec&quot;: &#123;</div><div class="line">    &quot;type&quot;: &quot;uniform&quot;,</div><div class="line">    &quot;segmentGranularity&quot;: &quot;HOUR&quot;,</div><div class="line">    &quot;queryGranularity&quot;: &quot;HOUR&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>当数据积累较长时间后，按小时聚合必然数据量巨大，可以将不常用或者不太重要的数据，按天存储，数据量会大大减小，必然可以提高查询速度。</p>
 <p>例如：将40天之后的数据提交batch indexing任务按天roll up。</p>
+<h2 id="最后的效果"><a href="#最后的效果" class="headerlink" title="最后的效果"></a>最后的效果</h2><p>以7台机器为例，配置5台hot分片的机器，2台default分片的机器。hot分片存储的是以小时为粒度的数据，_default_tier分片存的是按天为粒度的数据。  </p>
+<p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/A6979D7951D74EB8BE6A02C27B5AE2EF" alt="image"><br>40天之内的热数据根据之前配置的规则，会在hot分片存一份，_default_tier分片存一份<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/E4BCCAE548C8454A8922E80E5E6EB9CA" alt="image"><br>40天之前的数据只会在_default_tier分片存一份<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/655AB8A05A8A4067AB2EB57D4A0C453B" alt="image"></p>
+<p>查询40天内的数据时，由于hot分片的机器优先级高。只会从hot分片的5台机器读取数据，40天之前的数据只会从default分片读取数据。  </p>
 </the></excerpt>]]></content>
     </entry>
     
