@@ -15,27 +15,26 @@
 
 
 
-<meta name="description" content="应用场景
-OLTP类型的查询访问的行数比较少，但往往需要大部分的数据列。传统的行式数据库将一个个完整的数据行存储在数据页中。这种方式在磁盘IO上是比较高效的。
-OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数据量大需要进行压缩，且往往只关心少数几个数据列。这种情况下就需要列式存储。列式存储每一列单独存储，并且同一列里面的数据类型基本是相同，天生适合压缩。">
+<meta name="description" content="druid监控指标可以通过graphite-emitter插件很方便地直接发送到Graphite，再配合其他的展示和报警工具。
+这里提供一个Graphite+Grafana+Seyren这三个开源框架的组合来监控druid的思路。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="druid.io 1---列式存储概念">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/29/druid.io_1---列式存储概念/index.html">
+<meta property="og:title" content="druid.io实践4---druid监控">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/10/30/druid.io实践4---druid监控/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="应用场景
-OLTP类型的查询访问的行数比较少，但往往需要大部分的数据列。传统的行式数据库将一个个完整的数据行存储在数据页中。这种方式在磁盘IO上是比较高效的。
-OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数据量大需要进行压缩，且往往只关心少数几个数据列。这种情况下就需要列式存储。列式存储每一列单独存储，并且同一列里面的数据类型基本是相同，天生适合压缩。">
-<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0F29469CDE7443F8BD895003AA92432D">
-<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/881EB576D1864CBAB00F56BB36B62F03">
-<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/B2562E40B5A045BFB18DCD1DF911A803">
-<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/AAAF33C2767A45C9A8C89FDA35D578F2">
-<meta property="og:updated_time" content="2017-01-25T06:23:10.000Z">
+<meta property="og:description" content="druid监控指标可以通过graphite-emitter插件很方便地直接发送到Graphite，再配合其他的展示和报警工具。
+这里提供一个Graphite+Grafana+Seyren这三个开源框架的组合来监控druid的思路。">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8B8C7A2657A947698CBE20E605EED648">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/BB7AB009DB67446A86208F20DD363274">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/F0B9253194224C37A1B7BEB1E539897F">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8797DFE746454B20B05EF88EB7FD0DB9">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/11B8023A6DF845AEAB52ED73ACB66BD1">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/01E28C039FF94FF694C5451EBCD7B8D3">
+<meta property="og:updated_time" content="2017-02-17T12:02:41.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="druid.io 1---列式存储概念">
-<meta name="twitter:description" content="应用场景
-OLTP类型的查询访问的行数比较少，但往往需要大部分的数据列。传统的行式数据库将一个个完整的数据行存储在数据页中。这种方式在磁盘IO上是比较高效的。
-OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数据量大需要进行压缩，且往往只关心少数几个数据列。这种情况下就需要列式存储。列式存储每一列单独存储，并且同一列里面的数据类型基本是相同，天生适合压缩。">
-<meta name="twitter:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0F29469CDE7443F8BD895003AA92432D">
+<meta name="twitter:title" content="druid.io实践4---druid监控">
+<meta name="twitter:description" content="druid监控指标可以通过graphite-emitter插件很方便地直接发送到Graphite，再配合其他的展示和报警工具。
+这里提供一个Graphite+Grafana+Seyren这三个开源框架的组合来监控druid的思路。">
+<meta name="twitter:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8B8C7A2657A947698CBE20E605EED648">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -67,7 +66,7 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>druid.io 1---列式存储概念 | 小懒的博客</title>
+<title>druid.io实践4---druid监控 | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -275,11 +274,11 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-druid.io_1---列式存储概念" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-druid.io实践4---druid监控" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/29/druid.io_1---列式存储概念/" class="article-date">
-      <time datetime="2016-10-29T03:51:30.000Z" itemprop="datePublished">2016-10-29</time>
+      <a href="/2016/10/30/druid.io实践4---druid监控/" class="article-date">
+      <time datetime="2016-10-30T09:57:00.000Z" itemprop="datePublished">2016-10-30</time>
 </a>
 
 
@@ -294,7 +293,7 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
         
   
     <h1 class="article-title" itemprop="name">
-      druid.io 1---列式存储概念
+      druid.io实践4---druid监控
     </h1>
   
 
@@ -309,7 +308,7 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/实践/">实践</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/监控/">监控</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -319,80 +318,45 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p><excerpt in="" index="" |="" 首页摘要="">  </excerpt></p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
-<li>OLTP类型的查询访问的行数比较少，但往往需要大部分的数据列。传统的行式数据库将一个个完整的数据行存储在数据页中。这种方式在磁盘IO上是比较高效的。</li>
-<li>OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数据量大需要进行压缩，且往往只关心少数几个数据列。这种情况下就需要列式存储。列式存储每一列单独存储，并且同一列里面的数据类型基本是相同，天生适合压缩。</li>
-</ul>
+        <excerpt in="" index="" |="" 首页摘要="">   
+
+<p>druid监控指标可以通过graphite-emitter插件很方便地直接发送到Graphite，再配合其他的展示和报警工具。</p>
+<p>这里提供一个Graphite+Grafana+Seyren这三个开源框架的组合来监控druid的思路。<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8B8C7A2657A947698CBE20E605EED648" alt="image"></p>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
-<p>当然，列式数据库不是万能的，每次读取某个数据行时，需要分别从不同的地方读取各个数据列的值，然后合并在一起形成数据行。因此，如果每次查询涉及的数据量较小或者大部分查询都需要整行的数据，列式数据库并不适用。</p>
-<h2 id="列式存储vs行式存储"><a href="#列式存储vs行式存储" class="headerlink" title="列式存储vs行式存储"></a>列式存储vs行式存储</h2><p>简单来说两者的区别就是如何组织表，具体区别如下：</p>
-<table>
-<thead>
-<tr>
-<th>对比项</th>
-<th>行式存储</th>
-<th>列式存储</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>存储</td>
-<td>每一行数据作为一个整体来存储</td>
-<td>每一列数据作为一个整体来存储</td>
-</tr>
-<tr>
-<td>存储顺序</td>
-<td>把一行中的数据值串在一起存储起来，然后再存储下一行的数据</td>
-<td>把一列中的数据值串在一起存储起来，每列存储的位置分开</td>
-</tr>
-<tr>
-<td>插入/更新</td>
-<td>只需对一行进行操作，相对容易</td>
-<td>需要对多个列进行操作，相对麻烦</td>
-</tr>
-<tr>
-<td>索引</td>
-<td>对个别列建立索引</td>
-<td>任何列都能作为索引</td>
-</tr>
-<tr>
-<td>查询</td>
-<td>选择(Select)即使只涉及某几列，所有数据会被读取,存在冗余列</td>
-<td>查询时只有涉及到的列会被读取，被选择的列要重新组装</td>
-</tr>
-<tr>
-<td>查询适合场景</td>
-<td>随机查询</td>
-<td>范围查询（聚合）</td>
-</tr>
-<tr>
-<td>应用</td>
-<td>OLTP</td>
-<td>OLAP</td>
-</tr>
-</tbody>
-</table>
-<p>从下图可以很清楚地看到，行式存储下一张表的数据都是放在一起顺序保存的，但列式存储下都被分开保存了。</p>
-<p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/0F29469CDE7443F8BD895003AA92432D" alt="image">  </p>
-<h2 id="数据压缩"><a href="#数据压缩" class="headerlink" title="数据压缩"></a>数据压缩</h2><p>列式存储天生就是适合压缩，因为同一列里面的数据类型基本是相同。经过字典表进行数据压缩后，表中的字符串才都变成数字了。正因为每个字符串在字典表里只出现一次了，所以达到了压缩的目的。  </p>
-<p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/881EB576D1864CBAB00F56BB36B62F03" alt="image"></p>
-<h2 id="查询性能"><a href="#查询性能" class="headerlink" title="查询性能"></a>查询性能</h2><p>通过一条查询的执行过程说明列式存储(以及数据压缩)的优点，下图为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select * from table where Customer Name = &apos;Miller&apos; and Materiral = &apos;Refrigerator&apos;</div></pre></td></tr></table></figure></p>
-<p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/B2562E40B5A045BFB18DCD1DF911A803" alt="image"></p>
-<p>关键步骤如下：</p>
+<h2 id="Druid监控指标发送到Graphite"><a href="#Druid监控指标发送到Graphite" class="headerlink" title="Druid监控指标发送到Graphite"></a>Druid监控指标发送到Graphite</h2><p>Graphite是Python编写的、面向监控的工具， 是一个时间序列数据库，可以将数据可视化为图表的工具。</p>
+<h3 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h3><p>添加至extensions<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">druid.extensions.loadList=[..., &quot;graphite-emitter&quot;]</div></pre></td></tr></table></figure></p>
+<h3 id="修改配置"><a href="#修改配置" class="headerlink" title="修改配置"></a>修改配置</h3><p>修改druid节点启动配置_common/common.runtime.properties：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">druid.monitoring.monitors=[&quot;com.metamx.metrics.JvmMonitor&quot;]</div><div class="line">druid.emitter=composing</div><div class="line">druid.emitter.composing.emitters=[&quot;logging&quot;,&quot;graphite&quot;]</div><div class="line">druid.emitter.graphite.hostname=graphite.xxx.com</div><div class="line">druid.emitter.graphite.port=2004</div><div class="line">druid.emitter.graphite.eventConverter=&#123;&quot;type&quot;:&quot;whiteList&quot;, &quot;namespacePrefix&quot;: &quot;druid-graphite&quot;, &quot;ignoreHostname&quot;:false, &quot;ignoreServiceName&quot;:false, &quot;mapPath&quot;:&quot;/home/druid-conf/common-0.9.1.1/whiteList&quot;&#125;</div><div class="line">druid.emitter.logging.logLevel=info</div></pre></td></tr></table></figure></p>
+<p>druid的metrics结构为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;namespacePrefix&gt;.[&lt;druid service name&gt;].[&lt;druid hostname&gt;].&lt;dimensions values ordered by dimension&apos;s name&gt;.&lt;metric&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>graphite端口需要注意，druid发送的是pickled之后的数据。graphite的<a href="http://graphite.readthedocs.io/en/latest/feeding-carbon.html#the-pickle-protocol" target="_blank" rel="external">pickled protocal</a>默认是2004端口，plaintext protocal才是2003端口。</p>
+<p>否则graphite会遇见下述错误：<br>less /disk1/xxx/graphite-virtualenv/carbon-relay.out | grep druid<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">22/01/2017 15:02:29 :: [listener] invalid line (tta(S&apos;druid-graphite.druid/broker.jvm/gc/time&apos;) received from client xx.xxx.xx.xx:38901, ignoring</div><div class="line">22/01/2017 15:02:29 :: [listener] invalid line (tta(S&apos;druid-graphite.druid/broker.xxxx.groupBy.query/node/ttfb&apos;) received from client xx.xxx.xx.xx:38901, ignoring</div></pre></td></tr></table></figure></p>
+<h3 id="Event-Converter具体说明"><a href="#Event-Converter具体说明" class="headerlink" title="Event Converter具体说明"></a>Event Converter具体说明</h3><p>Event Converter用户可配置的：</p>
 <ul>
-<li>去字典表里找到字符串对应数字(只进行一次字符串比较)。</li>
-<li>用数字去列表里匹配，匹配上的位置设为1。</li>
-<li>把不同列的匹配结果进行位运算得到符合所有条件的记录下标。</li>
-<li>使用这个下标组装出最终的结果集。</li>
+<li>namespacePrefix：前缀</li>
+<li>ignoreHostname：是否忽略hostname</li>
+<li>ignoreServiceName：是否忽略servicename</li>
+<li>mapPath：</li>
 </ul>
-<h2 id="索引优化"><a href="#索引优化" class="headerlink" title="索引优化"></a>索引优化</h2><p>可以针对列式存储做专门的索引优化。比如，性别列只有两个值，“男”和“女”，可以对这一列建立位图索引：</p>
-<p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/AAAF33C2767A45C9A8C89FDA35D578F2" alt="image"></p>
-<p>“男”对应的位图为100101，表示第1、4、6行值为“男”；“女”对应的位图为011010，表示第2、3、5行值为“女”。如果需要查找男性或者女性的个数，只需要统计相应的位图中1出现的次数即可。另外，建立位图索引后0和1的重复度高，可以采用专门的编码方式对其进行压缩。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.csdn.net/dc_726/article/details/41143175" target="_blank" rel="external">http://blog.csdn.net/dc_726/article/details/41143175</a><br><a href="http://chattool.sinaapp.com/?p=1234" target="_blank" rel="external">http://chattool.sinaapp.com/?p=1234</a></p>
-</the>
+<p>经过上述配置之后，graphite目录结构为：<br>druid-graphite/serviceName/host/xxxx/xxxx</p>
+<h2 id="Grafana展示"><a href="#Grafana展示" class="headerlink" title="Grafana展示"></a>Grafana展示</h2><p>Grafana提供了一种强大的优雅的方式来创建，展示，分享dashboards，支持Graphite数据源。</p>
+<p>以broker节点的监控为例，以下的$node为节点变量，broker有两个节点，$node会有两个值。</p>
+<h3 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h3><blockquote>
+<p>transformNull(druid-graphite.druid.broker.$node.jvm.mem.*, 0)<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/BB7AB009DB67446A86208F20DD363274" alt="image"></p>
+</blockquote>
+<p>图中两条线为其中一个broker的内存情况，黄色的线为mem.used，淡蓝色的线为mem.max</p>
+<h3 id="查询时间"><a href="#查询时间" class="headerlink" title="查询时间"></a>查询时间</h3><blockquote>
+<p>druid-graphite.druid.broker.$node.$datasource.{groupBy,topN,timeseries}.query.time<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/F0B9253194224C37A1B7BEB1E539897F" alt="image"></p>
+</blockquote>
+<h3 id="查询时间占比"><a href="#查询时间占比" class="headerlink" title="查询时间占比"></a>查询时间占比</h3><blockquote>
+<p>druid-graphite.druid.broker.$node.$datasource.$queryType.query.time<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/8797DFE746454B20B05EF88EB7FD0DB9" alt="image"></p>
+</blockquote>
+<h2 id="Seyren报警"><a href="#Seyren报警" class="headerlink" title="Seyren报警"></a>Seyren报警</h2><p>报警使用的基于Graphite数据的开源项目<a href="https://github.com/scobal/seyren" target="_blank" rel="external">seyren</a>，提供邮件和短信等手段的报警。</p>
+<h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><p>监控broker是否活着，可以监控内存使用情况。当broker挂了的话，内存使用会将为0，会进行报警</p>
+<p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/11B8023A6DF845AEAB52ED73ACB66BD1" alt="image">  </p>
+<p>配置短信和邮件报警<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/01E28C039FF94FF694C5451EBCD7B8D3" alt="image"></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.leanote.com/post/du00/Druid%E7%9A%84Graphite%E7%9B%91%E6%8E%A7%E9%85%8D%E7%BD%AE" target="_blank" rel="external">博客:Druid的Graphite监控配置</a><br><a href="http://druid.io/docs/latest/development/extensions-contrib/graphite.html" target="_blank" rel="external">官方文档:Graphite Emitter</a></p>
+</the></excerpt>
       
     </div>
     
@@ -400,13 +364,13 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/30/druid.io实践4---druid监控/">druid.io实践4---druid监控</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
-        <p><span>发布时间:</span>2016-10-29, 11:51:30</p>
-        <p><span>最后更新:</span>2017-01-25, 14:23:10</p>
+        <p><span>发布时间:</span>2016-10-30, 17:57:00</p>
+        <p><span>最后更新:</span>2017-02-17, 20:02:41</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io_1---列式存储概念/" title="druid.io 1---列式存储概念">https://fangyeqing.github.io/2016/10/29/druid.io_1---列式存储概念/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io_1---列式存储概念/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/30/druid.io实践4---druid监控/" title="druid.io实践4---druid监控">https://fangyeqing.github.io/2016/10/30/druid.io实践4---druid监控/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/30/druid.io实践4---druid监控/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -419,15 +383,15 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
     <nav id="article-nav">
         
             <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/10/29/druid.io_2---druid介绍/">
-                    druid.io 2---druid介绍
+                <a href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">
+                    druid.io---Coordinator balancer源码解析
                 </a>
             </div>
         
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/29/druid.io_0---OLAP概念/">
-                    druid.io 0---OLAP概念
+                <a href="/2016/10/30/druid.io实践3---sql形式查询接口/">
+                    druid.io实践3---sql形式查询接口plyql
                 </a>
             </div>
         
@@ -439,7 +403,7 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#应用场景"><span class="toc-number">1.</span> <span class="toc-text">应用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#列式存储vs行式存储"><span class="toc-number">2.</span> <span class="toc-text">列式存储vs行式存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据压缩"><span class="toc-number">3.</span> <span class="toc-text">数据压缩</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查询性能"><span class="toc-number">4.</span> <span class="toc-text">查询性能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#索引优化"><span class="toc-number">5.</span> <span class="toc-text">索引优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">6.</span> <span class="toc-text">参考</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Druid监控指标发送到Graphite"><span class="toc-number">1.</span> <span class="toc-text">Druid监控指标发送到Graphite</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#添加依赖"><span class="toc-number">1.1.</span> <span class="toc-text">添加依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改配置"><span class="toc-number">1.2.</span> <span class="toc-text">修改配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意"><span class="toc-number">1.3.</span> <span class="toc-text">注意</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Event-Converter具体说明"><span class="toc-number">1.4.</span> <span class="toc-text">Event Converter具体说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Grafana展示"><span class="toc-number">2.</span> <span class="toc-text">Grafana展示</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#内存"><span class="toc-number">2.1.</span> <span class="toc-text">内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查询时间"><span class="toc-number">2.2.</span> <span class="toc-text">查询时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查询时间占比"><span class="toc-number">2.3.</span> <span class="toc-text">查询时间占比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Seyren报警"><span class="toc-number">3.</span> <span class="toc-text">Seyren报警</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#举例"><span class="toc-number">3.1.</span> <span class="toc-text">举例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
         
     </div>
     <style>
@@ -475,7 +439,7 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"druid.io 1---列式存储概念　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"druid.io实践4---druid监控　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -491,7 +455,7 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/29/druid.io_1---列式存储概念/" data-title="druid.io 1---列式存储概念" data-url="https://fangyeqing.github.io/2016/10/29/druid.io_1---列式存储概念/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/30/druid.io实践4---druid监控/" data-title="druid.io实践4---druid监控" data-url="https://fangyeqing.github.io/2016/10/30/druid.io实践4---druid监控/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -514,7 +478,7 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/10/29/druid.io_2---druid介绍/" title="上一篇: druid.io 2---druid介绍">
+            <a href="/2016/11/01/druid.io---Coordinator_balancer源码解析/" title="上一篇: druid.io---Coordinator balancer源码解析">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -522,7 +486,7 @@ OLAP类型的查询可能需要访问几百万甚至几十亿个数据行，数�
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/29/druid.io_0---OLAP概念/" title="下一篇: druid.io 0---OLAP概念">
+            <a href="/2016/10/30/druid.io实践3---sql形式查询接口/" title="下一篇: druid.io实践3---sql形式查询接口plyql">
                 <i class="fa fa-angle-right"></i>
             </a>
         
