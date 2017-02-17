@@ -4,6 +4,87 @@
   
     
     <entry>
+      <title><![CDATA[Vmware虚拟机安装Ubuntu]]></title>
+      <url>https://fangyeqing.github.io/2017/02/10/Vmware%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85Ubuntu/</url>
+      <content type="html"><![CDATA[<p><excerpt in="" index="" |="" 首页摘要=""><br>最近有一个项目，在windows下开发实在搞不定了，就用虚拟机装了个桌面版的linux-ubuntu，折腾了一天。</excerpt></p>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>ubuntu下载地址：<a href="http://cn.ubuntu.com/download/" target="_blank" rel="external">http://cn.ubuntu.com/download/</a><br>版本：<a href="http://releases.ubuntu.com/16.04/ubuntu-16.04-desktop-amd64.iso" target="_blank" rel="external">Ubuntu 16.04 LTS(长期支持)版本</a>  </p>
+<p>VMware下载地址：<br><a href="https://www.ruooo.com/software/852.html" target="_blank" rel="external">VMware v12.1.0 简体中文精简特别版</a><br><a id="more"></a>  </p>
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>打开VMware</p>
+<h3 id="创建虚拟机"><a href="#创建虚拟机" class="headerlink" title="创建虚拟机"></a>创建虚拟机</h3><ul>
+<li>创建新的虚拟机</li>
+<li>选择典型(推荐)</li>
+<li>浏览本地刚下载的Ubuntu镜像</li>
+<li>输入linux名、用户名、密码</li>
+<li>输入虚拟机名称、位置</li>
+<li>指定虚拟机磁盘大小，64位建议20G，磁盘存储为单个文件</li>
+<li>创建完成</li>
+</ul>
+<p>出现问题：</p>
+<blockquote>
+<p>已将虚拟机配置为使用64位客户机操作系统。但是，无法执行64位操作<br>此主机支持 Intel VT-x，但 Intel VT-x 处于禁用状态。</p>
+</blockquote>
+<p>解决：支持虚拟化  </p>
+<ul>
+<li>进入BIOS，其中联想为F2</li>
+<li>Configuration</li>
+<li>Intel Virtual Technology设置为Enabled</li>
+<li>F10保存并退出</li>
+</ul>
+<h3 id="安装操作系统"><a href="#安装操作系统" class="headerlink" title="安装操作系统"></a>安装操作系统</h3><ul>
+<li>虚拟机开机后，会自动进行 Ubuntu 的安装。</li>
+<li>安装完成后，虚拟机会自动重启</li>
+<li>使用刚才设置的密码进入系统</li>
+</ul>
+<h3 id="更改系统设置"><a href="#更改系统设置" class="headerlink" title="更改系统设置"></a>更改系统设置</h3><p>右上角“设置”按钮</p>
+<h4 id="系统下载设置"><a href="#系统下载设置" class="headerlink" title="系统下载设置"></a>系统下载设置</h4><ul>
+<li>选择「System Settings」</li>
+<li>选择「Software &amp; Updates」</li>
+<li>下载服务器选择 「other」，然后选择中国地区服务器，选择China-mirrors.aliyun.com</li>
+</ul>
+<h4 id="语言设置"><a href="#语言设置" class="headerlink" title="语言设置"></a>语言设置</h4><ul>
+<li>选择「Language Support」</li>
+<li>弹出窗口“The language support is not installed completely”，选择「Install」安装</li>
+<li>Install/Remove Lauguages</li>
+<li>选择Chinese(simplified)并Apply</li>
+<li>用鼠标将简体中文拖动到语言列表最顶端，然后「Apply System-Wide」</li>
+<li>右上角设置-log out再重新进入系统才会生效</li>
+</ul>
+<h3 id="安装-VMware-Tools"><a href="#安装-VMware-Tools" class="headerlink" title="安装 VMware Tools"></a>安装 VMware Tools</h3><p>只有在VMware虚拟机中安装好了VMware Tools，才能实现主机与虚拟机之间的文件共享，同时可支持自由拖拽的功能，鼠标也可在虚拟机与主机之前自由移动（不用再按ctrl+alt），且虚拟机屏幕也可实现全屏化</p>
+<p>系统会自动进行 VMware Tools 的安装，如果没有自动安装的话，选择 VMware 工具栏的「虚拟机」→「安装 VMware Tools」，Ubuntu 会自动弹出 VMware Tools 的安装文件夹。但是这种我试了下，速度太慢了，后来直接手动安装。</p>
+<p>下载<a href="http://pan.baidu.com/s/1hrLC0ja" target="_blank" rel="external">VMwareTools-10.0.10-4301679.tar.gz 密码:3nb1</a>，下载内容放/Home<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">tar -zxvf VMwareTools-10.0.10-4301679.tar.gz</div><div class="line">cd vmware-tools-distrib/</div><div class="line">sudo su              # 切换到root用户</div><div class="line">./vmware-install.pl  # 一路的回车确认至出现Enjoy</div></pre></td></tr></table></figure></p>
+<p>安装完成后「虚拟机」→「安装 VMware Tools」变为「重新安装 VMware Tools」，说明安装成功。</p>
+<p>设置–系统设置–显示–分辨率调大到适合值–应用–WMware主界面进入全屏模式</p>
+<h3 id="虚拟机联网模式"><a href="#虚拟机联网模式" class="headerlink" title="虚拟机联网模式"></a>虚拟机联网模式</h3><p>VMWare虚拟机分为三种网络模式，具体参见<a href="http://blog.csdn.net/leexide/article/details/17199083" target="_blank" rel="external">博客</a></p>
+<ul>
+<li>bridged(桥接模式)。</li>
+<li>NAT(网络地址转换模式)。</li>
+<li>host-only(主机模式)。  </li>
+</ul>
+<p>在虚拟系统中不用进行任何手工配置就能直接访问互联网，建议采用NAT模式。</p>
+<h4 id="NAT模式联网支持域名解析"><a href="#NAT模式联网支持域名解析" class="headerlink" title="NAT模式联网支持域名解析"></a>NAT模式联网支持域名解析</h4><p>首先，在Windows中确认“VMware DHCP Service”和“VMware NAT Service”已正常启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cmd</div><div class="line">services.msc</div></pre></td></tr></table></figure></p>
+<p>WMware顶部–编辑–虚拟网络编辑器—选中VMnet8点“NAT设置”—将里面显示的网关地址记录，例如：192.168.184.2—然后编辑<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo vi /etc/resolv.conf</div><div class="line">#加入内容</div><div class="line">nameserver 192.168.184.2</div></pre></td></tr></table></figure></p>
+<p>然后就可以<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ping baidu.com</div></pre></td></tr></table></figure></p>
+<p>可以解决在python程序中遇到的如下问题</p>
+<blockquote>
+<p>ERROR:root:<urlopen error="" [errno="" -3]="" temporary="" failure="" in="" name="" resolution=""></urlopen></p>
+</blockquote>
+<h3 id="安装常用软件"><a href="#安装常用软件" class="headerlink" title="安装常用软件"></a>安装常用软件</h3><p>编辑器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo update-alternatives --config editor    # 默认为nano，替换为vim</div></pre></td></tr></table></figure></p>
+<p>git<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt install git</div></pre></td></tr></table></figure></p>
+<p>java<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt-get update</div><div class="line">sudo apt-get install openjdk-8-jdk</div></pre></td></tr></table></figure></p>
+<p>python环境：自带<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python  #2.7.12</div><div class="line">python3  #3.5.2</div></pre></td></tr></table></figure></p>
+<p><a href="https://www.jetbrains.com/pycharm/download/#section=linux" target="_blank" rel="external">pycharm</a>:安装免费的社区版，下载好包自己装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tar -zxvf pycharm-community-2016.3.2.tar.gz</div><div class="line">cd pycharm-community-2016.3.2/</div><div class="line">bin/pycharm.sh</div></pre></td></tr></table></figure></p>
+<p>pycharm以root身份启动，不然每次pip安装东西都要输密码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt install gksu  #sudogk：与sudo类似，只是sudo用于命令行，sudogk用于GUI</div><div class="line">vi ~/.local/share/applications/jetbrains-pycharm-ce.desktop</div></pre></td></tr></table></figure></p>
+<p>修改desktop文件内容如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">[Desktop Entry]</div><div class="line">Version=1.0</div><div class="line">Type=Application</div><div class="line">Name=PyCharm Community Edition</div><div class="line">Icon=/home/fyq/coding/pycharm-community-2016.3.2/bin/pycharm.png</div><div class="line">Exec=gksudo -k -u root &quot;/home/fyq/coding/pycharm-community-2016.3.2/bin/pycharm.sh&quot; %f</div><div class="line">Comment=The Drive to Develop</div><div class="line">Categories=Development;IDE;</div><div class="line">Terminal=false</div><div class="line">StartupWMClass=jetbrains-pycharm-ce</div></pre></td></tr></table></figure></p>
+<p>其实点击图标就是执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">gksudo -k -u root /home/fyq/coding/pycharm-community-2016.3.2/bin/pycharm.sh</div></pre></td></tr></table></figure></p>
+<p>快捷键与ubuntu的GNOME桌面的冲突<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Files--Settings---Keymap---Default for DNOMe</div></pre></td></tr></table></figure></p>
+<p>其中，前进后退变成：Alt+Shift+方向左右键</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jianshu.com/p/3379892948da" target="_blank" rel="external">简书：VMware 虚拟机安装 Ubuntu 简单教程</a><br><a href="http://www.kali.org.cn/thread-22929-1-1.html" target="_blank" rel="external">VMware tools安装</a><br><a href="https://www.tlanyan.me/work-with-linux-without-root-permission/" target="_blank" rel="external">linux下非root用户安装软件入门</a><br><a href="http://blog.sina.com.cn/s/blog_828e50020101e81i.html" target="_blank" rel="external">让vmware（开启nat模式）中的linux虚拟机支持域名解析功能</a></p>
+</the>]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[spark---RDD]]></title>
       <url>https://fangyeqing.github.io/2017/01/08/spark---RDD/</url>
       <content type="html"><![CDATA[<p><excerpt in="" index="" |="" 首页摘要=""><br>现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：</excerpt></p>

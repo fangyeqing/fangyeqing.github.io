@@ -15,21 +15,22 @@
 
 
 
-<meta name="description" content="当数据维度比较多，存储时间比较长时，数据量会增加到到T级别。如果historical节点只是单机版，查询会特别慢。在生产过程中，主要做了以下几点优化：">
+<meta name="description" content="最近有一个项目，在windows下开发实在搞不定了，就用虚拟机装了个桌面版的linux-ubuntu，折腾了一天。
+下载ubuntu下载地址：http://cn.ubuntu.com/download/版本：Ubuntu 16.04 LTS(长期支持)版本  
+VMware下载地址：VMware v12.1.0 简体中文精简特别版">
 <meta property="og:type" content="article">
-<meta property="og:title" content="druid.io实践1---查询速度优化">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/index.html">
+<meta property="og:title" content="Vmware虚拟机安装Ubuntu">
+<meta property="og:url" content="https://fangyeqing.github.io/2017/02/10/Vmware虚拟机安装Ubuntu/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="当数据维度比较多，存储时间比较长时，数据量会增加到到T级别。如果historical节点只是单机版，查询会特别慢。在生产过程中，主要做了以下几点优化：">
-<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/4090FB9D383B4F20A177A8245AF84E75">
-<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/A6979D7951D74EB8BE6A02C27B5AE2EF">
-<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/E4BCCAE548C8454A8922E80E5E6EB9CA">
-<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/655AB8A05A8A4067AB2EB57D4A0C453B">
-<meta property="og:updated_time" content="2017-02-14T10:04:57.000Z">
+<meta property="og:description" content="最近有一个项目，在windows下开发实在搞不定了，就用虚拟机装了个桌面版的linux-ubuntu，折腾了一天。
+下载ubuntu下载地址：http://cn.ubuntu.com/download/版本：Ubuntu 16.04 LTS(长期支持)版本  
+VMware下载地址：VMware v12.1.0 简体中文精简特别版">
+<meta property="og:updated_time" content="2017-02-17T12:15:39.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="druid.io实践1---查询速度优化">
-<meta name="twitter:description" content="当数据维度比较多，存储时间比较长时，数据量会增加到到T级别。如果historical节点只是单机版，查询会特别慢。在生产过程中，主要做了以下几点优化：">
-<meta name="twitter:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/4090FB9D383B4F20A177A8245AF84E75">
+<meta name="twitter:title" content="Vmware虚拟机安装Ubuntu">
+<meta name="twitter:description" content="最近有一个项目，在windows下开发实在搞不定了，就用虚拟机装了个桌面版的linux-ubuntu，折腾了一天。
+下载ubuntu下载地址：http://cn.ubuntu.com/download/版本：Ubuntu 16.04 LTS(长期支持)版本  
+VMware下载地址：VMware v12.1.0 简体中文精简特别版">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -61,7 +62,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>druid.io实践1---查询速度优化 | 小懒的博客</title>
+<title>Vmware虚拟机安装Ubuntu | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -269,11 +270,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-druid.io实践1---查询速度优化" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Vmware虚拟机安装Ubuntu" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/29/druid.io实践1---查询速度优化/" class="article-date">
-      <time datetime="2016-10-29T03:57:00.000Z" itemprop="datePublished">2016-10-29</time>
+      <a href="/2017/02/10/Vmware虚拟机安装Ubuntu/" class="article-date">
+      <time datetime="2017-02-10T12:41:00.000Z" itemprop="datePublished">2017-02-10</time>
 </a>
 
 
@@ -288,7 +289,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      druid.io实践1---查询速度优化
+      Vmware虚拟机安装Ubuntu
     </h1>
   
 
@@ -297,13 +298,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
+    <a class="article-category-link" href="/categories/linux/">linux</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/实践/">实践</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/性能优化/">性能优化</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/">linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tools/">tools</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/实践/">实践</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -313,37 +314,82 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <excerpt in="" index="" |="" 首页摘要="">   
-
-<p>当数据维度比较多，存储时间比较长时，数据量会增加到到T级别。如果historical节点只是单机版，查询会特别慢。在生产过程中，主要做了以下几点优化：</p>
-<a id="more"></a>  
+        <p><excerpt in="" index="" |="" 首页摘要=""><br>最近有一个项目，在windows下开发实在搞不定了，就用虚拟机装了个桌面版的linux-ubuntu，折腾了一天。</excerpt></p>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>ubuntu下载地址：<a href="http://cn.ubuntu.com/download/" target="_blank" rel="external">http://cn.ubuntu.com/download/</a><br>版本：<a href="http://releases.ubuntu.com/16.04/ubuntu-16.04-desktop-amd64.iso" target="_blank" rel="external">Ubuntu 16.04 LTS(长期支持)版本</a>  </p>
+<p>VMware下载地址：<br><a href="https://www.ruooo.com/software/852.html" target="_blank" rel="external">VMware v12.1.0 简体中文精简特别版</a><br><a id="more"></a>  </p>
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
-<h2 id="增加缓存"><a href="#增加缓存" class="headerlink" title="增加缓存"></a>增加缓存</h2><p>当集群机器较少时(官方文档推荐&lt;20台)，在broker节点配置缓存，可以适当增加缓存大小，或者从local替换成memcached。</p>
-<p>当集群机器较多时，应当只配置historical节点缓存，减轻broker节点压力。</p>
-<h3 id="附：broker部分配置"><a href="#附：broker部分配置" class="headerlink" title="附：broker部分配置"></a>附：broker部分配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># Query cache</div><div class="line">druid.broker.cache.useCache=true</div><div class="line">druid.broker.cache.populateCache=true</div><div class="line">druid.cache.type=local</div><div class="line">druid.cache.sizeInBytes=2000000000</div></pre></td></tr></table></figure>
-<h2 id="historical节点集群化"><a href="#historical节点集群化" class="headerlink" title="historical节点集群化"></a>historical节点集群化</h2><p>查询为CPU密集型，通过合理的数据分配策略，使数据尽量分散在不同的历史节点。</p>
-<h3 id="集群分片"><a href="#集群分片" class="headerlink" title="集群分片"></a>集群分片</h3><p>可以根据查询频率的高低分为冷热数据，公司经常查40天内的数据，40天内的数据显然是hot数据。 </p>
-<p>这里涉及到coordinate节点的Load Rules配置，druid 0.9版本有coordinator的UI界面，可以设置每个dataSource的Load Rules。如下：</p>
-<p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/4090FB9D383B4F20A177A8245AF84E75" alt="image"></p>
-<p>这里设置了两个Load Rules，loadByPeriod部分表示40天内的数据在hot和_default_tier分片各保存一份副本。loadForever部分表示所有数据在_default_tier保存一份。</p>
-<h3 id="增加分片的节点数"><a href="#增加分片的节点数" class="headerlink" title="增加分片的节点数"></a>增加分片的节点数</h3><p>增加_default_tier和hot分片的节点数，并且节点存储空间尽量一致，使segment均匀分散在节点间，降低查询时每个historical节点的CPU负载。</p>
-<p>例如：_default_tier分片增加到2-3台，hot分片增加到5-10台机器，热数据分散到更多台。 </p>
-<h3 id="调整历史节点配置参数"><a href="#调整历史节点配置参数" class="headerlink" title="调整历史节点配置参数"></a>调整历史节点配置参数</h3><h4 id="druid-server-priority"><a href="#druid-server-priority" class="headerlink" title="druid.server.priority"></a>druid.server.priority</h4><p>默认为0。</p>
-<p>broker节点中，druid.broker.select.tier的配置默认为highestPriority，表示如果有重复的数据样本，优先查询优先级高的历史节点。</p>
-<p>例如：将hot分片的机器druid.server.priority设置为100，_default_tier分片的默认0，则查询热数据时，不会查询_default_tier，只会去查询hot，而hot集群机器比较多，查询速度快。</p>
-<h4 id="druid-processing-numThreads"><a href="#druid-processing-numThreads" class="headerlink" title="druid.processing.numThreads"></a>druid.processing.numThreads</h4><p>可以根据自己机器的情况进行调节，如果机器只用于历史节点，可以设置为（核心数-1），32核机器可以设置为31，或者默认值就是31。</p>
-<h4 id="druid-segmentCache-locations"><a href="#druid-segmentCache-locations" class="headerlink" title="druid.segmentCache.locations"></a>druid.segmentCache.locations</h4><p>可以将数据存储分散在不同的磁盘上，可以减轻磁盘的读写压力。</p>
-<h4 id="附：history节点部分配置"><a href="#附：history节点部分配置" class="headerlink" title="附：history节点部分配置"></a>附：history节点部分配置</h4><p>hot集群中调优查询速度的相关配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">#集群分片，不写默认_default_tier</div><div class="line">druid.server.tier=hot  </div><div class="line">#查询优先级，不写默认0，_default_tier分片的两个节点为0，hot节点的都改为100。这样，热数据只会查hot节点的机器。</div><div class="line">druid.server.priority=100</div><div class="line"></div><div class="line">#processing.buff，可以注释掉，默认是1G</div><div class="line">#processing.numThreads:默认是繁忙时core-1做process，剩余的1个进程做与zk通信和拉取seg等。</div><div class="line">druid.processing.buffer.sizeBytes=1073741824</div><div class="line">druid.processing.numThreads=31</div><div class="line"></div><div class="line">#segment路径和各路径的空间，例如：在disk1、2、3各配了200G</div><div class="line">druid.segmentCache.locations=[&#123;&quot;path&quot;: &quot;/disk1/druid-0.9.1.1-historical-data/persistent&quot;, &quot;maxSize&quot;: 200000000000&#125;,&#123;&quot;path&quot;: &quot;/disk2/druid-0.9.1.1-historical-data/persistent&quot;, &quot;maxSize&quot;: 200000000000&#125;,&#123;&quot;path&quot;: &quot;/disk3/druid-0.9.1.1-historical-data/persistent&quot;, &quot;maxSize&quot;: 200000000000&#125;]</div><div class="line">#segment总空间（字节）=上述空间之和</div><div class="line">druid.server.maxSize=600000000000</div></pre></td></tr></table></figure></p>
-<h2 id="老数据roll-up"><a href="#老数据roll-up" class="headerlink" title="老数据roll up"></a>老数据roll up</h2><p>进行实时和批量indexing的时候，一般配置的按小时的粒度进行roll up，最后存储的就是按小时聚合的数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&quot;granularitySpec&quot;: &#123;</div><div class="line">    &quot;type&quot;: &quot;uniform&quot;,</div><div class="line">    &quot;segmentGranularity&quot;: &quot;HOUR&quot;,</div><div class="line">    &quot;queryGranularity&quot;: &quot;HOUR&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>当数据积累较长时间后，按小时聚合必然数据量巨大，可以将不常用或者不太重要的数据，按天存储，数据量会大大减小，必然可以提高查询速度。</p>
-<p>例如：将40天之后的数据提交batch indexing任务按天roll up。</p>
-<h2 id="最后的效果"><a href="#最后的效果" class="headerlink" title="最后的效果"></a>最后的效果</h2><p>以7台机器为例，配置5台hot分片的机器，2台default分片的机器。hot分片存储的是以小时为粒度的数据，_default_tier分片存的是按天为粒度的数据。  </p>
-<p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/A6979D7951D74EB8BE6A02C27B5AE2EF" alt="image">    </p>
-<p>40天之内的热数据根据之前配置的规则，会在hot分片存一份，_default_tier分片存一份<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/E4BCCAE548C8454A8922E80E5E6EB9CA" alt="image"></p>
-<p>40天之前的数据只会在_default_tier分片存一份<br><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/655AB8A05A8A4067AB2EB57D4A0C453B" alt="image"></p>
-<p>查询40天内的数据时，由于hot分片的机器优先级高。只会从hot分片的5台机器读取数据，40天之前的数据只会从default分片读取数据。  </p>
-</the></excerpt>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>打开VMware</p>
+<h3 id="创建虚拟机"><a href="#创建虚拟机" class="headerlink" title="创建虚拟机"></a>创建虚拟机</h3><ul>
+<li>创建新的虚拟机</li>
+<li>选择典型(推荐)</li>
+<li>浏览本地刚下载的Ubuntu镜像</li>
+<li>输入linux名、用户名、密码</li>
+<li>输入虚拟机名称、位置</li>
+<li>指定虚拟机磁盘大小，64位建议20G，磁盘存储为单个文件</li>
+<li>创建完成</li>
+</ul>
+<p>出现问题：</p>
+<blockquote>
+<p>已将虚拟机配置为使用64位客户机操作系统。但是，无法执行64位操作<br>此主机支持 Intel VT-x，但 Intel VT-x 处于禁用状态。</p>
+</blockquote>
+<p>解决：支持虚拟化  </p>
+<ul>
+<li>进入BIOS，其中联想为F2</li>
+<li>Configuration</li>
+<li>Intel Virtual Technology设置为Enabled</li>
+<li>F10保存并退出</li>
+</ul>
+<h3 id="安装操作系统"><a href="#安装操作系统" class="headerlink" title="安装操作系统"></a>安装操作系统</h3><ul>
+<li>虚拟机开机后，会自动进行 Ubuntu 的安装。</li>
+<li>安装完成后，虚拟机会自动重启</li>
+<li>使用刚才设置的密码进入系统</li>
+</ul>
+<h3 id="更改系统设置"><a href="#更改系统设置" class="headerlink" title="更改系统设置"></a>更改系统设置</h3><p>右上角“设置”按钮</p>
+<h4 id="系统下载设置"><a href="#系统下载设置" class="headerlink" title="系统下载设置"></a>系统下载设置</h4><ul>
+<li>选择「System Settings」</li>
+<li>选择「Software &amp; Updates」</li>
+<li>下载服务器选择 「other」，然后选择中国地区服务器，选择China-mirrors.aliyun.com</li>
+</ul>
+<h4 id="语言设置"><a href="#语言设置" class="headerlink" title="语言设置"></a>语言设置</h4><ul>
+<li>选择「Language Support」</li>
+<li>弹出窗口“The language support is not installed completely”，选择「Install」安装</li>
+<li>Install/Remove Lauguages</li>
+<li>选择Chinese(simplified)并Apply</li>
+<li>用鼠标将简体中文拖动到语言列表最顶端，然后「Apply System-Wide」</li>
+<li>右上角设置-log out再重新进入系统才会生效</li>
+</ul>
+<h3 id="安装-VMware-Tools"><a href="#安装-VMware-Tools" class="headerlink" title="安装 VMware Tools"></a>安装 VMware Tools</h3><p>只有在VMware虚拟机中安装好了VMware Tools，才能实现主机与虚拟机之间的文件共享，同时可支持自由拖拽的功能，鼠标也可在虚拟机与主机之前自由移动（不用再按ctrl+alt），且虚拟机屏幕也可实现全屏化</p>
+<p>系统会自动进行 VMware Tools 的安装，如果没有自动安装的话，选择 VMware 工具栏的「虚拟机」→「安装 VMware Tools」，Ubuntu 会自动弹出 VMware Tools 的安装文件夹。但是这种我试了下，速度太慢了，后来直接手动安装。</p>
+<p>下载<a href="http://pan.baidu.com/s/1hrLC0ja" target="_blank" rel="external">VMwareTools-10.0.10-4301679.tar.gz 密码:3nb1</a>，下载内容放/Home<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">tar -zxvf VMwareTools-10.0.10-4301679.tar.gz</div><div class="line">cd vmware-tools-distrib/</div><div class="line">sudo su              # 切换到root用户</div><div class="line">./vmware-install.pl  # 一路的回车确认至出现Enjoy</div></pre></td></tr></table></figure></p>
+<p>安装完成后「虚拟机」→「安装 VMware Tools」变为「重新安装 VMware Tools」，说明安装成功。</p>
+<p>设置–系统设置–显示–分辨率调大到适合值–应用–WMware主界面进入全屏模式</p>
+<h3 id="虚拟机联网模式"><a href="#虚拟机联网模式" class="headerlink" title="虚拟机联网模式"></a>虚拟机联网模式</h3><p>VMWare虚拟机分为三种网络模式，具体参见<a href="http://blog.csdn.net/leexide/article/details/17199083" target="_blank" rel="external">博客</a></p>
+<ul>
+<li>bridged(桥接模式)。</li>
+<li>NAT(网络地址转换模式)。</li>
+<li>host-only(主机模式)。  </li>
+</ul>
+<p>在虚拟系统中不用进行任何手工配置就能直接访问互联网，建议采用NAT模式。</p>
+<h4 id="NAT模式联网支持域名解析"><a href="#NAT模式联网支持域名解析" class="headerlink" title="NAT模式联网支持域名解析"></a>NAT模式联网支持域名解析</h4><p>首先，在Windows中确认“VMware DHCP Service”和“VMware NAT Service”已正常启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cmd</div><div class="line">services.msc</div></pre></td></tr></table></figure></p>
+<p>WMware顶部–编辑–虚拟网络编辑器—选中VMnet8点“NAT设置”—将里面显示的网关地址记录，例如：192.168.184.2—然后编辑<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo vi /etc/resolv.conf</div><div class="line">#加入内容</div><div class="line">nameserver 192.168.184.2</div></pre></td></tr></table></figure></p>
+<p>然后就可以<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ping baidu.com</div></pre></td></tr></table></figure></p>
+<p>可以解决在python程序中遇到的如下问题</p>
+<blockquote>
+<p>ERROR:root:<urlopen error="" [errno="" -3]="" temporary="" failure="" in="" name="" resolution=""></urlopen></p>
+</blockquote>
+<h3 id="安装常用软件"><a href="#安装常用软件" class="headerlink" title="安装常用软件"></a>安装常用软件</h3><p>编辑器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo update-alternatives --config editor    # 默认为nano，替换为vim</div></pre></td></tr></table></figure></p>
+<p>git<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt install git</div></pre></td></tr></table></figure></p>
+<p>java<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt-get update</div><div class="line">sudo apt-get install openjdk-8-jdk</div></pre></td></tr></table></figure></p>
+<p>python环境：自带<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python  #2.7.12</div><div class="line">python3  #3.5.2</div></pre></td></tr></table></figure></p>
+<p><a href="https://www.jetbrains.com/pycharm/download/#section=linux" target="_blank" rel="external">pycharm</a>:安装免费的社区版，下载好包自己装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tar -zxvf pycharm-community-2016.3.2.tar.gz</div><div class="line">cd pycharm-community-2016.3.2/</div><div class="line">bin/pycharm.sh</div></pre></td></tr></table></figure></p>
+<p>pycharm以root身份启动，不然每次pip安装东西都要输密码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt install gksu  #sudogk：与sudo类似，只是sudo用于命令行，sudogk用于GUI</div><div class="line">vi ~/.local/share/applications/jetbrains-pycharm-ce.desktop</div></pre></td></tr></table></figure></p>
+<p>修改desktop文件内容如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">[Desktop Entry]</div><div class="line">Version=1.0</div><div class="line">Type=Application</div><div class="line">Name=PyCharm Community Edition</div><div class="line">Icon=/home/fyq/coding/pycharm-community-2016.3.2/bin/pycharm.png</div><div class="line">Exec=gksudo -k -u root &quot;/home/fyq/coding/pycharm-community-2016.3.2/bin/pycharm.sh&quot; %f</div><div class="line">Comment=The Drive to Develop</div><div class="line">Categories=Development;IDE;</div><div class="line">Terminal=false</div><div class="line">StartupWMClass=jetbrains-pycharm-ce</div></pre></td></tr></table></figure></p>
+<p>其实点击图标就是执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">gksudo -k -u root /home/fyq/coding/pycharm-community-2016.3.2/bin/pycharm.sh</div></pre></td></tr></table></figure></p>
+<p>快捷键与ubuntu的GNOME桌面的冲突<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Files--Settings---Keymap---Default for DNOMe</div></pre></td></tr></table></figure></p>
+<p>其中，前进后退变成：Alt+Shift+方向左右键</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jianshu.com/p/3379892948da" target="_blank" rel="external">简书：VMware 虚拟机安装 Ubuntu 简单教程</a><br><a href="http://www.kali.org.cn/thread-22929-1-1.html" target="_blank" rel="external">VMware tools安装</a><br><a href="https://www.tlanyan.me/work-with-linux-without-root-permission/" target="_blank" rel="external">linux下非root用户安装软件入门</a><br><a href="http://blog.sina.com.cn/s/blog_828e50020101e81i.html" target="_blank" rel="external">让vmware（开启nat模式）中的linux虚拟机支持域名解析功能</a></p>
+</the>
       
     </div>
     
@@ -351,13 +397,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></p>
+        <p><span>本文标题:</span><a href="/2017/02/10/Vmware虚拟机安装Ubuntu/">Vmware虚拟机安装Ubuntu</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
-        <p><span>发布时间:</span>2016-10-29, 11:57:00</p>
-        <p><span>最后更新:</span>2017-02-14, 18:04:57</p>
+        <p><span>发布时间:</span>2017-02-10, 20:41:00</p>
+        <p><span>最后更新:</span>2017-02-17, 20:15:39</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/29/druid.io实践1---查询速度优化/" title="druid.io实践1---查询速度优化">https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/02/10/Vmware虚拟机安装Ubuntu/" title="Vmware虚拟机安装Ubuntu">https://fangyeqing.github.io/2017/02/10/Vmware虚拟机安装Ubuntu/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/02/10/Vmware虚拟机安装Ubuntu/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -369,16 +415,10 @@
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/10/29/druid.io实践2---集群数据迁移/">
-                    druid.io实践2---集群数据迁移
-                </a>
-            </div>
-        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/29/druid.io_3---druid数据相关/">
-                    druid.io 3---druid数据
+                <a href="/2017/01/08/spark---RDD/">
+                    spark---RDD
                 </a>
             </div>
         
@@ -390,7 +430,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#增加缓存"><span class="toc-number">1.</span> <span class="toc-text">增加缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#附：broker部分配置"><span class="toc-number">1.1.</span> <span class="toc-text">附：broker部分配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#historical节点集群化"><span class="toc-number">2.</span> <span class="toc-text">historical节点集群化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#集群分片"><span class="toc-number">2.1.</span> <span class="toc-text">集群分片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增加分片的节点数"><span class="toc-number">2.2.</span> <span class="toc-text">增加分片的节点数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调整历史节点配置参数"><span class="toc-number">2.3.</span> <span class="toc-text">调整历史节点配置参数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#druid-server-priority"><span class="toc-number">2.3.1.</span> <span class="toc-text">druid.server.priority</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#druid-processing-numThreads"><span class="toc-number">2.3.2.</span> <span class="toc-text">druid.processing.numThreads</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#druid-segmentCache-locations"><span class="toc-number">2.3.3.</span> <span class="toc-text">druid.segmentCache.locations</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#附：history节点部分配置"><span class="toc-number">2.3.4.</span> <span class="toc-text">附：history节点部分配置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#老数据roll-up"><span class="toc-number">3.</span> <span class="toc-text">老数据roll up</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最后的效果"><span class="toc-number">4.</span> <span class="toc-text">最后的效果</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#下载"><span class="toc-number">1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-number">2.</span> <span class="toc-text">安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建虚拟机"><span class="toc-number">2.1.</span> <span class="toc-text">创建虚拟机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装操作系统"><span class="toc-number">2.2.</span> <span class="toc-text">安装操作系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更改系统设置"><span class="toc-number">2.3.</span> <span class="toc-text">更改系统设置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#系统下载设置"><span class="toc-number">2.3.1.</span> <span class="toc-text">系统下载设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#语言设置"><span class="toc-number">2.3.2.</span> <span class="toc-text">语言设置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-VMware-Tools"><span class="toc-number">2.4.</span> <span class="toc-text">安装 VMware Tools</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#虚拟机联网模式"><span class="toc-number">2.5.</span> <span class="toc-text">虚拟机联网模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#NAT模式联网支持域名解析"><span class="toc-number">2.5.1.</span> <span class="toc-text">NAT模式联网支持域名解析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装常用软件"><span class="toc-number">2.6.</span> <span class="toc-text">安装常用软件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">3.</span> <span class="toc-text">参考</span></a></li></ol>
         
     </div>
     <style>
@@ -426,7 +466,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"druid.io实践1---查询速度优化　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Vmware虚拟机安装Ubuntu　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -442,7 +482,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/29/druid.io实践1---查询速度优化/" data-title="druid.io实践1---查询速度优化" data-url="https://fangyeqing.github.io/2016/10/29/druid.io实践1---查询速度优化/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/02/10/Vmware虚拟机安装Ubuntu/" data-title="Vmware虚拟机安装Ubuntu" data-url="https://fangyeqing.github.io/2017/02/10/Vmware虚拟机安装Ubuntu/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -465,15 +505,13 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/10/29/druid.io实践2---集群数据迁移/" title="上一篇: druid.io实践2---集群数据迁移">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/29/druid.io_3---druid数据相关/" title="下一篇: druid.io 3---druid数据">
+            <a href="/2017/01/08/spark---RDD/" title="下一篇: spark---RDD">
                 <i class="fa fa-angle-right"></i>
             </a>
         
