@@ -331,7 +331,7 @@
     
     <entry>
       <title><![CDATA[druid.io实践4---druid监控]]></title>
-      <url>https://fangyeqing.github.io/2016/12/30/druid.io%E5%AE%9E%E8%B7%B54---druid%E7%9B%91%E6%8E%A7/</url>
+      <url>https://fangyeqing.github.io/2017/01/07/druid.io%E5%AE%9E%E8%B7%B54---druid%E7%9B%91%E6%8E%A7/</url>
       <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">   
 
 <p>druid监控指标可以通过graphite-emitter插件很方便地直接发送到Graphite，再配合其他的展示和报警工具。</p>
