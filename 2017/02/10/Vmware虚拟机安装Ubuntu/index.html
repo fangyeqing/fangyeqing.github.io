@@ -25,7 +25,7 @@ VMware下载地址：VMware v12.1.0 简体中文精简特别版">
 <meta property="og:description" content="最近有一个项目，在windows下开发实在搞不定了，就用虚拟机装了个桌面版的linux-ubuntu，折腾了一天。
 下载ubuntu下载地址：http://cn.ubuntu.com/download/版本：Ubuntu 16.04 LTS(长期支持)版本  
 VMware下载地址：VMware v12.1.0 简体中文精简特别版">
-<meta property="og:updated_time" content="2017-02-17T12:15:39.000Z">
+<meta property="og:updated_time" content="2017-02-21T10:37:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vmware虚拟机安装Ubuntu">
 <meta name="twitter:description" content="最近有一个项目，在windows下开发实在搞不定了，就用虚拟机装了个桌面版的linux-ubuntu，折腾了一天。
@@ -372,7 +372,7 @@ VMware下载地址：VMware v12.1.0 简体中文精简特别版">
 </ul>
 <p>在虚拟系统中不用进行任何手工配置就能直接访问互联网，建议采用NAT模式。</p>
 <h4 id="NAT模式联网支持域名解析"><a href="#NAT模式联网支持域名解析" class="headerlink" title="NAT模式联网支持域名解析"></a>NAT模式联网支持域名解析</h4><p>首先，在Windows中确认“VMware DHCP Service”和“VMware NAT Service”已正常启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cmd</div><div class="line">services.msc</div></pre></td></tr></table></figure></p>
-<p>WMware顶部–编辑–虚拟网络编辑器—选中VMnet8点“NAT设置”—将里面显示的网关地址记录，例如：192.168.184.2—然后编辑<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo vi /etc/resolv.conf</div><div class="line">#加入内容</div><div class="line">nameserver 192.168.184.2</div></pre></td></tr></table></figure></p>
+<p>WMware顶部–编辑–虚拟网络编辑器—选中VMnet8点“NAT设置”—将里面显示的网关地址记录，例如：192.168.184.2—然后编辑<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">sudo vi /etc/resolv.conf</div><div class="line">sudo vi /etc/resolvconf/resolv.conf.d/head</div><div class="line">#加入内容</div><div class="line">nameserver 192.168.184.2</div></pre></td></tr></table></figure></p>
 <p>然后就可以<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ping baidu.com</div></pre></td></tr></table></figure></p>
 <p>可以解决在python程序中遇到的如下问题</p>
 <blockquote>
@@ -400,7 +400,7 @@ VMware下载地址：VMware v12.1.0 简体中文精简特别版">
         <p><span>本文标题:</span><a href="/2017/02/10/Vmware虚拟机安装Ubuntu/">Vmware虚拟机安装Ubuntu</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2017-02-10, 20:41:00</p>
-        <p><span>最后更新:</span>2017-02-17, 20:15:39</p>
+        <p><span>最后更新:</span>2017-02-21, 18:37:48</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/02/10/Vmware虚拟机安装Ubuntu/" title="Vmware虚拟机安装Ubuntu">https://fangyeqing.github.io/2017/02/10/Vmware虚拟机安装Ubuntu/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/02/10/Vmware虚拟机安装Ubuntu/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
