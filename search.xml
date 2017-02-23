@@ -2193,16 +2193,11 @@ public void configure(Map&lt;String, ?&gt; map) {
       <title><![CDATA[about]]></title>
       <url>https://fangyeqing.github.io/about/index.html</url>
       <content type="html"><![CDATA[<p>程序员并不是木头和绝缘体，是有血有肉的逗比</p>
-<p>个人简介：  </p>
-<ul>
-<li>本科：2009-2013，北京邮电大学，电子科学与技术</li>
-<li>硕士：2013-2016，北京邮电大学，电子与通信工程</li>
-<li>工作：2016-至今, 网易有道, 广告统计系统&amp;&amp;大数据相关</li>
-</ul>
 <p>联系方式：</p>
 <ul>
 <li>微信：xiaolan592202890</li>
 <li>QQ：592202890</li>
+<li>邮箱：fangyeqing123@163.com</li>
 </ul>
 ]]></content>
     </entry>
