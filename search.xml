@@ -4,6 +4,639 @@
   
     
     <entry>
+      <title><![CDATA[Python-Pandas学习]]></title>
+      <url>https://fangyeqing.github.io/2017/02/25/Python-Pandas%E5%AD%A6%E4%B9%A0/</url>
+      <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">  
+
+<p>pandas建造在NumPy之上，它使得以NumPy为中心的应用很容易使用。pandas数据结构主要有：Series、DataFrame。首先引入模块：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">import pandas as pd</div><div class="line">import numpy as np</div></pre></td></tr></table></figure></p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h2 id="Series"><a href="#Series" class="headerlink" title="Series"></a>Series</h2><p>Series是一个类似一维数组的对象，包含:</p>
+<ul>
+<li>values:任何NumPy的数据类型组成的数组</li>
+<li>index:与数组关联的标签</li>
+</ul>
+<p>可以分别的通过它的 values 和 index 属性来获取Series的数组表示和索引对象</p>
+<h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p>创建可以有几种方式：</p>
+<ul>
+<li>由数组(list/tuple)创建：<ul>
+<li>不指定索引：默认索引为整数0到 N-1（N为数组长度）</li>
+<li>指定索引：index参数指定索引</li>
+</ul>
+</li>
+<li>由dict创建：key–&gt;index，value–&gt;values</li>
+<li>由Series创建：指定index时，只提取原Series的index对应的值，没有的为NAN<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"># 不指定索引</div><div class="line">obj = pd.Series([4, 7, -5, 3])  </div><div class="line">print(obj.values, obj.index, obj, sep=&apos;\n&apos;)</div><div class="line"># 指定索引</div><div class="line">obj2 = pd.Series((4, 7, -5, 3), index=[&apos;d&apos;, &apos;b&apos;, &apos;a&apos;, &apos;c&apos;])</div><div class="line">print(obj2.values, obj2.index, obj2, sep=&apos;\n&apos;)</div><div class="line"># 字典创建</div><div class="line">sdata = &#123;&apos;Ohio&apos;: 35000, &apos;Texas&apos;: 71000, &apos;Oregon&apos;: 16000, &apos;Utah&apos;: 5000&#125;</div><div class="line">obj3 = pd.Series(sdata)</div><div class="line"># Series创建</div><div class="line">states = [&apos;California&apos;, &apos;Ohio&apos;, &apos;Oregon&apos;, &apos;Texas&apos;]</div><div class="line">obj4 = pd.Series(sdata, index=states)</div><div class="line">print(obj3, obj4, sep=&apos;\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h3><h4 id="增"><a href="#增" class="headerlink" title="增"></a>增</h4><p>与dict新增属性一样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">obj[&apos;hehe&apos;] = 110</div><div class="line">print(obj)</div></pre></td></tr></table></figure></p>
+<h4 id="删"><a href="#删" class="headerlink" title="删"></a>删</h4><p>drop 方法将会返回一个新的对象并从坐标轴中删除指定的一个或多个值，inplace参数决定是否输出到原df<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">obj.drop(&apos;Bob&apos;, inplace=True)</div><div class="line">print(obj)</div></pre></td></tr></table></figure></p>
+<h4 id="改"><a href="#改" class="headerlink" title="改"></a>改</h4><p>分为值修改和索引更改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 索引更改</div><div class="line">obj.index = [&apos;Bob&apos;, &apos;Steve&apos;, &apos;Jeff&apos;, &apos;Ryan&apos;]</div><div class="line">print(obj)</div><div class="line"># 值更改</div><div class="line">obj[&apos;Bob&apos;] = 6</div><div class="line">print(obj)</div></pre></td></tr></table></figure></p>
+<p>说明：reindex()跟直接修改index属性的对比在重新索引部分会讲到</p>
+<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><ul>
+<li>NumPy查询，将会保持索引和值间的关联 <ul>
+<li>下标取数据</li>
+<li>布尔数组过滤</li>
+<li>纯量乘法</li>
+<li>使用数学函数</li>
+</ul>
+</li>
+<li>与NumPy不同的查询，可以使用索引里的值来选择一个单一值或一个值集<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">print(obj2[&apos;a&apos;, &apos;c&apos;])</div><div class="line">print(obj2[:2])</div><div class="line">print(obj2[obj2 &gt; 0], obj2 * 2, np.exp(obj2))</div><div class="line">print(&apos;b&apos; in obj2, &apos;e&apos; in obj2, sep=&apos;\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>算术运算：会自动对齐不同索引的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print(pd.isnull(obj4), obj4.isnull(), sep=&apos;\n&apos;)</div><div class="line">print(obj3 + obj4)</div></pre></td></tr></table></figure></p>
+<p>name属性：Series对象本身和它的索引都有一个name 属性，它和pandas的其它一些关键功能整合在一起<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">obj4.name = &apos;population&apos;</div><div class="line">obj4.index.name = &apos;state&apos;</div><div class="line">print(obj4)</div></pre></td></tr></table></figure></p>
+<h2 id="DataFrame"><a href="#DataFrame" class="headerlink" title="DataFrame"></a>DataFrame</h2><p>DataFrame类似于数据库中的表，不过DataFrame不仅仅限制于2维，可以创建多维数据表。DataFrame既有行索引，也有列索引，可以看做是Series组成的字典，每个Series看做DataFrame的一个列。</p>
+<h3 id="创建-1"><a href="#创建-1" class="headerlink" title="创建"></a>创建</h3><h4 id="由字典创建"><a href="#由字典创建" class="headerlink" title="由字典创建"></a>由字典创建</h4><p>可选参数：</p>
+<ul>
+<li>columns：可以决定列的顺序，没有的会以NaN补充</li>
+<li>index：索引值，默认值为0到N-1<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">data = &#123;&apos;state&apos;: [&apos;Ohio&apos;, &apos;Ohio&apos;, &apos;Ohio&apos;, &apos;Nevada&apos;, &apos;Nevada&apos;],</div><div class="line">        &apos;year&apos;: [2000, 2001, 2002, 2001, 2002],</div><div class="line">        &apos;pop&apos;: [1.5, 1.7, 3.6, 2.4, 2.9]&#125;</div><div class="line">frame = pd.DataFrame(data)</div><div class="line">print(frame)</div><div class="line">frame2 = pd.DataFrame(data, columns=[&apos;year&apos;, &apos;state&apos;, &apos;pop&apos;])</div><div class="line">print(frame2)</div><div class="line">frame2 = pd.DataFrame(data, columns=[&apos;year&apos;, &apos;state&apos;, &apos;pop&apos;, &apos;debt&apos;])</div><div class="line">print(frame2)</div><div class="line">frame2 = pd.DataFrame(data, columns=[&apos;year&apos;, &apos;state&apos;, &apos;pop&apos;, &apos;debt&apos;], index=[&apos;one&apos;, &apos;two&apos;, &apos;three&apos;, &apos;four&apos;, &apos;five&apos;])</div><div class="line">print(frame2)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="numpy数组创建"><a href="#numpy数组创建" class="headerlink" title="numpy数组创建"></a>numpy数组创建</h4><p>等长的numpy数组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">frame = pd.DataFrame(np.arange(16).reshape((4, 4)), index=[&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;], columns=[&apos;one&apos;, &apos;two&apos;, &apos;three&apos;, &apos;four&apos;])</div><div class="line">print(frame)</div></pre></td></tr></table></figure></p>
+<h4 id="嵌套字典的字典"><a href="#嵌套字典的字典" class="headerlink" title="嵌套字典的字典"></a>嵌套字典的字典</h4><p>它的外部键会被解释为列索引，内部键会被解释为行索引<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">pop = &#123;&apos;Nevada&apos;: &#123;2001: 2.4, 2002: 2.9&#125;,</div><div class="line">       &apos;Ohio&apos;: &#123;2000: 1.5, 2001: 1.7, 2002: 3.6&#125;&#125;</div><div class="line">frame3 = pd.DataFrame(pop)</div><div class="line">print(frame3)</div></pre></td></tr></table></figure></p>
+<h4 id="其他-1"><a href="#其他-1" class="headerlink" title="其他"></a>其他</h4><p>由其他df创建：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">pdata = &#123;&apos;Ohio&apos;: frame3[&apos;Ohio&apos;][:-1],</div><div class="line">         &apos;Nevada&apos;: frame3[&apos;Nevada&apos;][:2]&#125;</div><div class="line">print(pd.DataFrame(pdata))</div></pre></td></tr></table></figure></p>
+<p>可能的传递到DataFrame的构造器：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>二维ndarray</td>
+<td>一个数据矩阵，有可选的行标和列标</td>
+</tr>
+<tr>
+<td>数组，列表或元组的字典</td>
+<td>每一个序列成为DataFrame中的一列。所有的序列必须有相同的长度。</td>
+</tr>
+<tr>
+<td>NumPy的结构/记录数组</td>
+<td>和“数组字典”一样处理</td>
+</tr>
+<tr>
+<td>Series的字典</td>
+<td>每一个值成为一列。如果没有明显的传递索引，将结合每一个Series的索引来形成结果的行索引。</td>
+</tr>
+<tr>
+<td>字典的字典</td>
+<td>每一个内部的字典成为一列。和“Series的字典”一样，结合键值来形成行索引。</td>
+</tr>
+<tr>
+<td>字典或Series的列表</td>
+<td>每一项成为DataFrame中的一列。结合字典键或Series索引形成DataFrame的列标。</td>
+</tr>
+<tr>
+<td>列表或元组的列表</td>
+<td>和“二维ndarray”一样处理</td>
+</tr>
+<tr>
+<td>另一个DataFrame</td>
+<td>DataFrame的索引将被使用，除非传递另外一个</td>
+</tr>
+<tr>
+<td>NumPy伪装数组（MaskedArray）</td>
+<td>除了蒙蔽值在DataFrame中成为NA/丢失数据之外，其它的和“二维ndarray”一样</td>
+</tr>
+</tbody>
+</table>
+<h3 id="修改-1"><a href="#修改-1" class="headerlink" title="修改"></a>修改</h3><h4 id="增-1"><a href="#增-1" class="headerlink" title="增"></a>增</h4><p>增加新的一列，跟dict操作一样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">frame2[&apos;eastern&apos;] = frame2.state == &apos;Ohio&apos;</div><div class="line">print(frame2)</div></pre></td></tr></table></figure></p>
+<h4 id="删-1"><a href="#删-1" class="headerlink" title="删"></a>删</h4><p>del：删除一列，跟dict一样<br>dorp()：删除行或者列</p>
+<ul>
+<li>axis：删除轴，跟numpy一样，axis=0表示行，axis=1表示列</li>
+<li>inplace：是否替换原函数<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">del frame2[&apos;eastern&apos;]</div><div class="line">print(frame2.columns, frame2, sep=&apos;\n&apos;)</div><div class="line">print(frame2.drop(&apos;one&apos;, axis=0))</div><div class="line">print(frame2.drop([&apos;year&apos;, &apos;debt&apos;], axis=1))</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="改-1"><a href="#改-1" class="headerlink" title="改"></a>改</h4><p>列可以通过赋值来修改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">frame2[&apos;debt&apos;] = 16.5</div><div class="line">print(frame2)</div><div class="line">frame2[&apos;debt&apos;] = np.arange(5.)</div><div class="line">print(frame2)</div></pre></td></tr></table></figure></p>
+<p>通过列表或数组给一列赋值时，所赋的值的长度必须和DataFrame的长度相匹配。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">val = pd.Series([-1.2, -1.5, -1.7], index=[&apos;two&apos;, &apos;four&apos;, &apos;five&apos;])</div><div class="line">frame2[&apos;debt&apos;] = val</div><div class="line">print(frame2)</div></pre></td></tr></table></figure></p>
+<h3 id="选择、查询"><a href="#选择、查询" class="headerlink" title="选择、查询"></a>选择、查询</h3><h4 id="查看数据"><a href="#查看数据" class="headerlink" title="查看数据"></a>查看数据</h4><ul>
+<li>head()、tail(): 查看顶部和底部</li>
+<li>index、column、values: 显示索引,列,和底层numpy数据</li>
+<li>describe(): 描述显示数据快速统计摘要,包括count、mean、std、min、25%、50%、75%、max</li>
+<li>转置数据：T</li>
+<li>按轴排序，按值排序<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">dates = pd.date_range(&apos;20130101&apos;, periods=6)</div><div class="line">df = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list(&apos;ABCD&apos;))</div><div class="line">print(df, df.head(), df.tail(1), </div><div class="line">      df.index, df.columns, df.values, </div><div class="line">      df.describe(), df.T,</div><div class="line">      df.sort_index(axis=1, ascending=False), df.sort(columns=&apos;B&apos;), sep=&apos;\n-------\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="选择数据"><a href="#选择数据" class="headerlink" title="选择数据"></a>选择数据</h4><p>选择单列：通过字典记法或属性来检索。建议使用列标签[ ]选取方式，‘.’的写法容易与其他预留关键字产生冲突。返回的Series包含和DataFrame相同的索引，并且继承name 属性。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(df[&apos;A&apos;], df.A, sep=&apos;\n------\n&apos;)</div></pre></td></tr></table></figure></p>
+<p>选择片段：使用[]<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(df[0:3], df[&apos;20130102&apos;:&apos;20130104&apos;], sep=&apos;\n------\n&apos;)</div></pre></td></tr></table></figure></p>
+<h5 id="使用标签选择"><a href="#使用标签选择" class="headerlink" title="使用标签选择"></a>使用标签选择</h5><p>loc(行标签,列标签)：</p>
+<ul>
+<li>行标签和列标签都可以为切片或者单个值</li>
+<li>两者都为单个值时为选择单个数据，等价于at<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">print(df.loc[dates[0]], df.loc[:, [&apos;A&apos;, &apos;B&apos;]], df.loc[&apos;20130102&apos;:&apos;20130104&apos;, [&apos;A&apos;, &apos;B&apos;]], df.loc[&apos;20130102&apos;, [&apos;A&apos;, &apos;B&apos;]], sep=&apos;\n------\n&apos;)</div><div class="line"></div><div class="line">print(df.loc[dates[0], &apos;A&apos;], df.at[dates[0], &apos;A&apos;], sep=&apos;\n------\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="按位置选择"><a href="#按位置选择" class="headerlink" title="按位置选择"></a>按位置选择</h5><p>iloc(行位置,列位置):</p>
+<ul>
+<li>行位置和列位置都可以为切片或者单个值</li>
+<li>两者都为单个值时为选择单个数据，等价于iat<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 传递整数选择位置</div><div class="line">print(df.iloc[3], df.iloc[3:5, 0:2], df.iloc[[1, 2, 4], [0, 2]], df.iloc[1:3, :], df.iloc[:, 1:3], sep=&apos;\n------\n&apos;)</div><div class="line"># 显式获取一个值(两者等价)</div><div class="line">print(df.iloc[1, 1], df.iat[1, 1], sep=&apos;\n------\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="布尔索引"><a href="#布尔索引" class="headerlink" title="布尔索引"></a>布尔索引</h5><p>跟Series基本一样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(df[df.A &gt; 0], df[df &gt; 0], sep=&apos;\n-------\n&apos;)</div></pre></td></tr></table></figure></p>
+<h2 id="索引对象"><a href="#索引对象" class="headerlink" title="索引对象"></a>索引对象</h2><p>pandas的索引对象用来保存坐标轴标签和其它元数据（如坐标轴名或名称）。</p>
+<p>索引对象是不可变的，从上文Series部分可以看出可以通过整个替换index对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">obj = pd.Series([4, 7, -5, 3])</div><div class="line">obj.index = [&apos;Bob&apos;, &apos;Steve&apos;, &apos;Jeff&apos;, &apos;Ryan&apos;]</div><div class="line">print(obj)</div><div class="line"># 索引对象不可变</div><div class="line"># index = obj.index</div><div class="line"># index[1] = &apos;hehe&apos;</div></pre></td></tr></table></figure></p>
+<h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><p>pandas中的主要索引对象：</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Index</td>
+<td>最通用的索引对象，使用Python对象的NumPy数组来表示坐标轴标签。</td>
+</tr>
+<tr>
+<td>Int64Index</td>
+<td>对整形值的特化索引。</td>
+</tr>
+<tr>
+<td>MultiIndex</td>
+<td>“分层”索引对象，表示单个轴的多层次的索引。可以被认为是类似的元组的数组。</td>
+</tr>
+<tr>
+<td>DatetimeIndex</td>
+<td>存储纳秒时间戳（使用NumPy的datetime64 dtyppe来表示）。</td>
+</tr>
+<tr>
+<td>PeriodIndex</td>
+<td>对周期数据（时间间隔的）的特化索引。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><p>除了类似于阵列，索引也有类似固定大小集合一样的功能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print(&apos;Ohio&apos; in frame3.columns)</div><div class="line">print(2003 in frame3.index)</div></pre></td></tr></table></figure></p>
+<p>每个索引都有许多关于集合逻辑的方法和属性：</p>
+<table>
+<thead>
+<tr>
+<th>索引方法和属性</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>append</td>
+<td>链接额外的索引对象，产生一个新的索引</td>
+</tr>
+<tr>
+<td>diff</td>
+<td>计算索引的差集</td>
+</tr>
+<tr>
+<td>intersection</td>
+<td>计算交集</td>
+</tr>
+<tr>
+<td>union</td>
+<td>计算并集</td>
+</tr>
+<tr>
+<td>isin</td>
+<td>计算出一个布尔数组表示每一个值是否包含在所传递的集合里</td>
+</tr>
+<tr>
+<td>delete</td>
+<td>计算删除位置i的元素的索引</td>
+</tr>
+<tr>
+<td>drop</td>
+<td>计算删除所传递的值后的索引</td>
+</tr>
+<tr>
+<td>insert</td>
+<td>计算在位置i插入元素后的索引</td>
+</tr>
+<tr>
+<td>is_monotonic</td>
+<td>返回True，如果每一个元素都比它前面的元素大或相等</td>
+</tr>
+<tr>
+<td>is_unique</td>
+<td>返回True，如果索引没有重复的值</td>
+</tr>
+<tr>
+<td>unique</td>
+<td>计算索引的唯一值数组</td>
+</tr>
+</tbody>
+</table>
+<h3 id="重新索引"><a href="#重新索引" class="headerlink" title="重新索引"></a>重新索引</h3><p>reindex：根据新的index来进行排序，使得它符合新的索引，如果那个索引的值不存在就引入缺失数据值。</p>
+<p>没有的值填充可选配置：</p>
+<ul>
+<li>fill_value: 填充单个值，例如填0</li>
+<li>method: 对时间序列内插或填充<ul>
+<li>ffill或pad: 前向（或进位）填充，例如ffill跟前一位相同</li>
+<li>bfill或backfill: 后向（或进位）填充<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">obj = pd.Series([4.5, 7.2, -5.3, 3.6], index=[&apos;d&apos;, &apos;b&apos;, &apos;a&apos;, &apos;c&apos;])</div><div class="line">obj2 = obj.reindex([&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;], fill_value=0)</div><div class="line">obj.index = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;]</div><div class="line">print(obj, obj2, sep=&apos;\n------\n&apos;)</div><div class="line"></div><div class="line">obj3 = pd.Series([&apos;blue&apos;, &apos;purple&apos;, &apos;yellow&apos;], index=[0, 2, 4])</div><div class="line">obj4 = obj3.reindex(range(6), method=&apos;ffill&apos;)</div><div class="line">print(obj4)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<p>reindex与修改index的结果对比：obj vs obj2<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"># 直接通过修改index属性只是把index换掉，并且长度必须一样，没有填NaN一说</div><div class="line">a    4.5</div><div class="line">b    7.2</div><div class="line">c   -5.3</div><div class="line">d    3.6</div><div class="line">dtype: float64</div><div class="line"># reindex会根据新的index对以前的进行排序。</div><div class="line">a   -5.3</div><div class="line">b    7.2</div><div class="line">c    3.6</div><div class="line">d    4.5</div><div class="line">e    0</div><div class="line">dtype: float64</div></pre></td></tr></table></figure></p>
+<h4 id="DataFrame重新索引"><a href="#DataFrame重新索引" class="headerlink" title="DataFrame重新索引"></a>DataFrame重新索引</h4><p>reindex 可以改变（行）索引，列或两者：</p>
+<ul>
+<li>columns：列重新索引</li>
+<li>index： 行重新索引</li>
+<li>只传入一个序列：相当于index，行重新索引<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">frame = pd.DataFrame(np.arange(9).reshape((3, 3)), index=[&apos;a&apos;, &apos;c&apos;, &apos;d&apos;],</div><div class="line">                     columns=[&apos;Ohio&apos;, &apos;Texas&apos;, &apos;California&apos;])</div><div class="line">frame2 = frame.reindex([&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;])</div><div class="line">states = [&apos;Texas&apos;, &apos;Utah&apos;, &apos;California&apos;]</div><div class="line">frame3 = frame.reindex(columns=states)</div><div class="line">print(frame, frame2, frame3, sep=&apos;\n------\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>插值只在行侧（0坐标轴）进行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">frame.reindex(index=[&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;], method=&apos;ffill&apos;, columns=states)</div></pre></td></tr></table></figure></p>
+<h2 id="其他-2"><a href="#其他-2" class="headerlink" title="其他"></a>其他</h2><h3 id="丢失的数据"><a href="#丢失的数据" class="headerlink" title="丢失的数据"></a>丢失的数据</h3><p>pandas主要使用np.nan替换丢失的数据. 默认情况下它并不包含在计算中:</p>
+<ul>
+<li>dropna():删除丢失数据的行,how=’any’表示删除任何</li>
+<li>fillna():填充丢失数据</li>
+<li>isnull():获取值是否nan的布尔标记<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">df2 = df[df &gt; 0]</div><div class="line">print(df2.dropna(how=&apos;any&apos;))</div><div class="line">print(df2.fillna(value=0))</div><div class="line">print(df2.isnull())</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="运算"><a href="#运算" class="headerlink" title="运算"></a>运算</h3><h4 id="算术运算"><a href="#算术运算" class="headerlink" title="算术运算"></a>算术运算</h4><p>基本的加减乘除运算：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">df1 + df2</div><div class="line">df1 * df2</div></pre></td></tr></table></figure></p>
+<h4 id="二元运算"><a href="#二元运算" class="headerlink" title="二元运算"></a>二元运算</h4><p>类似于numpy的运算</p>
+<ul>
+<li>广播机制</li>
+<li>缺失数据的计算</li>
+<li>通过axis指定轴</li>
+</ul>
+<h4 id="Apply"><a href="#Apply" class="headerlink" title="Apply"></a>Apply</h4><p>在数据上使用函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print(df.apply(np.cumsum))</div><div class="line">print(df.apply(lambda x: x.max() - x.min()))</div></pre></td></tr></table></figure></p>
+<h4 id="字符串方法"><a href="#字符串方法" class="headerlink" title="字符串方法"></a>字符串方法</h4><p>具体参见<a href="http://pandas.pydata.org/pandas-docs/stable/text.html#text-string-methods" target="_blank" rel="external">官方文档:Working with Text Data</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">s = pd.Series([&apos;A&apos;, &apos;B&apos;, &apos;C&apos;, &apos;Aaba&apos;, &apos;Baca&apos;, np.nan, &apos;CABA&apos;, &apos;dog&apos;, &apos;cat&apos;])</div><div class="line">print(s.str.lower())</div></pre></td></tr></table></figure></p>
+<h3 id="Merge"><a href="#Merge" class="headerlink" title="Merge"></a>Merge</h3><p>pandas提供各种工具以简便合并序列,数据桢,和组合对象, 在连接/合并类型操作中使用多种类型索引和相关数学函数，具体参见<a href="http://pandas.pydata.org/pandas-docs/stable/merging.html" target="_blank" rel="external">官方文档</a></p>
+<h4 id="concat"><a href="#concat" class="headerlink" title="concat"></a>concat</h4><p>把pandas对象连接到一起<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">df = pd.DataFrame(np.random.randn(10, 4))</div><div class="line">print(df[:3], df[3:7], df[7:], sep=&apos;\n-------\n&apos;)</div><div class="line">pieces = [df[:3], df[3:7], df[7:]]</div><div class="line">print(pd.concat(pieces))</div></pre></td></tr></table></figure></p>
+<h4 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h4><p>SQL样式合并:</p>
+<ul>
+<li>on:merge的列</li>
+<li>how：选择左连接、右连接、全连接，默认内连接</li>
+<li>suffixes：重名列后缀<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">left = pd.DataFrame(&#123;&apos;key&apos;: [&apos;K0&apos;, &apos;K1&apos;, &apos;K2&apos;, &apos;K3&apos;],</div><div class="line">                     &apos;key2&apos;: [&apos;K0&apos;, &apos;K1&apos;, &apos;K0&apos;, &apos;K1&apos;],</div><div class="line">                     &apos;A&apos;: [&apos;A0&apos;, &apos;A1&apos;, &apos;A2&apos;, &apos;A3&apos;],</div><div class="line">                     &apos;B&apos;: [&apos;B0&apos;, &apos;B1&apos;, &apos;B2&apos;, &apos;B3&apos;]&#125;)</div><div class="line">right = pd.DataFrame(&#123;&apos;key&apos;: [&apos;K0&apos;, &apos;K1&apos;, &apos;K2&apos;, &apos;K3&apos;, &apos;K4&apos;],</div><div class="line">                     &apos;key2&apos;: [&apos;K0&apos;, &apos;K0&apos;, &apos;K0&apos;, &apos;K0&apos;, &apos;K0&apos;],</div><div class="line">                      &apos;C&apos;: [&apos;C0&apos;, &apos;C1&apos;, &apos;C2&apos;, &apos;C3&apos;, &apos;C4&apos;],</div><div class="line">                      &apos;D&apos;: [&apos;D0&apos;, &apos;D1&apos;, &apos;D2&apos;, &apos;D3&apos;, &apos;D4&apos;]&#125;)</div><div class="line"></div><div class="line">df3 = pd.merge(left, right, on=&apos;key&apos;, suffixes=(&apos;_left&apos;, &apos;_right&apos;))</div><div class="line"></div><div class="line">df4 = pd.merge(left, right, on=[&apos;key&apos;, &apos;key2&apos;])</div><div class="line">df5 = pd.merge(left, right, on=[&apos;key&apos;, &apos;key2&apos;], how=&apos;left&apos;)</div><div class="line">df6 = pd.merge(left, right, on=[&apos;key&apos;, &apos;key2&apos;], how=&apos;right&apos;)</div><div class="line">df7 = pd.merge(left, right, on=[&apos;key&apos;, &apos;key2&apos;], how=&apos;outer&apos;)</div><div class="line"></div><div class="line">print(df3, df4, df5, df6, df7, sep=&apos;\n--------\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="append"><a href="#append" class="headerlink" title="append"></a>append</h4><p>添加行到数据增,下例中取第4行，append到df最后一行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">df = pd.DataFrame(np.random.randn(8, 4), columns=[&apos;A&apos;, &apos;B&apos;, &apos;C&apos;, &apos;D&apos;])</div><div class="line">s = df.iloc[3]</div><div class="line">print(df.append(s, ignore_index=True))</div></pre></td></tr></table></figure></p>
+<h3 id="Group-by"><a href="#Group-by" class="headerlink" title="Group by"></a>Group by</h3><p>对于“group by”指的是以下一个或多个处理：</p>
+<ul>
+<li>将数据按某些标准分割为不同的组</li>
+<li>在每个独立组上应用函数</li>
+<li>组合结果为一个数据结构<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">df = pd.DataFrame(&#123;&apos;A&apos;: [&apos;foo&apos;, &apos;bar&apos;, &apos;foo&apos;, &apos;bar&apos;,&apos;foo&apos;, &apos;bar&apos;, &apos;foo&apos;, &apos;foo&apos;],</div><div class="line">                   &apos;B&apos;: [&apos;one&apos;, &apos;one&apos;, &apos;two&apos;, &apos;three&apos;, &apos;two&apos;, &apos;two&apos;, &apos;one&apos;, &apos;three&apos;],</div><div class="line">                   &apos;C&apos;: np.random.randn(8),</div><div class="line">                   &apos;D&apos;: np.random.randn(8)&#125;)</div><div class="line">print(df, df.groupby(&apos;A&apos;).sum(), df.groupby([&apos;A&apos;, &apos;B&apos;]).sum(), sep=&apos;\n------\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Pivot-talbe-数据透视表"><a href="#Pivot-talbe-数据透视表" class="headerlink" title="Pivot talbe(数据透视表)"></a>Pivot talbe(数据透视表)</h3><p>我们可以从此数据非常容易的产生数据透视表:</p>
+<ul>
+<li>values: 聚合列</li>
+<li>index: group列</li>
+<li>columns: 新df的索引列</li>
+<li>aggfunc：聚合函数<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">df = pd.DataFrame(&#123;&apos;A&apos;: [&apos;one&apos;, &apos;one&apos;, &apos;two&apos;, &apos;three&apos;] * 3,</div><div class="line">                   &apos;B&apos;: [&apos;A&apos;, &apos;B&apos;, &apos;C&apos;] * 4,</div><div class="line">                   &apos;C&apos;: [&apos;foo&apos;, &apos;foo&apos;, &apos;foo&apos;, &apos;bar&apos;, &apos;bar&apos;, &apos;bar&apos;] * 2,</div><div class="line">                   &apos;D&apos;: np.random.randn(12),</div><div class="line">                   &apos;E&apos;: np.random.randn(12)&#125;)</div><div class="line">df_pivot = pd.pivot_table(df, values=&apos;D&apos;, index=[&apos;A&apos;, &apos;B&apos;], columns=[&apos;C&apos;])</div><div class="line">print(df, df_pivot, sep=&apos;\n-----pivot-----\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://pda.readthedocs.io/en/latest/chp5.html" target="_blank" rel="external">Python for Data Analysis</a><br><a href="http://blog.csdn.net/zutsoft/article/details/51482573" target="_blank" rel="external">【pandas】[1] Series 入门(创建和增删改查)</a><br><a href="http://blog.csdn.net/zutsoft/article/details/51483710" target="_blank" rel="external">【pandas】[2] DataFrame 基础，创建DataFrame和增删改查基本操作（1）</a><br><a href="http://www.shizhuolin.com/2015/04/19/978.html" target="_blank" rel="external">十分钟搞定pandas</a><br><a href="http://pandas.pydata.org/pandas-docs/stable/indexing.html" target="_blank" rel="external">官方文档：Indexing and Selecting Data</a>  </p>
+</the></excerpt>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Python-Numpy学习]]></title>
+      <url>https://fangyeqing.github.io/2017/02/25/Python-Numpy%E5%AD%A6%E4%B9%A0/</url>
+      <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">  
+
+<p>本文是<a href="http://old.sebug.net/paper/books/scipydoc/numpy_intro.html#" target="_blank" rel="external">《用Python做科学计算》</a>的学习笔记，并且参考<a href="http://pda.readthedocs.io/en/latest/chp4.html" target="_blank" rel="external">《Python for Data Analysis》</a>，内容稍作整合，代码均在Pycharm中运行通过。</p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h2 id="Numpy"><a href="#Numpy" class="headerlink" title="Numpy"></a>Numpy</h2><p>NumPy 是 Numerical Python 的简称，是高性能计算和数据分析的基础包。下面是它所能做的一些事情：</p>
+<ul>
+<li>ndarray，快速和节省空间的多维数组，提供数组化的算术运算和高级的 广播 功能。</li>
+<li>ufunc，使用标准数学函数对整个数组的数据进行快速运算，而不需要编写循环。</li>
+<li>读取/写入磁盘上的阵列数据和操作存储器映像文件的工具。</li>
+<li>线性代数，随机数生成，和傅里叶变换的能力。</li>
+<li>集成C，C++，Fortran代码的工具。<h3 id="为什么要Numpy"><a href="#为什么要Numpy" class="headerlink" title="为什么要Numpy"></a>为什么要Numpy</h3>Python中用列表(list)保存一组值，可以用来当作数组使用，不过由于列表的元素可以是任何对象，因此列表中所保存的是对象的指针。这样为了保存一个简单的[1,2,3]，需要有3个指针和三个整数对象。对于数值运算来说这种结构显然比较浪费内存和CPU计算时间。</li>
+</ul>
+<p>此外Python还提供了一个array模块，array对象和列表不同，它直接保存数值，和C语言的一维数组比较类似。但是由于它不支持多维，也没有各种运算函数，因此也不适合做数值运算。</p>
+<p>NumPy的诞生弥补了这些不足，提供了两种基本的对象：</p>
+<ul>
+<li>ndarray（N-dimensional array object，下文统一称之为数组）是存储单一数据类型的多维数组</li>
+<li>ufunc（universal function object），是能够对数组进行处理的函数</li>
+</ul>
+<h3 id="模块导入"><a href="#模块导入" class="headerlink" title="模块导入"></a>模块导入</h3><p>导入NumPy函数库:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import numpy as np</div></pre></td></tr></table></figure></p>
+<h2 id="ndarray对象"><a href="#ndarray对象" class="headerlink" title="ndarray对象"></a>ndarray对象</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><h4 id="从python序列创建"><a href="#从python序列创建" class="headerlink" title="从python序列创建"></a>从python序列创建</h4><p>通过np.array()，可选参数：</p>
+<ul>
+<li>dtype：指定元素类型，np.float/np.complex/np.</li>
+<li>order：内存顺序，后续会讲<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a = np.array([1, 2, 3, 4])</div><div class="line">b = np.array((1, 2, 3, 4), dtype=np.float)</div><div class="line">c = np.array([[1, 2, 3, 4], [4, 5, 6, 7], [7, 8, 9, 10]])</div><div class="line">print(a, &apos;\n&apos;, b, &apos;\n&apos;, c)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>数组大小可以通过shape属性获得，shape相关：</p>
+<ul>
+<li>n维数组会有n个轴，其shape会有n个元素。一维数组的shape会有一个元素，二位数组的shape会有两个元素。</li>
+<li>通过改变shape可以改变每个轴的长度，数组元素在内存中的位置不变</li>
+<li>当某个轴的元素为-1时，将根据数组元素的个数自动计算此轴的长度</li>
+<li>reshape方法，可以创建一个改变了尺寸的新数组，原数组的shape保持不变。并且新旧数组共享内存区域，修改其中一个会改变另一个。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">print(a.dtype, b.dtype, a.shape, c.shape)</div><div class="line">c.shape = 4, 3</div><div class="line">print(c)</div><div class="line">c.shape = 2, -1</div><div class="line">print(c)</div><div class="line">d = a.reshape((2, 2))</div><div class="line">print(d)</div><div class="line">a[1] = 100  # 将数组a的第一个元素改为100</div><div class="line">print(d)    # 注意数组d中的2也被改变了</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="由numpy函数创建"><a href="#由numpy函数创建" class="headerlink" title="由numpy函数创建"></a>由numpy函数创建</h4><p>先创建一个Python序列，然后通过array函数将其转换为数组，这样做显然效率不高。因此NumPy提供了很多专门用来创建数组的函数：</p>
+<ul>
+<li>数值构造型<ul>
+<li>arange函数：类似于python的range函数，通过指定开始值、终值和步长来创建一维数组，注意数组不包括终值</li>
+<li>linspace函数：通过指定开始值、终值和元素个数来创建一维数组，可以通过endpoint关键字指定是否包括终值，缺省设置是包括终值</li>
+<li>logspace函数和linspace类似，不过它创建等比数列，下面的例子产生1(10^0)到100(10^2)、有20个元素的等比数列</li>
+<li>ones, ones_like    根据提供的shape和dtype产生一个全1的数组。ones_like使用另一歌数组为入参，产生一个shape和dtype都相同的数组。</li>
+<li>zeros, zeros_like    同ones和ones_like，但是生成全0的数组</li>
+<li>empty, enpty_like    通过分配新内存来构造新的数组，但不同与ones 和 zeros，不初始任何值。</li>
+<li>eye, identity    生成一个NxN的单位方阵（对角线上为1，其它地方为0）</li>
+</ul>
+</li>
+<li>字节序列型<ul>
+<li>frombuffer</li>
+<li>fromfile</li>
+<li>fromstring：Python的字符串实际上是字节序列，每个字符占一个字节。因此如果从字符串s创建一个8bit的整数数组的话，所得到的数组正好就是字符串中每个字符的ASCII编码。如果从字符串s创建16bit的整数数组，那么两个相邻的字节就表示一个整数</li>
+</ul>
+</li>
+<li>函数构造型：np.fromfunction，参数：<ul>
+<li>function:构造函数，由元素的index构造元素，其中二维：a(i,j)=fun(i,j)</li>
+<li>shape:生成的shape<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"># 数值型</div><div class="line">print(np.arange(0, 1, 0.1))</div><div class="line">print(np.linspace(0, 1, 12))</div><div class="line">print(np.logspace(0, 2, 20))</div><div class="line"># 字符型</div><div class="line">s = &quot;abcdefgh&quot;</div><div class="line">print(np.fromstring(s, dtype=np.int8))</div><div class="line">print(np.fromstring(s, dtype=np.int16))</div><div class="line"># 函数型</div><div class="line"># 构造一维数组，a(i)=i%4+1</div><div class="line">def func(i):</div><div class="line">    return i % 4 + 1</div><div class="line">print(np.fromfunction(func, (10,)))</div><div class="line"># 构造二位数组，a（i,j）=(i+1)*(j+1)</div><div class="line">def func2(i, j):</div><div class="line">    return (i+1) * (j+1)</div><div class="line">print(np.fromfunction(func2, (9, 9)))</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p>Dtypes是使NumPy如此强大和灵活的一部分。在大多数情况下，它们直接映射到底层的机器表示，这是的很容易地读取和写入二进制流到磁盘上，也能链接低级语言，如C 或Fortran编写的代码</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>类型码</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int8, uint8</td>
+<td>i1, u1</td>
+<td>有符号和无符号8位（1字节）整数类型</td>
+</tr>
+<tr>
+<td>int16, uint16</td>
+<td>i2, u2</td>
+<td>有符号和无符号16位整数类型</td>
+</tr>
+<tr>
+<td>int32, uint32</td>
+<td>i4, u4</td>
+<td>有符号和无符号32位整数类型</td>
+</tr>
+<tr>
+<td>int64, uint64</td>
+<td>i8, u8</td>
+<td>有符号和无符号64位整数类型</td>
+</tr>
+<tr>
+<td>float16</td>
+<td>f2</td>
+<td>半精度浮点类型</td>
+</tr>
+<tr>
+<td>float32</td>
+<td>f4 or f</td>
+<td>标准精度浮点。与C的 float 兼容</td>
+</tr>
+<tr>
+<td>float64, float128</td>
+<td>f8 or d</td>
+<td>标准双精度浮点。与C的 double 和Python 的 folat 对象兼容</td>
+</tr>
+<tr>
+<td>float128</td>
+<td>f16 or g</td>
+<td>扩展精度浮点</td>
+</tr>
+<tr>
+<td>complex64, complex128, complex256</td>
+<td>c8, c16, c32</td>
+<td>分别使用两个32，64，128位浮点表示的复数</td>
+</tr>
+<tr>
+<td>bool</td>
+<td>?</td>
+<td>布尔值，存储 True 和 False</td>
+</tr>
+<tr>
+<td>object</td>
+<td>O</td>
+<td>Python对象类型</td>
+</tr>
+<tr>
+<td>string_</td>
+<td>S</td>
+<td>定长字符窜类型（每字符一字节）。例如，为了生成长度为10的字符窜，使用 ‘S10’</td>
+</tr>
+<tr>
+<td>unicode_</td>
+<td>f16 or g</td>
+<td>扩展精度浮点（字节书依赖平台）。同 string_ 有相同的语义规范（例如：U10 ）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="存取元素"><a href="#存取元素" class="headerlink" title="存取元素"></a>存取元素</h3><h4 id="通过下标-切片"><a href="#通过下标-切片" class="headerlink" title="通过下标(切片)"></a>通过下标(切片)</h4><p>数组元素的存取方法和Python的标准方法相同，可以使用切片。和Python的列表序列不同，通过下标范围获取的新的数组是原始数组的一个视图。它与原始数组共享同一块数据空间。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">b = a[3:7]  # 通过下标范围产生一个新的数组b，b和a共享同一块数据空间</div><div class="line">print(b)</div><div class="line">b[2] = -10  # 将b的第2个元素修改为-10</div><div class="line">print(a)  # a的第5个元素也被修改为10</div></pre></td></tr></table></figure></p>
+<h4 id="通过整数序列"><a href="#通过整数序列" class="headerlink" title="通过整数序列"></a>通过整数序列</h4><p>当使用整数序列对数组元素进行存取时，将使用整数序列中的每个元素作为下标，整数序列可以是列表或者数组。使用整数序列作为下标获得的数组不和原始数组共享数据空间。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">x = np.arange(10, 1, -1)</div><div class="line">print(x)</div><div class="line">print(x[[3, 3, 1, 8]])  # 获取x中的下标为3, 3, 1, 8的4个元素，组成一个新的数组</div><div class="line">b = x[np.array([3, 3, -3, 8])]  # 下标可以是负数</div><div class="line">b[2] = 100</div><div class="line">print(x)  # 由于b和x不共享数据空间，因此x中的值并没有改变</div><div class="line">x[[3, 5, 1]] = -1, -2, -3  # 整数序列下标也可以用来修改元素的值</div><div class="line">print(x)</div></pre></td></tr></table></figure></p>
+<h4 id="使用布尔数组"><a href="#使用布尔数组" class="headerlink" title="使用布尔数组"></a>使用布尔数组</h4><p>当使用布尔数组b作为下标存取数组x中的元素时，将收集数组x中所有在数组b中对应下标为True的元素。使用布尔数组作为下标获得的数组不和原始数组共享数据空间，注意这种方式只对应于布尔数组，不能使用布尔列表。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">x = np.arange(5, 0, -1)</div><div class="line">print(x)</div><div class="line">print(x[np.array([True, False, True, False, False])])  # 布尔数组中下标为0，2的元素为True，因此获取x中下标为0,2的元素</div><div class="line">print(x[[True, False, True, False, False]])  # 如果是布尔列表，则把True当作1, False当作0，按照整数序列方式获取x中的元素</div><div class="line">print(x[np.array([True, False, True, True])])  # 布尔数组的长度不够时，不够的部分都当作False</div><div class="line">x[np.array([True, False, True, True])] = -1, -2, -3  # 布尔数组下标也可以用来修改元素</div><div class="line">print(x)</div></pre></td></tr></table></figure></p>
+<h3 id="多维数组"><a href="#多维数组" class="headerlink" title="多维数组"></a>多维数组</h3><p>多维数组的存取和一维数组类似，因为多维数组有多个轴，因此它的下标需要用多个值来表示，NumPy采用组元(tuple)作为数组的下标。</p>
+<h4 id="下标存取（切片）"><a href="#下标存取（切片）" class="headerlink" title="下标存取（切片）"></a>下标存取（切片）</h4><p><img src="http://old.sebug.net/paper/books/scipydoc/_images/numpy_intro_02.png" alt="image"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">a = np.arange(0, 60, 10).reshape(-1, 1) + np.arange(0, 6)</div><div class="line">print(a)</div><div class="line">print(a[0, 3:5])</div><div class="line">print(a[4:, 4:])</div><div class="line">print(a[:, 2])</div><div class="line">print(a[2::2, ::2])</div></pre></td></tr></table></figure></p>
+<h4 id="整数序列、布尔数组"><a href="#整数序列、布尔数组" class="headerlink" title="整数序列、布尔数组"></a>整数序列、布尔数组</h4><p><img src="http://old.sebug.net/paper/books/scipydoc/_images/numpy_intro_03.png" alt="image">  </p>
+<ul>
+<li>a[(0,1,2,3,4),(1,2,3,4,5)] : 用于存取数组的下标和仍然是一个有两个元素的组元，组元中的每个元素都是整数序列，分别对应数组的第0轴和第1轴。从两个序列的对应位置取出两个整数组成下标： a[0,1], a[1,2], …, a[4,5]。</li>
+<li>a[3:, [0, 2, 5]] : 下标中的第0轴是一个范围，它选取第3行之后的所有行；第1轴是整数序列，它选取第0, 2, 5三列。</li>
+<li>a[mask, 2] : 下标的第0轴是一个布尔数组，它选取第0，2，5行；第1轴是一个整数，选取第2列。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">print(a[(0, 1, 2, 3, 4), (1, 2, 3, 4, 5)])   </div><div class="line">print(a[3:, [0, 2, 5]])</div><div class="line">mask = np.array([1, 0, 1, 0, 0, 1], dtype=np.bool)</div><div class="line">print(a[mask, 2])</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="结构数组"><a href="#结构数组" class="headerlink" title="结构数组"></a>结构数组</h3><p>类似于C语言的结构体struct</p>
+<ul>
+<li>name：定义字段名</li>
+<li>formats：定义每个字段的类型<ul>
+<li>S32 : 32个字节的字符串类型，由于结构中的每个元素的大小必须固定，因此需要指定字符串的长度</li>
+<li>i : 32bit的整数类型，相当于np.int32</li>
+<li>f : 32bit的单精度浮点数类型，相当于np.float32<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">persontype = np.dtype(&#123;</div><div class="line">    &apos;names&apos;: [&apos;name&apos;, &apos;age&apos;, &apos;weight&apos;],</div><div class="line">    &apos;formats&apos;: [&apos;S32&apos;, &apos;i&apos;, &apos;f&apos;]&#125;)</div><div class="line">a = np.array([(&quot;Zhang&quot;, 32, 75.5), (&quot;Wang&quot;, 24, 65.2)], dtype=persontype)</div><div class="line">print(a)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<p>通过dtype获取a的类型,类型描述前面为我们添加了 ‘|’, ‘&lt;’ 等字符，这些字符用来描述字段值的字节顺序:</p>
+<ul>
+<li>‘|’: 忽视字节顺序</li>
+<li>‘&lt;’: 低位字节在前</li>
+<li>‘&gt;’: 高位字节在前<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print(a.dtype)</div><div class="line">print(a[0].dtype)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>通过a构造出来的子数组，它和数组a共享内存数据，因此可以通过修改它的字段，改变原始数组中的对应字段<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">c = a[1]</div><div class="line">c[&quot;name&quot;] = &quot;Li&quot;</div><div class="line">print(a[1][&quot;name&quot;])</div><div class="line">b = a[:][&quot;age&quot;]</div><div class="line">print(b)</div><div class="line">b[0] = 40</div><div class="line">print(a[0][&quot;age&quot;])</div></pre></td></tr></table></figure></p>
+<h5 id="内存对齐"><a href="#内存对齐" class="headerlink" title="内存对齐"></a>内存对齐</h5><p>C语言的结构体为了内存寻址方便，会自动的添加一些填充用的字节，这叫做内存对齐。例如如果把下面的name[32]改为name[30]的话，由于内存对齐问题，在name和age中间会填补两个字节，最终的结构体大小不会改变。因此如果numpy中的所配置的内存大小不符合C语言的对齐规范的话，将会出现数据错位。为了解决这个问题，在创建dtype对象时，可以传递参数align=True，这样numpy的结构数组的内存对齐和C语言的结构体就一致了。</p>
+<h3 id="内存结构"><a href="#内存结构" class="headerlink" title="内存结构"></a>内存结构</h3><p>关于数组的描述信息保存在一个数据结构中，这个结构引用两个对象：</p>
+<ul>
+<li>一个用于描述元素类型的dtype对象：知道如何将元素的二进制数据转换为可用的值  </li>
+<li><p>一块用于保存数据的存储区域：保存着数组中所有元素的二进制数据<br><img src="http://old.sebug.net/paper/books/scipydoc/_images/numpy_memory_struct.png" alt="image">  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">a = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]], dtype=np.float32)</div><div class="line">print(a.dtype)</div><div class="line">print(a.ndim)</div><div class="line">print(a.shape)</div><div class="line">print(a.strides)</div><div class="line">print(a.data)</div></pre></td></tr></table></figure>
+</li>
+<li><p>strides：保存的是当每个轴的下标增加1时，数据存储区中的指针所增加的字节数。例如图中的strides为12,4，即第0轴的下标增加1时，数据的地址增加12个字节：即a[1,0]的地址比a[0,0]的地址要高12个字节，正好是3个单精度浮点数的总字节数；第1轴下标增加1时，数据的地址增加4个字节，正好是单精度浮点数的字节数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">b = a[::2, ::2]</div><div class="line">print(b)</div><div class="line">print(b.strides)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>由于数组b和数组a共享数据存储区，而b中的第0轴和第1轴都是数组a中隔一个元素取一个，因此数组b的strides变成了24,8，正好都是数组a的两倍。 对照前面的图很容易看出数据0和2的地址相差8个字节，而0和6的地址相差24个字节。</p>
+<h4 id="内存顺序"><a href="#内存顺序" class="headerlink" title="内存顺序"></a>内存顺序</h4><p>元素在数据存储区中的排列格式有两种，创建时通过参数order指定：</p>
+<ul>
+<li>order=”C”（缺省值），在C语言中，多维数组的第0轴是最上位的，即第0轴的下标增加1时，元素的地址增加的字节数最多</li>
+<li>order=”F”，Fortan语言的多维数组的第0轴是最下位的，即第0轴的下标增加1时，地址只增加一个元素的字节数。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">c = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]], dtype=np.float32, order=&quot;F&quot;)</div><div class="line">print(c.strides)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>以一个二维数组a[2][2]为例</p>
+<ul>
+<li>在C语言中，其在内存中存储为a[0][0] a[0][1] a[1][0] a[1][1]  </li>
+<li>而在Fortran语言中，其顺序为a[0][0] a[1][0] a[0][1] a[1][1]</li>
+</ul>
+<h2 id="ufunc运算"><a href="#ufunc运算" class="headerlink" title="ufunc运算"></a>ufunc运算</h2><p>它是一种能对数组的每个元素进行操作的函数。NumPy内置的许多ufunc函数都是在C语言级别实现的，因此它们的计算速度非常快。</p>
+<h3 id="单输入函数"><a href="#单输入函数" class="headerlink" title="单输入函数"></a>单输入函数</h3><h4 id="sin"><a href="#sin" class="headerlink" title="sin"></a>sin</h4><p>np.sin对x中的每个元素求正弦值，然后将结果返回。可选参数out：结果输出到out，如果要覆盖x，则将out赋值为x<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">x = np.linspace(0, 2*np.pi, 10)</div><div class="line">y = np.sin(x)</div><div class="line">print(y)</div><div class="line">t = np.sin(x, x)</div><div class="line">print(id(t) == id(x))</div></pre></td></tr></table></figure></p>
+<h4 id="与Python标准库速度对比"><a href="#与Python标准库速度对比" class="headerlink" title="与Python标准库速度对比"></a>与Python标准库速度对比</h4><p>计算100万次正弦值，所用时间的对比：</p>
+<ul>
+<li>np.sin处理数组(C级别循环)：0.011924890681391243</li>
+<li>python级别循环 + math.sin处理单个值：0.41831748538827573</li>
+<li>python级别循环 + np.sin处理单个值：1.4091675317012233<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">import time</div><div class="line">import math</div><div class="line">import numpy as np</div><div class="line"># python级别循环 + math.sin</div><div class="line">x = [i * 0.001 for i in xrange(1000000)]</div><div class="line">start = time.clock()</div><div class="line">for i, t in enumerate(x):</div><div class="line">    x[i] = math.sin(t)</div><div class="line">print &quot;math.sin:&quot;, time.clock() - start</div><div class="line"># np.sin(C级别循环)</div><div class="line">x = [i * 0.001 for i in xrange(1000000)]</div><div class="line">x = np.array(x)</div><div class="line">start = time.clock()</div><div class="line">np.sin(x,x)</div><div class="line">print &quot;numpy.sin:&quot;, time.clock() - start</div><div class="line"># python级别循环 + np.sin处理单个值</div><div class="line">x = [i * 0.001 for i in range(1000000)]</div><div class="line">start = time.clock()</div><div class="line">for i, t in enumerate(x):</div><div class="line">    x[i] = np.sin(t)</div><div class="line">print(&quot;numpy.sin loop:&quot;, time.clock() - start)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>结论：numpy.sin处理数组比math.sin+python循环处理数组快几十倍。这得利于numpy.sin在C语言级别的循环计算   </p>
+<p>但是numpy.sin处理单个值的计算速度比math.sin要慢。这是因为numpy.sin为了同时支持数组和单个值的计算，其C语言的内部实现要比math.sin复杂很多。</p>
+<h3 id="多输入函数"><a href="#多输入函数" class="headerlink" title="多输入函数"></a>多输入函数</h3><h4 id="add函数"><a href="#add函数" class="headerlink" title="add函数"></a>add函数</h4><p>add函数返回一个新的数组，此数组的每个元素都为两个参数数组的对应元素之和。它接受第3个参数指定计算结果所要写入的数组，如果指定的话，add函数就不再产生新的数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">a = np.arange(0, 4)</div><div class="line">b = np.arange(1, 5)</div><div class="line">print(a)</div><div class="line">print(b)</div><div class="line">print(np.add(a, b))   #  a+b</div><div class="line">print(np.add(a, b, a))   #  a+=b</div><div class="line">print(a)</div></pre></td></tr></table></figure></p>
+<h4 id="其他函数"><a href="#其他函数" class="headerlink" title="其他函数"></a>其他函数</h4><ul>
+<li>y = x1 + x2:    add(x1, x2 [, y])</li>
+<li>y = x1 - x2:    subtract(x1, x2 [, y])</li>
+<li>y = x1 * x2:    multiply (x1, x2 [, y])</li>
+<li>y = x1 / x2:    divide (x1, x2 [, y]), 如果两个数组的元素为整数，那么用整数除法</li>
+<li>y = x1 / x2:    true divide (x1, x2 [, y]), 总是返回精确的商</li>
+<li>y = x1 // x2:    floor divide (x1, x2 [, y]), 总是对返回值取整</li>
+<li>y = -x:    negative(x [,y])</li>
+<li>y = x1**x2:    power(x1, x2 [, y])</li>
+<li>y = x1 % x2:    remainder(x1, x2 [, y]), mod(x1, x2, [, y])</li>
+</ul>
+<h4 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h4><p>数组对象支持这些操作符，极大地简化了算式的编写，不过要注意如果你的算式很复杂，并且要运算的数组很大的话，会因为产生大量的中间结果而降低程序的运算效率。例如：假设a b c三个数组采用算式x=a*b+c计算，那么它相当于:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">t = a * b</div><div class="line">x = t + c</div><div class="line">del t</div></pre></td></tr></table></figure></p>
+<p>也就是说需要产生一个数组t保存乘法的计算结果，然后再产生最后的结果数组x。我们可以通过手工将一个算式分解为x = a*b; x += c，以减少一次内存分配。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">a = np.arange(0, 100000000)</div><div class="line">b = np.arange(0, 100000000)</div><div class="line">start = time.clock()</div><div class="line">x = a*b + a</div><div class="line">print(&quot;x = a*b+c time:&quot;, time.clock() - start)</div><div class="line">start = time.clock()</div><div class="line">y = a*b</div><div class="line">y += a</div><div class="line">print(&quot;y = a*b,y += c time:&quot;, time.clock() - start)</div></pre></td></tr></table></figure></p>
+<p>输出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">x = a*b+c time: 0.6211750219831841</div><div class="line">y = a*b,y += c time: 0.48815467969828963</div></pre></td></tr></table></figure></p>
+<h3 id="frompyfunc"><a href="#frompyfunc" class="headerlink" title="frompyfunc"></a>frompyfunc</h3><p>可以用frompyfunc函数将一个计算单个元素的函数转换成ufunc函数。这样就可以方便地用所产生的ufunc函数对数组进行计算了</p>
+<p>frompyfunc的调用格式为frompyfunc(func, nin, nout)，其中func是计算单个元素的函数，nin是此函数的输入参数的个数，nout是此函数的返回值的个数。</p>
+<p><img src="http://old.sebug.net/paper/books/scipydoc/_images/numpy_intro_01.png" alt="image"><br>我们很容易根据上图所示写出如下的计算三角波某点y坐标的函数，有三种方式:</p>
+<ul>
+<li>可以用下面的方法先使用列表包容(List comprehension)，计算出一个list，然后用array函数将列表转换为数组</li>
+<li>用一个lambda函数对triangle_wave的参数进行一次包装。这样传入frompyfunc的函数就只有一个参数了</li>
+<li>通过函数triangle_func包装三角波的三个参数，在其内部定义一个计算三角波的函数trifunc，trifunc函数在调用时会采用triangle_func的参数进行计算。最后triangle_func返回用frompyfunc转换结果。</li>
+</ul>
+<p>值得注意的是用frompyfunc得到的函数计算出的数组元素的类型为object，因为frompyfunc函数无法保证Python函数返回的数据类型都完全一致。因此还需要再次 y2.astype(np.float64)将其转换为双精度浮点数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">def triangle_wave(x, c, c0, hc):</div><div class="line">    x = x - int(x) # 三角波的周期为1，因此只取x坐标的小数部分进行计算</div><div class="line">    if x &gt;= c: r = 0.0</div><div class="line">    elif x &lt; c0: r = x / c0 * hc</div><div class="line">    else: r = (c-x) / (c-c0) * hc</div><div class="line">    return r</div><div class="line"></div><div class="line">x = np.linspace(0, 2, 1000)</div><div class="line">y = np.array([triangle_wave(t, 0.6, 0.4, 1.0) for t in x])</div><div class="line"></div><div class="line">triangle_ufunc = np.frompyfunc( lambda x: triangle_wave(x, 0.6, 0.4, 1.0), 1, 1)</div><div class="line">y2 = triangle_ufunc(x)</div><div class="line">    </div><div class="line">def triangle_func(c, c0, hc):</div><div class="line">    def trifunc(x):</div><div class="line">        x = x - int(x) # 三角波的周期为1，因此只取x坐标的小数部分进行计算</div><div class="line">        if x &gt;= c: r = 0.0</div><div class="line">        elif x &lt; c0: r = x / c0 * hc</div><div class="line">        else: r = (c-x) / (c-c0) * hc</div><div class="line">        return r</div><div class="line">    # 用trifunc函数创建一个ufunc函数，可以直接对数组进行计算, 不过通过此函数</div><div class="line">    # 计算得到的是一个Object数组，需要进行类型转换</div><div class="line">    return np.frompyfunc(trifunc, 1, 1)</div><div class="line">y2 = triangle_func(0.6, 0.4, 1.0)(x)</div></pre></td></tr></table></figure></p>
+<h3 id="广播"><a href="#广播" class="headerlink" title="广播"></a>广播</h3><p>当我们使用ufunc函数对两个数组进行计算时，ufunc函数会对这两个数组的对应元素进行计算，因此它要求这两个数组有相同的大小(shape相同)。如果两个数组的shape不同的话，会进行如下的广播(broadcasting)处理：</p>
+<ul>
+<li>让所有输入数组都向其中shape最长的数组看齐，shape中不足的部分都通过在前面加1补齐</li>
+<li>输出数组的shape是输入数组shape的各个轴上的最大值</li>
+<li>如果输入数组的某个轴和输出数组的对应轴的长度相同或者其长度为1时，这个数组能够用来计算，否则出错</li>
+<li>当输入数组的某个轴的长度为1时，沿着此轴运算时都用此轴上的第一组值</li>
+</ul>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><p>之前：</p>
+<ul>
+<li>先创建一个二维数组a，其shape为(6,1)，再创建一维数组b，其shape为(5,)。  </li>
+<li>由于a和b的shape长度(也就是ndim属性)不同，根据规则1，需要让b的shape向a对齐，于是将b的shape前面加1，补齐为(1,5)</li>
+<li>这样加法运算的两个输入数组的shape分别为(6,1)和(1,5)，根据规则2，可知输出数组的shape为(6,5)</li>
+<li>由于b的第0轴上的长度为1，而a的第0轴上的长度为6，因此为了让它们在第0轴上能够相加，需要将b在第0轴上的长度扩展为6，相当于b向下复制5行。同理，a向右复制4列。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">a = np.arange(0, 60, 10).reshape(-1, 1)    # [[ 0], [10], [20], [30], [40], [50]]</div><div class="line">b = np.arange(0, 5)    # [0 1 2 3 4]</div><div class="line">print(a.shape, b.shape)    # 输出：(6, 1) (5,)</div><div class="line">print(a + b)</div><div class="line"></div><div class="line">b.shape = 1, 5    # [[0 1 2 3 4]]</div><div class="line">b = b.repeat(6, axis=0)</div><div class="line">a = a.repeat(5, axis=1)</div><div class="line">print(a, b, sep=&apos;\n&apos;)</div><div class="line">print(a + b)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="ogrid对象"><a href="#ogrid对象" class="headerlink" title="ogrid对象"></a>ogrid对象</h4><p>当然，numpy在执行a+b运算时，其内部并不会真正将长度为1的轴用repeat函数进行扩展，如果这样做的话就太浪费空间了。numpy提供了一个快速产生如上面a,b数组的方法： ogrid对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">x, y = np.ogrid[0:1:4j, 0:1:3j]</div><div class="line">print(x, y)</div></pre></td></tr></table></figure></p>
+<p>ogrid是一个很有趣的对象，它像一个多维数组一样，用切片组元作为下标进行存取，返回的是一组可以用来广播计算的数组。其切片下标有两种形式：</p>
+<ul>
+<li>开始值:结束值:步长，和np.arange(开始值, 结束值, 步长)类似</li>
+<li>开始值:结束值:长度j，当第三个参数为虚数时，它表示返回的数组的长度，和np.linspace(开始值, 结束值, 长度)类似：</li>
+</ul>
+<h3 id="ufunc的方法"><a href="#ufunc的方法" class="headerlink" title="ufunc的方法"></a>ufunc的方法</h3><p>ufunc函数本身还有些方法，这些方法只对两个输入一个输出的ufunc函数有效，其它的ufunc对象调用这些方法时会抛出ValueError异常</p>
+<h4 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h4><p>方法和Python的reduce函数类似，它沿着axis轴对array进行操作，相当于将<op>运算符插入到沿axis轴的所有子数组或者元素当中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a = np.add.reduce([1, 2, 3])  # 1 + 2 + 3</div><div class="line">b = np.add.reduce([[1, 2, 3], [4, 5, 6]], axis=0)  # 1+2+3 , 4+5+6</div><div class="line">c = np.add.reduce([[1, 2, 3], [4, 5, 6]], axis=1)  # 1+4 , 2+5 ,3+6</div><div class="line">print(a, b, c, sep=&apos;\n&apos;)</div></pre></td></tr></table></figure></op></p>
+<h4 id="accumulate"><a href="#accumulate" class="headerlink" title="accumulate"></a>accumulate</h4><p>reduce方法类似，只是它返回的数组和输入的数组的shape相同，保存所有的中间计算结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a = np.add.accumulate([1, 2, 3])  # [1 3 6]</div><div class="line">b = np.add.accumulate([[1, 2, 3], [4, 5, 6]], axis=0)  # [[1 2 3],[5 7 9]]</div><div class="line">c = np.add.accumulate([[1, 2, 3], [4, 5, 6]], axis=1)  # [[ 1  3  6],[ 4  9 15]]</div><div class="line">print(a, b, c, sep=&apos;\n&apos;)</div></pre></td></tr></table></figure></p>
+<h4 id="reduceat"><a href="#reduceat" class="headerlink" title="reduceat"></a>reduceat</h4><p>计算多组reduce的结果，通过indices参数指定一系列reduce的起始和终了位置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">a = np.array([1, 2, 3, 4])</div><div class="line">result = np.add.reduceat(a, indices=[0, 1, 0, 2, 0, 3, 0])</div><div class="line">print(result)  # [ 1  2  3  3  6  4 10]</div></pre></td></tr></table></figure></p>
+<h4 id="outer-a-b-方法的计算等同于如下程序："><a href="#outer-a-b-方法的计算等同于如下程序：" class="headerlink" title=".outer(a,b)方法的计算等同于如下程序："></a><op>.outer(a,b)方法的计算等同于如下程序：</op></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">a.shape += (1,)*b.ndim</div><div class="line">&lt;op&gt;(a,b)</div><div class="line">a = a.squeeze()  # 剔除数组a中长度为1的轴</div></pre></td></tr></table></figure>
+<p>通过outer方法计算的结果是乘法表。如果将这两个数组按照等同程序一步一步的计算的话，就会发现乘法表最终是通过广播的方式计算出来的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">x = np.multiply.outer([1, 2, 3, 4, 5], [2, 3, 4])</div><div class="line">print(x)   # [[ 2  3  4],[ 4  6  8],[ 6  9 12],[ 8 12 16],[10 15 20]]</div></pre></td></tr></table></figure></p>
+<h2 id="矩阵运算"><a href="#矩阵运算" class="headerlink" title="矩阵运算"></a>矩阵运算</h2><p>NumPy和Matlab不一样，对于多维数组的运算，缺省情况下并不使用矩阵运算，如果你希望对数组进行矩阵运算的话，可以调用相应的函数</p>
+<h3 id="matrix对象"><a href="#matrix对象" class="headerlink" title="matrix对象"></a>matrix对象</h3><p>numpy库提供了matrix类，使用matrix类创建的是矩阵对象，它们的加减乘除运算缺省采用矩阵方式计算，因此用法和matlab十分类似。但是由于NumPy中同时存在ndarray和matrix对象，因此用户很容易将两者弄混。这有违Python的“显式优于隐式”的原则，因此并不推荐在较复杂的程序中使用matrix。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a = np.matrix([[1, 2, 3], [5, 5, 6], [7, 9, 9]])</div><div class="line">print(a*a**-1)</div></pre></td></tr></table></figure></p>
+<p>计算的是矩阵a和其逆矩阵的乘积，结果是一个单位矩阵</p>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><h4 id="dot"><a href="#dot" class="headerlink" title="dot"></a>dot</h4><p>对于两个一维的数组，计算的是这两个数组对应下标元素的乘积和(数学上称之为内积)；对于二维数组，计算的是两个数组的矩阵乘积；对于多维数组，它的通用计算公式如下，即结果数组中的每个元素都是：数组a的最后一维上的所有元素与数组b的倒数第二位上的所有元素的乘积和</p>
+<h4 id="inner"><a href="#inner" class="headerlink" title="inner"></a>inner</h4><p>和dot乘积一样，对于两个一维数组，计算的是这两个数组对应下标元素的乘积和；对于多维数组，它计算的结果数组中的每个元素都是：数组a和b的最后一维的内积，因此数组a和b的最后一维的长度必须相同</p>
+<h4 id="outer"><a href="#outer" class="headerlink" title="outer"></a>outer</h4><p>只按照一维数组进行计算，如果传入参数是多维数组，则先将此数组展平为一维数组之后再进行运算。outer乘积计算的列向量和行向量的矩阵乘积</p>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><p>矩阵中更高级的一些运算可以在NumPy的线性代数子库linalg中找到</p>
+<h2 id="文件存取"><a href="#文件存取" class="headerlink" title="文件存取"></a>文件存取</h2><p>NumPy提供了多种文件操作函数方便我们存取数组内容。文件存取的格式分为：</p>
+<ul>
+<li>文本</li>
+<li>二进制<ul>
+<li>NumPy专用的格式化二进制类型</li>
+<li>无格式类型。</li>
+</ul>
+</li>
+</ul>
+<h3 id="tofile-amp-amp-fromfile"><a href="#tofile-amp-amp-fromfile" class="headerlink" title="tofile &amp;&amp; fromfile"></a>tofile &amp;&amp; fromfile</h3><p>使用数组的方法函数tofile可以方便地将数组中数据以二进制的格式写进文件。tofile输出的数据没有格式，因此用numpy.fromfile需要在读入的时候设置正确的dtype和shape才能保证数据一致：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">a = np.arange(0, 12)</div><div class="line">a.shape = 3, 4</div><div class="line">print(a)</div><div class="line">a.tofile(&quot;a.bin&quot;)</div><div class="line">b = np.fromfile(&quot;a.bin&quot;, dtype=np.float)  # 按照float类型读入数据</div><div class="line">print(b)  # 读入的数据是错误的</div><div class="line">b = np.fromfile(&quot;a.bin&quot;, dtype=np.int32)  # 按照int32类型读入数据</div><div class="line">print(b)  # 数据是一维的</div><div class="line">b.shape = 3, 4  # 按照a的shape修改b的shape</div><div class="line">print(b)  # 这次终于正确了</div></pre></td></tr></table></figure></p>
+<h3 id="numpy-load-amp-amp-numpy-save"><a href="#numpy-load-amp-amp-numpy-save" class="headerlink" title="numpy.load &amp;&amp; numpy.save"></a>numpy.load &amp;&amp; numpy.save</h3><p>以NumPy专用的二进制类型保存数据，这两个函数会自动处理元素类型和shape等信息，使用它们读写数组就方便多了，但是numpy.save输出的文件很难和其它语言编写的程序读入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">np.save(&quot;a.npy&quot;, a)</div><div class="line">c = np.load(&quot;a.npy&quot;)</div><div class="line">print(c)</div></pre></td></tr></table></figure></p>
+<p>如果你想将多个数组保存到一个文件中的话，可以使用numpy.savez函数。savez函数的第一个参数是文件名，其后的参数都是需要保存的数组，也可以使用关键字参数为数组起一个名字，非关键字参数传递的数组会自动起名为arr_0, arr_1, …。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">a = np.array([[1, 2, 3], [4, 5, 6]])</div><div class="line">b = np.arange(0, 1.0, 0.1)</div><div class="line">c = np.sin(b)</div><div class="line">np.savez(&quot;result.npz&quot;, a, b, sin_array=c)</div><div class="line">r = np.load(&quot;result.npz&quot;)</div><div class="line">print(r[&quot;arr_0&quot;])  # 数组a</div><div class="line">print(r[&quot;arr_1&quot;])  # 数组b</div><div class="line">print(r[&quot;sin_array&quot;])  # 数组c</div></pre></td></tr></table></figure></p>
+<p>如果你用解压软件打开result.npz文件的话，会发现其中有三个文件：arr_0.npy， arr_1.npy， sin_array.npy，其中分别保存着数组a, b, c的内容。</p>
+<h3 id="numpy-savetxt-amp-amp-numpy-loadtxt"><a href="#numpy-savetxt-amp-amp-numpy-loadtxt" class="headerlink" title="numpy.savetxt &amp;&amp; numpy.loadtxt"></a>numpy.savetxt &amp;&amp; numpy.loadtxt</h3><p>numpy.savetxt和numpy.loadtxt可以读写1维和2维的数组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">a = np.arange(0, 12, 0.5).reshape(4, -1)</div><div class="line">np.savetxt(&quot;a.txt&quot;, a)  # 缺省按照&apos;%.18e&apos;格式保存数据，以空格分隔</div><div class="line">b = np.loadtxt(&quot;a.txt&quot;)</div><div class="line">np.savetxt(&quot;a.txt&quot;, a, fmt=&quot;%d&quot;, delimiter=&quot;,&quot;)  # 改为保存为整数，以逗号分隔</div><div class="line">c = np.loadtxt(&quot;a.txt&quot;, delimiter=&quot;,&quot;)  # 读入的时候也需要指定逗号分隔</div><div class="line">print(a, b, c, sep=&apos;\n&apos;)</div></pre></td></tr></table></figure></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://old.sebug.net/paper/books/scipydoc/numpy_intro.html#" target="_blank" rel="external">在线电子书：用Python做科学计算——NumPy-快速处理数据</a>  </p>
+</the></excerpt>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Python-Web学习(Flask框架初探)]]></title>
+      <url>https://fangyeqing.github.io/2017/02/25/Python-Web%E5%AD%A6%E4%B9%A0(Flask%E6%A1%86%E6%9E%B6%E5%88%9D%E6%8E%A2)/</url>
+      <content type="html"><![CDATA[<excerpt in="" index="" |="" 首页摘要="">  
+
+<p>Python有上百种Web开发框架，有很多成熟的模板技术，选择Python开发Web应用，不但开发效率高，而且运行速度快。</p>
+<h2 id="WSGI"><a href="#WSGI" class="headerlink" title="WSGI"></a>WSGI</h2><p>Web Server Gateway Interface：WSGI 规范了一种简单的接口，描述了web server如何与web application交互、web application如何处理请求。实现了WSGI的模块/库有wsgiref(python内置)、werkzeug.serving、twisted.web等</p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h3 id="应用程序-框架端（Web-framework-app）"><a href="#应用程序-框架端（Web-framework-app）" class="headerlink" title="应用程序/框架端（Web framework/app）"></a>应用程序/框架端（Web framework/app）</h3><p>符合WSGI标准的application接口应该实现为一个可调用对象（callable object），例如函数、方法、类、含<strong>call</strong>方法的实例。这个可调用对象可以接收2个参数：</p>
+<ul>
+<li>environ：一个包含所有HTTP请求信息的dict对象，常用的有：environ[‘REQUEST_METHOD’]、environ[‘PATH_INFO’]</li>
+<li>start_response：一个发送HTTP响应的函数。</li>
+</ul>
+<h3 id="服务器端-网关端（Web-server）"><a href="#服务器端-网关端（Web-server）" class="headerlink" title="服务器端/网关端（Web server）"></a>服务器端/网关端（Web server）</h3><p>每一次，当HTTP客户端冲着应用程序发来一个请求，服务器/网关都会调用应用程序可调用者（callable）。</p>
+<h3 id="中间件（Middleware）"><a href="#中间件（Middleware）" class="headerlink" title="中间件（Middleware）"></a>中间件（Middleware）</h3><p>中间件位于WSGI server和WSGI application之间，包装了应用程序，可以实现：</p>
+<ul>
+<li>在相应地重写environ变量之后，根据目标URL地址将请求路由到不同的应用程序对象。</li>
+<li>允许多个应用程序或框架在同一个进程中并行运行。</li>
+<li>通过在网络上转发请求和应答，实现负载均衡和远程处理。</li>
+<li>对上下文（content）进行后加工（postprocessing），比如应用xsl样式表等。</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>以python内置的wsgiref作为服务器端为例：</p>
+<ul>
+<li>符合WSGI接口的application()方法可以收这两个参数，最后将environment字典的内容返回给客户端。</li>
+<li>中间件：实现小写转大写</li>
+<li>服务器端：wsgiref的make_server方法调用中间件Upperware(application)<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">from wsgiref.simple_server import make_server</div><div class="line"></div><div class="line"># 应用程序端</div><div class="line">def application(environ, start_response):</div><div class="line">    response_body = [</div><div class="line">        &apos;%s: %s&apos; % (key, value) for key, value in sorted(environ.items())</div><div class="line">    ]</div><div class="line">    response_body = &apos;\n&apos;.join(response_body)  # 由于下面将Content-Type设置为text/plain，所以`\n`在浏览器中会起到换行的作用</div><div class="line">    status = &apos;200 OK&apos;</div><div class="line">    response_headers = [</div><div class="line">        (&apos;Content-Type&apos;, &apos;text/plain&apos;),</div><div class="line">        (&apos;Content-Length&apos;, str(len(response_body)))</div><div class="line">    ]</div><div class="line">    start_response(status, response_headers)</div><div class="line">    return [response_body]</div><div class="line"></div><div class="line"># 中间件</div><div class="line">class Upperware:</div><div class="line">   def __init__(self, app):</div><div class="line">      self.wrapped_app = app</div><div class="line"></div><div class="line">   def __call__(self, environ, start_response):</div><div class="line">      for data in self.wrapped_app(environ, start_response):</div><div class="line">        yield data.upper()</div><div class="line"></div><div class="line"># 创建一个服务器，IP地址为空，端口是8000，处理函数是application或者是中间件:</div><div class="line">wrapped_app = Upperware(application)</div><div class="line"># httpd = make_server(&apos;&apos;, 8000, application)</div><div class="line">httpd = make_server(&apos;&apos;, 8000, wrapped_app)</div><div class="line">print(&apos;Serving HTTP on port 8000...&apos;)</div><div class="line"># 开始监听HTTP请求:</div><div class="line">httpd.serve_forever()</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h2><p>Web App不仅仅是处理逻辑，展示给用户的页面也非常重要。在函数中返回一个包含HTML的字符串，简单的页面还可以，但是，复杂的页面在Python的字符串中很难正确地写出来。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">response_body = &apos;&apos;&apos;&lt;form action=&quot;/signin&quot; method=&quot;post&quot;&gt;</div><div class="line">          &lt;p&gt;&lt;input name=&quot;username&quot;&gt;&lt;/p&gt;</div><div class="line">          &lt;p&gt;&lt;input name=&quot;password&quot; type=&quot;password&quot;&gt;&lt;/p&gt;</div><div class="line">          &lt;p&gt;&lt;button type=&quot;submit&quot;&gt;Sign In&lt;/button&gt;&lt;/p&gt;</div><div class="line">          &lt;/form&gt;&apos;&apos;&apos;</div><div class="line">return [response_body]</div></pre></td></tr></table></figure></p>
+<p>所以，为了解决上述问题，模板技术出现了，类似于java web中的JSP。用于创建 HTML、XML 等其它标记格式文件，这些文件能通过 HTTP 响应返回给用户。主要以下几种：</p>
+<ul>
+<li>Jinja2：{ { name } }表示一个需要替换的变量。{ % … % }表示指令，解决循环、条件判断等指令语句</li>
+<li>Mako：用&lt;% … %&gt;和${xxx}的一个模板  </li>
+<li>Cheetah：也是用&lt;% … %&gt;和${xxx}的一个模板  </li>
+<li>Django：Django是一站式框架，内置一个用{ % … %}和{ { xxx } }的模板。</li>
+</ul>
+<p>备注：文中的两层大括号，由于hexo发布博客bug的原因，两个大括号之间加入了空格{ {,{ %也多加了个空格。</p>
+<h2 id="web框架"><a href="#web框架" class="headerlink" title="web框架"></a>web框架</h2><p>一个Web App，就是写一个WSGI的处理函数，针对每个HTTP请求进行响应。处理100个不同的URL？最简单的想法是从environ变量里取出HTTP请求的信息，然后逐个判断。只是这么写下去代码是肯定没法维护了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">def application(environ, start_response):</div><div class="line">    method = environ[&apos;REQUEST_METHOD&apos;]</div><div class="line">    path = environ[&apos;PATH_INFO&apos;]</div><div class="line">    if method==&apos;GET&apos; and path==&apos;/&apos;:</div><div class="line">        return handle_home(environ, start_response)</div><div class="line">    if method==&apos;POST&apos; and path=&apos;/signin&apos;:</div><div class="line">        return handle_signin(environ, start_response)</div><div class="line">    ...</div></pre></td></tr></table></figure></p>
+<p>我们需要在WSGI接口之上能进一步抽象，让我们专注于用一个函数处理一个URL，至于URL到函数的映射，就交给Web框架来做。</p>
+<p>常见的Python Web框架有：</p>
+<ul>
+<li>Django：全能型Web框架，一站式，自带模板、ORM、Session、Authentication等</li>
+<li>Flask：轻量级Web应用框架，扩展性强，附加功能都通过extension增加</li>
+<li>web.py：一个小巧的Web框架；</li>
+<li>Bottle：和Flask类似的Web框架；</li>
+<li>Tornado：Facebook的开源异步Web框架。</li>
+</ul>
+<h2 id="Flask"><a href="#Flask" class="headerlink" title="Flask"></a>Flask</h2><p>Flask是一个使用Python编写的轻量级Web应用框架。基于:</p>
+<ul>
+<li>Werkzeug WSGI工具箱</li>
+<li>Jinja2 模板引擎</li>
+</ul>
+<p>Flask也被称为“microframework”，因为它使用简单的核心，其他功能用extension增加：ORM、窗体验证工具、文件上传、各种开放式身份验证技术。</p>
+<p>模板和静态文件放在应用的 Python 源代码树的子目录中，名称分别为 templates 和 static</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>虚拟环境：可以使用pip安装，也可以用ubuntu系统中的软件包管理器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt install virtualenv             #ubuntu apt</div><div class="line">sudo pip install virtualenv             #pip</div></pre></td></tr></table></figure></p>
+<p>flask安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo pip install Flask</div></pre></td></tr></table></figure></p>
+<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><p>Flask通过request.form[‘name’]来获取表单的内容，通过render_template()函数来实现模板的渲染，在框架内部组装出一个dict作为Model作为render_template的参数传递到模板。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">from flask import Flask, request, render_template</div><div class="line"></div><div class="line">app = Flask(__name__)</div><div class="line"></div><div class="line">@app.route(&apos;/&apos;, methods=[&apos;GET&apos;, &apos;POST&apos;])</div><div class="line">def home():</div><div class="line">    return render_template(&apos;home.html&apos;)</div><div class="line"></div><div class="line">@app.route(&apos;/signin&apos;, methods=[&apos;GET&apos;])</div><div class="line">def signin_form():</div><div class="line">    return render_template(&apos;form.html&apos;)</div><div class="line"></div><div class="line">@app.route(&apos;/signin&apos;, methods=[&apos;POST&apos;])</div><div class="line">def signin():</div><div class="line">    username = request.form[&apos;username&apos;]</div><div class="line">    password = request.form[&apos;password&apos;]</div><div class="line">    if username == &apos;admin&apos; and password == &apos;password&apos;:</div><div class="line">        return render_template(&apos;signin-ok.html&apos;, username=username)</div><div class="line">    return render_template(&apos;form.html&apos;, message=&apos;Bad username or password&apos;, username=username)</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    app.run()</div></pre></td></tr></table></figure></p>
+<p>form.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">  &lt;title&gt;Please Sign In&lt;/title&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">  &#123; % if message %&#125;</div><div class="line">  &lt;p style=&quot;color:red&quot;&gt;&#123; &#123; message &#125;&#125;&lt;/p&gt;</div><div class="line">  &#123; % endif %&#125;</div><div class="line">  &lt;form action=&quot;/signin&quot; method=&quot;post&quot;&gt;</div><div class="line">    &lt;legend&gt;Please sign in:&lt;/legend&gt;</div><div class="line">    &lt;p&gt;&lt;input name=&quot;username&quot; placeholder=&quot;Username&quot; value=&quot;&#123; &#123; username &#125;&#125;&quot;&gt;&lt;/p&gt;</div><div class="line">    &lt;p&gt;&lt;input name=&quot;password&quot; placeholder=&quot;Password&quot; type=&quot;password&quot;&gt;&lt;/p&gt;</div><div class="line">    &lt;p&gt;&lt;button type=&quot;submit&quot;&gt;Sign In&lt;/button&gt;&lt;/p&gt;</div><div class="line">  &lt;/form&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>sign-ok.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">  &lt;title&gt;Welcome, &#123; &#123; username &#125;&#125;&lt;/title&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">  &lt;p&gt;Welcome, &#123; &#123; username &#125;&#125;!&lt;/p&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>home.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">  &lt;title&gt;Home&lt;/title&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">  &lt;h1 style=&quot;font-style:italic&quot;&gt;Home&lt;/h1&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.letiantian.me/2015-09-10-understand-python-wsgi/" target="_blank" rel="external">理解Python WSGI</a><br><a href="https://www.zybuluo.com/miaomiaomiao/note/48495#preface" target="_blank" rel="external">PEP 333 - Python Web Server Gateway Interface v1.0 中文版</a><br><a href="http://www.jianshu.com/p/e7a958bc0f0f" target="_blank" rel="external">Python wsgiref 模块源码浅析</a><br><a href="http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/001386832805619b3e68a9cf16c4d0398d8af8f6d50e740000" target="_blank" rel="external">廖雪峰Python教程-使用模板</a><br><a href="https://dormousehole.readthedocs.io/en/latest/" target="_blank" rel="external">https://dormousehole.readthedocs.io/en/latest/</a>  </p>
+</the></excerpt>]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[Vmware虚拟机安装Ubuntu]]></title>
       <url>https://fangyeqing.github.io/2017/02/10/Vmware%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85Ubuntu/</url>
       <content type="html"><![CDATA[<p><excerpt in="" index="" |="" 首页摘要=""><br>最近有一个项目，在windows下开发实在搞不定了，就用虚拟机装了个桌面版的linux-ubuntu，折腾了一天。</excerpt></p>
@@ -1096,7 +1729,7 @@
 </ul>
 <p>安装完后测试是否成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python</div></pre></td></tr></table></figure></p>
 <h3 id="解释器"><a href="#解释器" class="headerlink" title="解释器"></a>解释器</h3><p>当我们编写Python代码时，我们得到的是一个包含Python代码的以.py为扩展名的文本文件。要运行代码，就需要Python解释器去执行.py文件。安装python之后自带了CPython，就用这个 就可以了。</p>
-<h3 id="编译器"><a href="#编译器" class="headerlink" title="编译器"></a>编译器</h3><p>Windows下安装PyCharm，官方下载地址为<a href="https://download.jetbrains.com/python/pycharm-professional-2016.2.3.exe" target="_blank" rel="external">pycharm-professional-2016.2.3</a>，第一次打开的时候，选择激活方式为code，填入下方激活码（激活码来自互联网，仅供学习交流之用）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">43B4A73YYJ-eyJsaWNlbnNlSWQiOiI0M0I0QTczWVlKIiwibGljZW5zZWVOYW1lIjoibGFuIHl1IiwiYXNzaWduZWVOYW1lIjoiIiwiYXNzaWduZWVFbWFpbCI6IiIsImxpY2Vuc2VSZXN0cmljdGlvbiI6IkZvciBlZHVjYXRpb25hbCB1c2Ugb25seSIsImNoZWNrQ29uY3VycmVudFVzZSI6ZmFsc2UsInByb2R1Y3RzIjpbeyJjb2RlIjoiSUkiLCJwYWlkVXBUbyI6IjIwMTctMDItMjUifSx7ImNvZGUiOiJBQyIsInBhaWRVcFRvIjoiMjAxNy0wMi0yNSJ9LHsiY29kZSI6IkRQTiIsInBhaWRVcFRvIjoiMjAxNy0wMi0yNSJ9LHsiY29kZSI6IlBTIiwicGFpZFVwVG8iOiIyMDE3LTAyLTI1In0seyJjb2RlIjoiRE0iLCJwYWlkVXBUbyI6IjIwMTctMDItMjUifSx7ImNvZGUiOiJDTCIsInBhaWRVcFRvIjoiMjAxNy0wMi0yNSJ9LHsiY29kZSI6IlJTMCIsInBhaWRVcFRvIjoiMjAxNy0wMi0yNSJ9LHsiY29kZSI6IlJDIiwicGFpZFVwVG8iOiIyMDE3LTAyLTI1In0seyJjb2RlIjoiUEMiLCJwYWlkVXBUbyI6IjIwMTctMDItMjUifSx7ImNvZGUiOiJSTSIsInBhaWRVcFRvIjoiMjAxNy0wMi0yNSJ9LHsiY29kZSI6IldTIiwicGFpZFVwVG8iOiIyMDE3LTAyLTI1In0seyJjb2RlIjoiREIiLCJwYWlkVXBUbyI6IjIwMTctMDItMjUifSx7ImNvZGUiOiJEQyIsInBhaWRVcFRvIjoiMjAxNy0wMi0yNSJ9XSwiaGFzaCI6IjMzOTgyOTkvMCIsImdyYWNlUGVyaW9kRGF5cyI6MCwiYXV0b1Byb2xvbmdhdGVkIjpmYWxzZSwiaXNBdXRvUHJvbG9uZ2F0ZWQiOmZhbHNlfQ==-keaxIkRgXPKE4BR/ZTs7s7UkP92LBxRe57HvWamu1EHVXTcV1B4f/KNQIrpOpN6dgpjig5eMVMPmo7yMPl+bmwQ8pTZaCGFuLqCHD1ngo6ywHKIQy0nR249sAUVaCl2wGJwaO4JeOh1opUx8chzSBVRZBMz0/MGyygi7duYAff9JQqfH3p/BhDTNM8eKl6z5tnneZ8ZG5bG1XvqFTqWk4FhGsEWdK7B+He44hPjBxKQl2gmZAodb6g9YxfTHhVRKQY5hQ7KPXNvh3ikerHkoaL5apgsVBZJOTDE2KdYTnGLmqxghFx6L0ofqKI6hMr48ergMyflDk6wLNGWJvYHLWw==-MIIEPjCCAiagAwIBAgIBBTANBgkqhkiG9w0BAQsFADAYMRYwFAYDVQQDDA1KZXRQcm9maWxlIENBMB4XDTE1MTEwMjA4MjE0OFoXDTE4MTEwMTA4MjE0OFowETEPMA0GA1UEAwwGcHJvZDN5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxcQkq+zdxlR2mmRYBPzGbUNdMN6OaXiXzxIWtMEkrJMO/5oUfQJbLLuMSMK0QHFmaI37WShyxZcfRCidwXjot4zmNBKnlyHodDij/78TmVqFl8nOeD5+07B8VEaIu7c3E1N+e1doC6wht4I4+IEmtsPAdoaj5WCQVQbrI8KeT8M9VcBIWX7fD0fhexfg3ZRt0xqwMcXGNp3DdJHiO0rCdU+Itv7EmtnSVq9jBG1usMSFvMowR25mju2JcPFp1+I4ZI+FqgR8gyG8oiNDyNEoAbsR3lOpI7grUYSvkB/xVy/VoklPCK2h0f0GJxFjnye8NT1PAywoyl7RmiAVRE/EKwIDAQABo4GZMIGWMAkGA1UdEwQCMAAwHQYDVR0OBBYEFGEpG9oZGcfLMGNBkY7SgHiMGgTcMEgGA1UdIwRBMD+AFKOetkhnQhI2Qb1t4Lm0oFKLl/GzoRykGjAYMRYwFAYDVQQDDA1KZXRQcm9maWxlIENBggkA0myxg7KDeeEwEwYDVR0lBAwwCgYIKwYBBQUHAwEwCwYDVR0PBAQDAgWgMA0GCSqGSIb3DQEBCwUAA4ICAQC9WZuYgQedSuOc5TOUSrRigMw4/+wuC5EtZBfvdl4HT/8vzMW/oUlIP4YCvA0XKyBaCJ2iX+ZCDKoPfiYXiaSiH+HxAPV6J79vvouxKrWg2XV6ShFtPLP+0gPdGq3x9R3+kJbmAm8w+FOdlWqAfJrLvpzMGNeDU14YGXiZ9bVzmIQbwrBA+c/F4tlK/DV07dsNExihqFoibnqDiVNTGombaU2dDup2gwKdL81ua8EIcGNExHe82kjF4zwfadHk3bQVvbfdAwxcDy4xBjs3L4raPLU3yenSzr/OEur1+jfOxnQSmEcMXKXgrAQ9U55gwjcOFKrgOxEdek/Sk1VfOjvS+nuM4eyEruFMfaZHzoQiuw4IqgGc45ohFH0UUyjYcuFxxDSU9lMCv8qdHKm+wnPRb0l9l5vXsCBDuhAGYD6ss+Ga+aDY6f/qXZuUCEUOH3QUNbbCUlviSz6+GiRnt1kA9N2Qachl+2yBfaqUqr8h7Z2gsx5LcIf5kYNsqJ0GavXTVyWh7PYiKX4bs354ZQLUwwa/cG++2+wNWP+HtBhVxMRNTdVhSm38AknZlD+PTAsWGu9GyLmhti2EnVwGybSD2Dxmhxk3IPCkhKAK+pl0eWYGZWG3tJ9mZ7SowcXLWDFAk0lRJnKGFMTggrWjV8GYpw5bq23VmIqqDLgkNzuoog==</div></pre></td></tr></table></figure></p>
+<h3 id="编译器"><a href="#编译器" class="headerlink" title="编译器"></a>编译器</h3><p>Windows下安装PyCharm，官方下载地址为<a href="https://download.jetbrains.com/python/pycharm-professional-2016.2.3.exe" target="_blank" rel="external">pycharm-professional-2016.2.3</a>，第一次打开的时候，选择激活方式为code，填入下方激活码（激活码来自<a href="http://idea.lanyus.com/" target="_blank" rel="external">互联网</a>，仅供学习交流之用）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">CNEKJPQZEX-eyJsaWNlbnNlSWQiOiJDTkVLSlBRWkVYIiwibGljZW5zZWVOYW1lIjoibGFuIHl1IiwiYXNzaWduZWVOYW1lIjoiIiwiYXNzaWduZWVFbWFpbCI6IiIsImxpY2Vuc2VSZXN0cmljdGlvbiI6IkZvciBlZHVjYXRpb25hbCB1c2Ugb25seSIsImNoZWNrQ29uY3VycmVudFVzZSI6ZmFsc2UsInByb2R1Y3RzIjpbeyJjb2RlIjoiQUMiLCJwYWlkVXBUbyI6IjIwMTgtMDEtMzAifSx7ImNvZGUiOiJETSIsInBhaWRVcFRvIjoiMjAxOC0wMS0zMCJ9LHsiY29kZSI6IklJIiwicGFpZFVwVG8iOiIyMDE4LTAxLTMwIn0seyJjb2RlIjoiUlMwIiwicGFpZFVwVG8iOiIyMDE4LTAxLTMwIn0seyJjb2RlIjoiV1MiLCJwYWlkVXBUbyI6IjIwMTgtMDEtMzAifSx7ImNvZGUiOiJEUE4iLCJwYWlkVXBUbyI6IjIwMTgtMDEtMzAifSx7ImNvZGUiOiJSQyIsInBhaWRVcFRvIjoiMjAxOC0wMS0zMCJ9LHsiY29kZSI6IlBTIiwicGFpZFVwVG8iOiIyMDE4LTAxLTMwIn0seyJjb2RlIjoiREMiLCJwYWlkVXBUbyI6IjIwMTgtMDEtMzAifSx7ImNvZGUiOiJEQiIsInBhaWRVcFRvIjoiMjAxOC0wMS0zMCJ9LHsiY29kZSI6IlJNIiwicGFpZFVwVG8iOiIyMDE4LTAxLTMwIn0seyJjb2RlIjoiUEMiLCJwYWlkVXBUbyI6IjIwMTgtMDEtMzAifSx7ImNvZGUiOiJDTCIsInBhaWRVcFRvIjoiMjAxOC0wMS0zMCJ9XSwiaGFzaCI6IjUxOTU1OTMvMCIsImdyYWNlUGVyaW9kRGF5cyI6MCwiYXV0b1Byb2xvbmdhdGVkIjpmYWxzZSwiaXNBdXRvUHJvbG9uZ2F0ZWQiOmZhbHNlfQ==-QOxwjWvRwJz6vo6J6adC3CJ4ukQHosbPYZ94URUVFna/Rbew8xK/M5gP3kAaPh6ZDveFdtMR1UBoumq3eCwXtXM3U3ls5noB4LIr+QplVlCj2pK5uNq7g/feyNyQcHpSXtvhIOnXDBLOecB05DOsxzm0p7ulGGJoAInmHeb9mc0eYjqc4RPpUQfh6HSYBnvEnKMlLF5bz4KEtzmsvvgA55CwzwQ3gRitm5Q/wUT7AQCBdjmBfNUjKVQL6TSjSDPp56FUdEs4Aab8LqstA2DIMbxocO64rvytmcUeIwu8Mi5uq87KQP5AQMSMYb59Inbd+dmVfx5cJo3fRS4/5s3/Hg==-MIIEPjCCAiagAwIBAgIBBTANBgkqhkiG9w0BAQsFADAYMRYwFAYDVQQDDA1KZXRQcm9maWxlIENBMB4XDTE1MTEwMjA4MjE0OFoXDTE4MTEwMTA4MjE0OFowETEPMA0GA1UEAwwGcHJvZDN5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxcQkq+zdxlR2mmRYBPzGbUNdMN6OaXiXzxIWtMEkrJMO/5oUfQJbLLuMSMK0QHFmaI37WShyxZcfRCidwXjot4zmNBKnlyHodDij/78TmVqFl8nOeD5+07B8VEaIu7c3E1N+e1doC6wht4I4+IEmtsPAdoaj5WCQVQbrI8KeT8M9VcBIWX7fD0fhexfg3ZRt0xqwMcXGNp3DdJHiO0rCdU+Itv7EmtnSVq9jBG1usMSFvMowR25mju2JcPFp1+I4ZI+FqgR8gyG8oiNDyNEoAbsR3lOpI7grUYSvkB/xVy/VoklPCK2h0f0GJxFjnye8NT1PAywoyl7RmiAVRE/EKwIDAQABo4GZMIGWMAkGA1UdEwQCMAAwHQYDVR0OBBYEFGEpG9oZGcfLMGNBkY7SgHiMGgTcMEgGA1UdIwRBMD+AFKOetkhnQhI2Qb1t4Lm0oFKLl/GzoRykGjAYMRYwFAYDVQQDDA1KZXRQcm9maWxlIENBggkA0myxg7KDeeEwEwYDVR0lBAwwCgYIKwYBBQUHAwEwCwYDVR0PBAQDAgWgMA0GCSqGSIb3DQEBCwUAA4ICAQC9WZuYgQedSuOc5TOUSrRigMw4/+wuC5EtZBfvdl4HT/8vzMW/oUlIP4YCvA0XKyBaCJ2iX+ZCDKoPfiYXiaSiH+HxAPV6J79vvouxKrWg2XV6ShFtPLP+0gPdGq3x9R3+kJbmAm8w+FOdlWqAfJrLvpzMGNeDU14YGXiZ9bVzmIQbwrBA+c/F4tlK/DV07dsNExihqFoibnqDiVNTGombaU2dDup2gwKdL81ua8EIcGNExHe82kjF4zwfadHk3bQVvbfdAwxcDy4xBjs3L4raPLU3yenSzr/OEur1+jfOxnQSmEcMXKXgrAQ9U55gwjcOFKrgOxEdek/Sk1VfOjvS+nuM4eyEruFMfaZHzoQiuw4IqgGc45ohFH0UUyjYcuFxxDSU9lMCv8qdHKm+wnPRb0l9l5vXsCBDuhAGYD6ss+Ga+aDY6f/qXZuUCEUOH3QUNbbCUlviSz6+GiRnt1kA9N2Qachl+2yBfaqUqr8h7Z2gsx5LcIf5kYNsqJ0GavXTVyWh7PYiKX4bs354ZQLUwwa/cG++2+wNWP+HtBhVxMRNTdVhSm38AknZlD+PTAsWGu9GyLmhti2EnVwGybSD2Dxmhxk3IPCkhKAK+pl0eWYGZWG3tJ9mZ7SowcXLWDFAk0lRJnKGFMTggrWjV8GYpw5bq23VmIqqDLgkNzuoog==</div></pre></td></tr></table></figure></p>
 <h4 id="pycharm配置"><a href="#pycharm配置" class="headerlink" title="pycharm配置"></a>pycharm配置</h4><p>配置的文件在github项目中，直接导入也可以，下载<a href="https://github.com/fangyeqing/hello-python/blob/master/pyCharm_setting/pyCharm-settings.jar" target="_blank" rel="external">地址</a>。不怕麻烦可以按下面一步步设置：</p>
 <ol>
 <li><p>界面窗口设置：</p>
@@ -1553,26 +2186,16 @@
 <h2 id="数据分片"><a href="#数据分片" class="headerlink" title="数据分片"></a>数据分片</h2><p>数据以segments(段)的形式就行分片，Segments是自包含容器，包括基于列的压缩,以及这些列的索引，对应下面要介绍的存储的descriptor.json和index.zip。Druid只需要清楚如何扫描这些segments就可以查询。</p>
 <h3 id="第一级分片-segment"><a href="#第一级分片-segment" class="headerlink" title="第一级分片-segment"></a>第一级分片-segment</h3><p>以时间作为第一级分片,通过segmentGranularity定义segments的分片时间粒度。    </p>
 <h3 id="第二级分片-shard"><a href="#第二级分片-shard" class="headerlink" title="第二级分片-shard"></a>第二级分片-shard</h3><p>支持两种类型的分区策略:“散列”、“单维度”。在大多数情况下,建议使用散列分区，可以提高索引性能和创造大小更均匀的数据段</p>
-<h4 id="基于哈希散列"><a href="#基于哈希散列" class="headerlink" title="基于哈希散列"></a>基于哈希散列</h4><p>首先选择第一级分片的segments,然后根据segments每一行的所有维度的hash来划分。shard的数量 = 输入的基数 / targetPartitionSize<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&quot;partitionsSpec&quot;: &#123;</div><div class="line">     &quot;type&quot;: &quot;hashed&quot;,</div><div class="line">     &quot;targetPartitionSize&quot;: 5000000</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
-<p>numShards：可以直接指定shard个数。当配置这个参数时，还可以配置partitionDimensions来指定维度，而不用全部维度</p>
-<h4 id="单维度划分"><a href="#单维度划分" class="headerlink" title="单维度划分"></a>单维度划分</h4><p>首先自动选择一个维度划分,然后分离该维度成连续的范围。每一部分将包含所有行维度的值范围。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&quot;partitionsSpec&quot;: &#123;</div><div class="line">    &quot;type&quot;: &quot;dimension&quot;,</div><div class="line">    &quot;targetPartitionSize&quot;: 5000000</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
-<p>可以通过partitionDimension指定维度进行划分，不用自动选择的维度。</p>
-<h4 id="shard大小推荐"><a href="#shard大小推荐" class="headerlink" title="shard大小推荐"></a>shard大小推荐</h4><p>根据<a href="http://druid.io/docs/latest/design/segments.html" target="_blank" rel="external">官方文档</a>，shard大小推荐为300MB-700MB，需要调整两级分片的参数segmentGranularity和partitioningSpec。</p>
-<p>个人是这么理解的，shard相当于是druid数据最小存储单位，分得太大的话，可能在各个历史节点分散不开。分得合适的话，查询的时候在历史节点比较分散，可以充分利用每个历史节点的cpu。mark，有空看看这部分的源码。</p>
-<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>Segments通过datasource, interval, version, partition number来区分。   </p>
-<blockquote>
-<p>dataSource_interval_version_partitionNumber。  </p>
-</blockquote>
-<p>interval：时间段，由queryGranularity决定<br>partition number：shard的序号，shard的个数由输入的基数/targetPartitionSize决定</p>
-<p>例如：<br>Segment sampleData_2011-01-01T01:00:00:00Z_2011-01-01T02:00:00:00Z_v1_0 包含<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2011-01-01T01:00:00Z  ultratrimfast.com  google.com  Male   USA     1800        25     15.70</div><div class="line">2011-01-01T01:00:00Z  bieberfever.com    google.com  Male   USA     2912        42     29.18</div></pre></td></tr></table></figure></p>
-<p>Segment sampleData_2011-01-01T02:00:00:00Z_2011-01-01T03:00:00:00Z_v1_0 包含<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Male   UK      1953        17     17.31</div><div class="line">2011-01-01T02:00:00Z  bieberfever.com    google.com  Male   UK      3194        170    34.01</div></pre></td></tr></table></figure></p>
-<h2 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h2><p><strong>MVCC</strong>：多版本控制，以HDFS作为DeepStorage为例，HDFS上会保存每次修改的版本，history节点只load最新的数据，即用最新的版本来表示数据。</p>
-<p>druid在0.9版本之后，HDFS上存储格式如下:</p>
-<p><strong>hdfs://nn1:port/…/ sampleData / startTime_endTime / updateTime / shard / index.zip</strong><br><strong>hdfs://nn1:port/…/ sampleData / startTime_endTime / updateTime / shard / descriptor.json</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">startTime_endTime:看聚合粒度，可能是1个小时之内，可能是1天之内</div><div class="line">updateTime：修改时间，即版本号。取最新的一个版本</div><div class="line">shard:分片，数据比较多，一个分片放不下</div></pre></td></tr></table></figure></p>
-<h3 id="HDFS存储举例"><a href="#HDFS存储举例" class="headerlink" title="HDFS存储举例"></a>HDFS存储举例</h3><p><strong>hdfs://nn1:port/…/sampleData/20160801T120000.000+0800_20160801T130000.000+0800/</strong><br>目录下有如下两个版本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2016-08-01T12_07_40.483+08_00/	rwxr-xr-x	root/supergroup	    2016-08-01 13:15:12</div><div class="line">2016-08-01T13_17_06.199+08_00/	rwxr-xr-x	root/supergroup	    2016-08-01 13:23:40</div></pre></td></tr></table></figure></p>
-<p><strong>2016-08-01T13_17_06.199+08_00</strong>目录下有3个分片：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">0/	rwxr-xr-x	root/supergroup	2016-08-01 13:23:05</div><div class="line">1/	rwxr-xr-x	root/supergroup	2016-08-01 13:23:11</div><div class="line">2/	rwxr-xr-x	root/supergroup	2016-08-01 13:23:46</div></pre></td></tr></table></figure></p>
-<p><strong>0/</strong>目录下有两个文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">descriptor.json	rw-r--r--	eadata/supergroup	766 B	128 mb	3	2016-08-01 13:23:05</div><div class="line">index.zip	rw-r--r--	eadata/supergroup	5.56 mb	128 mb	3	2016-08-01 13:23:04</div></pre></td></tr></table></figure></p>
-<p>descriptor.json保存的信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;dataSource&quot;: &quot;sampleData&quot;,//数据源</div><div class="line">    &quot;interval&quot;: &quot;2016-08-01T12:00:00.000+08:00/2016-08-01T13:00:00.000+08:00&quot;,//时间区间</div><div class="line">    &quot;version&quot;: &quot;2016-08-01T13:17:06.199+08:00&quot;,//版本号，即修改时间</div><div class="line">    &quot;loadSpec&quot;: &#123;//存储路径</div><div class="line">        &quot;type&quot;: &quot;hdfs&quot;,</div><div class="line">        &quot;path&quot;: &quot;hdfs://nn1:port/..../sampleData/20160801T120000.000+0800_20160801T130000.000+0800/2016-08-01T13_17_06.199+08_00/0/index.zip&quot;</div><div class="line">    &#125;,</div><div class="line">    &quot;dimensions&quot;: &quot;publisher,advertiser,gender,country&quot;,</div><div class="line">    &quot;metrics&quot;: &quot;click,price&quot;,</div><div class="line">    &quot;shardSpec&quot;: &#123;//分片信息</div><div class="line">        &quot;type&quot;: &quot;hashed&quot;,</div><div class="line">        &quot;partitionNum&quot;: 0,</div><div class="line">        &quot;partitions&quot;: 3,</div><div class="line">        &quot;partitionDimensions&quot;: []</div><div class="line">    &#125;,</div><div class="line">    &quot;binaryVersion&quot;: 9,</div><div class="line">    &quot;size&quot;: 8959843,//index.zip解压后的大小</div><div class="line">    &quot;identifier&quot;: &quot;sampleData_2016-08-01T12:00:00.000+08:00_2016-08-01T13:00:00.000+08:00_2016-08-01T13:17:06.199+08:00&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="基于哈希散列"><a href="#基于哈希散列" class="headerlink" title="基于哈希散列"></a>基于哈希散列</h4><p>首先选择第一级分片的segments,然后根据segments每一行的所有维度的hash来划分。<figure class="highlight plain"><figcaption><span>= 输入的基数 / targetPartitionSize```  </span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">配置举例：</div></pre></td></tr></table></figure></p>
+<p>“partitionsSpec”: {<br>     “type”: “hashed”,<br>     “targetPartitionSize”: 5000000<br>   }<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">numShards：可以直接指定shard个数。当配置这个参数时，还可以配置partitionDimensions来指定维度，而不用全部维度</div><div class="line"></div><div class="line">#### 单维度划分</div><div class="line">首先自动选择一个维度划分,然后分离该维度成连续的范围。每一部分将包含所有行维度的值范围。</div></pre></td></tr></table></figure></p>
+<p> “partitionsSpec”: {<br>     “type”: “dimension”,<br>     “targetPartitionSize”: 5000000<br>   }<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">可以通过partitionDimension指定维度进行划分，不用自动选择的维度。</div><div class="line"></div><div class="line">#### shard大小推荐</div><div class="line">根据[官方文档](http://druid.io/docs/latest/design/segments.html)，shard大小推荐为300MB-700MB，需要调整两级分片的参数segmentGranularity和partitioningSpec。</div><div class="line"></div><div class="line">个人是这么理解的，shard相当于是druid数据最小存储单位，分得太大的话，可能在各个历史节点分散不开。分得合适的话，查询的时候在历史节点比较分散，可以充分利用每个历史节点的cpu。mark，有空看看这部分的源码。</div><div class="line"></div><div class="line">### 例子</div><div class="line">Segments通过datasource, interval, version, partition number来区分。   </div><div class="line">&gt; dataSource_interval_version_partitionNumber。  </div><div class="line"></div><div class="line">interval：时间段，由queryGranularity决定  </div><div class="line">partition number：shard的序号，shard的个数由输入的基数/targetPartitionSize决定</div><div class="line"></div><div class="line">例如：  </div><div class="line">Segment sampleData_2011-01-01T01:00:00:00Z_2011-01-01T02:00:00:00Z_v1_0 包含</div></pre></td></tr></table></figure></p>
+<p>2011-01-01T01:00:00Z  ultratrimfast.com  google.com  Male   USA     1800        25     15.70<br>2011-01-01T01:00:00Z  bieberfever.com    google.com  Male   USA     2912        42     29.18<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Segment sampleData_2011-01-01T02:00:00:00Z_2011-01-01T03:00:00:00Z_v1_0 包含</div></pre></td></tr></table></figure></p>
+<p>2011-01-01T02:00:00Z  ultratrimfast.com  google.com  Male   UK      1953        17     17.31<br>2011-01-01T02:00:00Z  bieberfever.com    google.com  Male   UK      3194        170    34.01<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">## 数据存储</div><div class="line">**MVCC**：多版本控制，以HDFS作为DeepStorage为例，HDFS上会保存每次修改的版本，history节点只load最新的数据，即用最新的版本来表示数据。</div><div class="line"></div><div class="line">druid在0.9版本之后，HDFS上存储格式如下:</div><div class="line"></div><div class="line">**hdfs://nn1:port/.../ sampleData / startTime_endTime / updateTime / shard / index.zip**  </div><div class="line">**hdfs://nn1:port/.../ sampleData / startTime_endTime / updateTime / shard / descriptor.json**</div></pre></td></tr></table></figure></p>
+<p>startTime_endTime:看聚合粒度，可能是1个小时之内，可能是1天之内<br>updateTime：修改时间，即版本号。取最新的一个版本<br>shard:分片，数据比较多，一个分片放不下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">### HDFS存储举例</div><div class="line">**hdfs://nn1:port/.../sampleData/20160801T120000.000+0800_20160801T130000.000+0800/**</div><div class="line">目录下有如下两个版本：</div></pre></td></tr></table></figure></p>
+<p>2016-08-01T12_07_40.483+08_00/    rwxr-xr-x    root/supergroup        2016-08-01 13:15:12<br>2016-08-01T13_17_06.199+08_00/    rwxr-xr-x    root/supergroup        2016-08-01 13:23:40<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">**2016-08-01T13_17_06.199+08_00**目录下有3个分片：</div></pre></td></tr></table></figure></p>
+<p>0/    rwxr-xr-x    root/supergroup    2016-08-01 13:23:05<br>1/    rwxr-xr-x    root/supergroup    2016-08-01 13:23:11<br>2/    rwxr-xr-x    root/supergroup    2016-08-01 13:23:46<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">**0/**目录下有两个文件：</div></pre></td></tr></table></figure></p>
+<p>descriptor.json    rw-r–r–    eadata/supergroup    766 B    128 mb    3    2016-08-01 13:23:05<br>index.zip    rw-r–r–    eadata/supergroup    5.56 mb    128 mb    3    2016-08-01 13:23:04<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">descriptor.json保存的信息：</div></pre></td></tr></table></figure></p>
+<p>{<br>    “dataSource”: “sampleData”,//数据源<br>    “interval”: “2016-08-01T12:00:00.000+08:00/2016-08-01T13:00:00.000+08:00”,//时间区间<br>    “version”: “2016-08-01T13:17:06.199+08:00”,//版本号，即修改时间<br>    “loadSpec”: {//存储路径<br>        “type”: “hdfs”,<br>        “path”: “hdfs://nn1:port/…./sampleData/20160801T120000.000+0800_20160801T130000.000+0800/2016-08-01T13_17_06.199+08_00/0/index.zip”<br>    },<br>    “dimensions”: “publisher,advertiser,gender,country”,<br>    “metrics”: “click,price”,<br>    “shardSpec”: {//分片信息<br>        “type”: “hashed”,<br>        “partitionNum”: 0,<br>        “partitions”: 3,<br>        “partitionDimensions”: []<br>    },<br>    “binaryVersion”: 9,<br>    “size”: 8959843,//index.zip解压后的大小<br>    “identifier”: “sampleData_2016-08-01T12:00:00.000+08:00_2016-08-01T13:00:00.000+08:00_2016-08-01T13:17:06.199+08:00”<br>}<br>```</p>
 <p>当historical节点加载HDFS中的segment到本地存储时，会解压index.zip，解压出00000.smoosh、meta.smoosh、version.bin三个文件。保存在本地路径:</p>
 <blockquote>
 <p>druid.segmentCache.locations / sampleData / startTime_endTime / updateTime / shard   </p>
@@ -2014,8 +2637,8 @@ public void configure(Map&lt;String, ?&gt; map) {
 <h2 id="topic-amp-amp-partitions"><a href="#topic-amp-amp-partitions" class="headerlink" title="topic&amp;&amp;partitions"></a>topic&amp;&amp;partitions</h2><p>对于每个Topic，Kafka会为其维护一个如下图所示的分区的日志文件<br><img src="http://kafka.apache.org/090/images/log_anatomy.png" alt="image"><br>每个partition(分区)是一个有序的、不可修改的消息组成的队列；这些消息是被不断的appended到这个commit log（提交日志文件）上的。在这些patitions之中的每个消息都会被赋予一个叫做offset的顺序id编号，用来在partition之中唯一性的标示这个消息。</p>
 <p>Kafka集群会保存一个时间段内所有被发布出来的信息，无论这个消息是否已经被消费过。</p>
 <h3 id="partition内有序"><a href="#partition内有序" class="headerlink" title="partition内有序"></a>partition内有序</h3><p>Kafka仅仅提供提供partition之内的消息的全局有序，在不同的partition之间不能担保。partition的消息有序性加上可以按照指定的key划分消息的partition，这基本上满足了大部分应用的需求。如果你必须要实现一个全局有序的消息队列，那么可以采用Topic只划分1个partition来实现。但是这就意味着你的每个消费组只能有唯一的一个消费者进程。</p>
-<h2 id="Consumer-Group"><a href="#Consumer-Group" class="headerlink" title="Consumer Group"></a>Consumer Group</h2><p>每一个consumer实例都属于一个consumer group，每一条消息都会被所有订阅了该topic的consumer group消费。通过group id指定consumer group。</p>
-<p>并且使用high-level consumer时，同一个consumer group里只有一个consumer能消费到该消息。  </p>
+<h2 id="Consumer-Group"><a href="#Consumer-Group" class="headerlink" title="Consumer Group"></a>Consumer Group</h2><p>每一个consumer实例都属于一个consumer group，每一条消息都会被所有订阅了该topic的consumer group消费。通过group id指定consumer group。相当于同一个consumer group的消费者会瓜分所有的分区，每个consumer会消费一个或多个分区。</p>
+<p>使用high-level consumer时，同一个consumer group里只有一个consumer能消费到该消息。  </p>
 <p>因为high level不用client关心offset, 会自动的读zookeeper中该Consumer group的last offset，相当于所有consumer都公用这个offset。当其中一个consumer消费一条消息时，offset就移动到下一条。  </p>
 <p><img src="http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/41CC44BBC283484B9E01F28C50A8991D/23720" alt="image">  </p>
 <h3 id="不同形式的消息播发"><a href="#不同形式的消息播发" class="headerlink" title="不同形式的消息播发"></a>不同形式的消息播发</h3><p>订阅模式:每个Consumer都采用不同的group，每一条消息都会发送给所有消费者<br>消息队列模式:所有的Consumer在同一个Group里，消费者之间负载均衡  </p>
@@ -2142,6 +2765,11 @@ public void configure(Map&lt;String, ?&gt; map) {
 <p>在hexo\source\about\index.md中修改</p>
 <h3 id="标签云"><a href="#标签云" class="headerlink" title="标签云"></a>标签云</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page tags</div></pre></td></tr></table></figure>
 <p>会自动生成标签云</p>
+<h2 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h2><p>在发布博客的时候遇到的一个问题<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Template render error: (unknown path) [Line 31, Column 31]</div><div class="line">``` </div><div class="line">Hexo使用 Nunjucks 来解析文章（旧版本使用 Swig，两者语法类似），内容若包含两层大括号&#123; &#123;或 &#123; % % &#125; 可能导致解析错误，您可以用 raw 标签包裹来避免潜在问题发生。或者在两个大括号之间加入空格&#123; &#123;</div></pre></td></tr></table></figure></p>
+
+Hello {{ sensitive }}
+
+<p>```</p>
 </the></excerpt>]]></content>
     </entry>
     
@@ -2198,12 +2826,6 @@ public void configure(Map&lt;String, ?&gt; map) {
   
     
     <entry>
-      <title><![CDATA[tags]]></title>
-      <url>https://fangyeqing.github.io/tags/index.html</url>
-      <content type="html"></content>
-    </entry>
-    
-    <entry>
       <title><![CDATA[about]]></title>
       <url>https://fangyeqing.github.io/about/index.html</url>
       <content type="html"><![CDATA[<p>程序员并不是木头和绝缘体，是有血有肉的逗比</p>
@@ -2214,6 +2836,12 @@ public void configure(Map&lt;String, ?&gt; map) {
 <li>邮箱：fangyeqing123@163.com</li>
 </ul>
 ]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[tags]]></title>
+      <url>https://fangyeqing.github.io/tags/index.html</url>
+      <content type="html"></content>
     </entry>
     
   

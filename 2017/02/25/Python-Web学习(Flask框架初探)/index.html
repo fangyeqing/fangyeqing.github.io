@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="小懒" />
+
+
+
+<meta name="description" content="Python有上百种Web开发框架，有很多成熟的模板技术，选择Python开发Web应用，不但开发效率高，而且运行速度快。
+WSGIWeb Server Gateway Interface：WSGI 规范了一种简单的接口，描述了web server如何与web application交互、web application如何处理请求。实现了WSGI的模块/库有wsgiref(python内置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python-Web学习(Flask框架初探)">
+<meta property="og:url" content="https://fangyeqing.github.io/2017/02/25/Python-Web学习(Flask框架初探)/index.html">
+<meta property="og:site_name" content="小懒的博客">
+<meta property="og:description" content="Python有上百种Web开发框架，有很多成熟的模板技术，选择Python开发Web应用，不但开发效率高，而且运行速度快。
+WSGIWeb Server Gateway Interface：WSGI 规范了一种简单的接口，描述了web server如何与web application交互、web application如何处理请求。实现了WSGI的模块/库有wsgiref(python内置">
+<meta property="og:updated_time" content="2017-02-28T08:46:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python-Web学习(Flask框架初探)">
+<meta name="twitter:description" content="Python有上百种Web开发框架，有很多成熟的模板技术，选择Python开发Web应用，不但开发效率高，而且运行速度快。
+WSGIWeb Server Gateway Interface：WSGI 规范了一种简单的接口，描述了web server如何与web application交互、web application如何处理请求。实现了WSGI的模块/库有wsgiref(python内置">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="小懒的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/xiaolan.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Python-Web学习(Flask框架初探) | 小懒的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?7fb806568d59e1b131e6cd93134ab91e";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">小懒</a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">文章分类</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/监控/">监控</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">小懒</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">小懒</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">文章分类</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Python-Web学习(Flask框架初探)" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/02/25/Python-Web学习(Flask框架初探)/" class="article-date">
+      <time datetime="2017-02-25T12:50:50.000Z" itemprop="datePublished">2017-02-25</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python-Web学习(Flask框架初探)
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/python/">python</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <excerpt in="" index="" |="" 首页摘要="">  
+
+<p>Python有上百种Web开发框架，有很多成熟的模板技术，选择Python开发Web应用，不但开发效率高，而且运行速度快。</p>
+<h2 id="WSGI"><a href="#WSGI" class="headerlink" title="WSGI"></a>WSGI</h2><p>Web Server Gateway Interface：WSGI 规范了一种简单的接口，描述了web server如何与web application交互、web application如何处理请求。实现了WSGI的模块/库有wsgiref(python内置)、werkzeug.serving、twisted.web等</p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h3 id="应用程序-框架端（Web-framework-app）"><a href="#应用程序-框架端（Web-framework-app）" class="headerlink" title="应用程序/框架端（Web framework/app）"></a>应用程序/框架端（Web framework/app）</h3><p>符合WSGI标准的application接口应该实现为一个可调用对象（callable object），例如函数、方法、类、含<strong>call</strong>方法的实例。这个可调用对象可以接收2个参数：</p>
+<ul>
+<li>environ：一个包含所有HTTP请求信息的dict对象，常用的有：environ[‘REQUEST_METHOD’]、environ[‘PATH_INFO’]</li>
+<li>start_response：一个发送HTTP响应的函数。</li>
+</ul>
+<h3 id="服务器端-网关端（Web-server）"><a href="#服务器端-网关端（Web-server）" class="headerlink" title="服务器端/网关端（Web server）"></a>服务器端/网关端（Web server）</h3><p>每一次，当HTTP客户端冲着应用程序发来一个请求，服务器/网关都会调用应用程序可调用者（callable）。</p>
+<h3 id="中间件（Middleware）"><a href="#中间件（Middleware）" class="headerlink" title="中间件（Middleware）"></a>中间件（Middleware）</h3><p>中间件位于WSGI server和WSGI application之间，包装了应用程序，可以实现：</p>
+<ul>
+<li>在相应地重写environ变量之后，根据目标URL地址将请求路由到不同的应用程序对象。</li>
+<li>允许多个应用程序或框架在同一个进程中并行运行。</li>
+<li>通过在网络上转发请求和应答，实现负载均衡和远程处理。</li>
+<li>对上下文（content）进行后加工（postprocessing），比如应用xsl样式表等。</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>以python内置的wsgiref作为服务器端为例：</p>
+<ul>
+<li>符合WSGI接口的application()方法可以收这两个参数，最后将environment字典的内容返回给客户端。</li>
+<li>中间件：实现小写转大写</li>
+<li>服务器端：wsgiref的make_server方法调用中间件Upperware(application)<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">from wsgiref.simple_server import make_server</div><div class="line"></div><div class="line"># 应用程序端</div><div class="line">def application(environ, start_response):</div><div class="line">    response_body = [</div><div class="line">        &apos;%s: %s&apos; % (key, value) for key, value in sorted(environ.items())</div><div class="line">    ]</div><div class="line">    response_body = &apos;\n&apos;.join(response_body)  # 由于下面将Content-Type设置为text/plain，所以`\n`在浏览器中会起到换行的作用</div><div class="line">    status = &apos;200 OK&apos;</div><div class="line">    response_headers = [</div><div class="line">        (&apos;Content-Type&apos;, &apos;text/plain&apos;),</div><div class="line">        (&apos;Content-Length&apos;, str(len(response_body)))</div><div class="line">    ]</div><div class="line">    start_response(status, response_headers)</div><div class="line">    return [response_body]</div><div class="line"></div><div class="line"># 中间件</div><div class="line">class Upperware:</div><div class="line">   def __init__(self, app):</div><div class="line">      self.wrapped_app = app</div><div class="line"></div><div class="line">   def __call__(self, environ, start_response):</div><div class="line">      for data in self.wrapped_app(environ, start_response):</div><div class="line">        yield data.upper()</div><div class="line"></div><div class="line"># 创建一个服务器，IP地址为空，端口是8000，处理函数是application或者是中间件:</div><div class="line">wrapped_app = Upperware(application)</div><div class="line"># httpd = make_server(&apos;&apos;, 8000, application)</div><div class="line">httpd = make_server(&apos;&apos;, 8000, wrapped_app)</div><div class="line">print(&apos;Serving HTTP on port 8000...&apos;)</div><div class="line"># 开始监听HTTP请求:</div><div class="line">httpd.serve_forever()</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h2><p>Web App不仅仅是处理逻辑，展示给用户的页面也非常重要。在函数中返回一个包含HTML的字符串，简单的页面还可以，但是，复杂的页面在Python的字符串中很难正确地写出来。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">response_body = &apos;&apos;&apos;&lt;form action=&quot;/signin&quot; method=&quot;post&quot;&gt;</div><div class="line">          &lt;p&gt;&lt;input name=&quot;username&quot;&gt;&lt;/p&gt;</div><div class="line">          &lt;p&gt;&lt;input name=&quot;password&quot; type=&quot;password&quot;&gt;&lt;/p&gt;</div><div class="line">          &lt;p&gt;&lt;button type=&quot;submit&quot;&gt;Sign In&lt;/button&gt;&lt;/p&gt;</div><div class="line">          &lt;/form&gt;&apos;&apos;&apos;</div><div class="line">return [response_body]</div></pre></td></tr></table></figure></p>
+<p>所以，为了解决上述问题，模板技术出现了，类似于java web中的JSP。用于创建 HTML、XML 等其它标记格式文件，这些文件能通过 HTTP 响应返回给用户。主要以下几种：</p>
+<ul>
+<li>Jinja2：{ { name } }表示一个需要替换的变量。{ % … % }表示指令，解决循环、条件判断等指令语句</li>
+<li>Mako：用&lt;% … %&gt;和${xxx}的一个模板  </li>
+<li>Cheetah：也是用&lt;% … %&gt;和${xxx}的一个模板  </li>
+<li>Django：Django是一站式框架，内置一个用{ % … %}和{ { xxx } }的模板。</li>
+</ul>
+<p>备注：文中的两层大括号，由于hexo发布博客bug的原因，两个大括号之间加入了空格{ {,{ %也多加了个空格。</p>
+<h2 id="web框架"><a href="#web框架" class="headerlink" title="web框架"></a>web框架</h2><p>一个Web App，就是写一个WSGI的处理函数，针对每个HTTP请求进行响应。处理100个不同的URL？最简单的想法是从environ变量里取出HTTP请求的信息，然后逐个判断。只是这么写下去代码是肯定没法维护了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">def application(environ, start_response):</div><div class="line">    method = environ[&apos;REQUEST_METHOD&apos;]</div><div class="line">    path = environ[&apos;PATH_INFO&apos;]</div><div class="line">    if method==&apos;GET&apos; and path==&apos;/&apos;:</div><div class="line">        return handle_home(environ, start_response)</div><div class="line">    if method==&apos;POST&apos; and path=&apos;/signin&apos;:</div><div class="line">        return handle_signin(environ, start_response)</div><div class="line">    ...</div></pre></td></tr></table></figure></p>
+<p>我们需要在WSGI接口之上能进一步抽象，让我们专注于用一个函数处理一个URL，至于URL到函数的映射，就交给Web框架来做。</p>
+<p>常见的Python Web框架有：</p>
+<ul>
+<li>Django：全能型Web框架，一站式，自带模板、ORM、Session、Authentication等</li>
+<li>Flask：轻量级Web应用框架，扩展性强，附加功能都通过extension增加</li>
+<li>web.py：一个小巧的Web框架；</li>
+<li>Bottle：和Flask类似的Web框架；</li>
+<li>Tornado：Facebook的开源异步Web框架。</li>
+</ul>
+<h2 id="Flask"><a href="#Flask" class="headerlink" title="Flask"></a>Flask</h2><p>Flask是一个使用Python编写的轻量级Web应用框架。基于:</p>
+<ul>
+<li>Werkzeug WSGI工具箱</li>
+<li>Jinja2 模板引擎</li>
+</ul>
+<p>Flask也被称为“microframework”，因为它使用简单的核心，其他功能用extension增加：ORM、窗体验证工具、文件上传、各种开放式身份验证技术。</p>
+<p>模板和静态文件放在应用的 Python 源代码树的子目录中，名称分别为 templates 和 static</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>虚拟环境：可以使用pip安装，也可以用ubuntu系统中的软件包管理器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt install virtualenv             #ubuntu apt</div><div class="line">sudo pip install virtualenv             #pip</div></pre></td></tr></table></figure></p>
+<p>flask安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo pip install Flask</div></pre></td></tr></table></figure></p>
+<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><p>Flask通过request.form[‘name’]来获取表单的内容，通过render_template()函数来实现模板的渲染，在框架内部组装出一个dict作为Model作为render_template的参数传递到模板。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">from flask import Flask, request, render_template</div><div class="line"></div><div class="line">app = Flask(__name__)</div><div class="line"></div><div class="line">@app.route(&apos;/&apos;, methods=[&apos;GET&apos;, &apos;POST&apos;])</div><div class="line">def home():</div><div class="line">    return render_template(&apos;home.html&apos;)</div><div class="line"></div><div class="line">@app.route(&apos;/signin&apos;, methods=[&apos;GET&apos;])</div><div class="line">def signin_form():</div><div class="line">    return render_template(&apos;form.html&apos;)</div><div class="line"></div><div class="line">@app.route(&apos;/signin&apos;, methods=[&apos;POST&apos;])</div><div class="line">def signin():</div><div class="line">    username = request.form[&apos;username&apos;]</div><div class="line">    password = request.form[&apos;password&apos;]</div><div class="line">    if username == &apos;admin&apos; and password == &apos;password&apos;:</div><div class="line">        return render_template(&apos;signin-ok.html&apos;, username=username)</div><div class="line">    return render_template(&apos;form.html&apos;, message=&apos;Bad username or password&apos;, username=username)</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    app.run()</div></pre></td></tr></table></figure></p>
+<p>form.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">  &lt;title&gt;Please Sign In&lt;/title&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">  &#123; % if message %&#125;</div><div class="line">  &lt;p style=&quot;color:red&quot;&gt;&#123; &#123; message &#125;&#125;&lt;/p&gt;</div><div class="line">  &#123; % endif %&#125;</div><div class="line">  &lt;form action=&quot;/signin&quot; method=&quot;post&quot;&gt;</div><div class="line">    &lt;legend&gt;Please sign in:&lt;/legend&gt;</div><div class="line">    &lt;p&gt;&lt;input name=&quot;username&quot; placeholder=&quot;Username&quot; value=&quot;&#123; &#123; username &#125;&#125;&quot;&gt;&lt;/p&gt;</div><div class="line">    &lt;p&gt;&lt;input name=&quot;password&quot; placeholder=&quot;Password&quot; type=&quot;password&quot;&gt;&lt;/p&gt;</div><div class="line">    &lt;p&gt;&lt;button type=&quot;submit&quot;&gt;Sign In&lt;/button&gt;&lt;/p&gt;</div><div class="line">  &lt;/form&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>sign-ok.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">  &lt;title&gt;Welcome, &#123; &#123; username &#125;&#125;&lt;/title&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">  &lt;p&gt;Welcome, &#123; &#123; username &#125;&#125;!&lt;/p&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>home.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">  &lt;title&gt;Home&lt;/title&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">  &lt;h1 style=&quot;font-style:italic&quot;&gt;Home&lt;/h1&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.letiantian.me/2015-09-10-understand-python-wsgi/" target="_blank" rel="external">理解Python WSGI</a><br><a href="https://www.zybuluo.com/miaomiaomiao/note/48495#preface" target="_blank" rel="external">PEP 333 - Python Web Server Gateway Interface v1.0 中文版</a><br><a href="http://www.jianshu.com/p/e7a958bc0f0f" target="_blank" rel="external">Python wsgiref 模块源码浅析</a><br><a href="http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/001386832805619b3e68a9cf16c4d0398d8af8f6d50e740000" target="_blank" rel="external">廖雪峰Python教程-使用模板</a><br><a href="https://dormousehole.readthedocs.io/en/latest/" target="_blank" rel="external">https://dormousehole.readthedocs.io/en/latest/</a>  </p>
+</the></excerpt>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/02/25/Python-Web学习(Flask框架初探)/">Python-Web学习(Flask框架初探)</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
+        <p><span>发布时间:</span>2017-02-25, 20:50:50</p>
+        <p><span>最后更新:</span>2017-02-28, 16:46:26</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/02/25/Python-Web学习(Flask框架初探)/" title="Python-Web学习(Flask框架初探)">https://fangyeqing.github.io/2017/02/25/Python-Web学习(Flask框架初探)/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/02/25/Python-Web学习(Flask框架初探)/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/02/25/Python-Numpy学习/">
+                    Python-Numpy学习
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/02/10/Vmware虚拟机安装Ubuntu/">
+                    Vmware虚拟机安装Ubuntu
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#WSGI"><span class="toc-number">1.</span> <span class="toc-text">WSGI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#应用程序-框架端（Web-framework-app）"><span class="toc-number">1.1.</span> <span class="toc-text">应用程序/框架端（Web framework/app）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#服务器端-网关端（Web-server）"><span class="toc-number">1.2.</span> <span class="toc-text">服务器端/网关端（Web server）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#中间件（Middleware）"><span class="toc-number">1.3.</span> <span class="toc-text">中间件（Middleware）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例"><span class="toc-number">1.4.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模板"><span class="toc-number">2.</span> <span class="toc-text">模板</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web框架"><span class="toc-number">3.</span> <span class="toc-text">web框架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Flask"><span class="toc-number">4.</span> <span class="toc-text">Flask</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装"><span class="toc-number">4.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-1"><span class="toc-number">4.2.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Python-Web学习(Flask框架初探)　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/02/25/Python-Web学习(Flask框架初探)/" data-title="Python-Web学习(Flask框架初探)" data-url="https://fangyeqing.github.io/2017/02/25/Python-Web学习(Flask框架初探)/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/02/25/Python-Numpy学习/" title="上一篇: Python-Numpy学习">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/02/10/Vmware虚拟机安装Ubuntu/" title="下一篇: Vmware虚拟机安装Ubuntu">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Pandas学习/">Python-Pandas学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Numpy学习/">Python-Numpy学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Web学习(Flask框架初探)/">Python-Web学习(Flask框架初探)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/10/Vmware虚拟机安装Ubuntu/">Vmware虚拟机安装Ubuntu</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/spark---RDD/">spark---RDD</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/spark---hello_spark_java版/">spark---hello spark java版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/druid.io实践4---druid监控/">druid.io实践4---druid监控</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 小懒
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

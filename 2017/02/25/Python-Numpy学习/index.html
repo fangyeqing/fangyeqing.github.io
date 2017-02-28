@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="小懒" />
+
+
+
+<meta name="description" content="本文是《用Python做科学计算》的学习笔记，并且参考《Python for Data Analysis》，内容稍作整合，代码均在Pycharm中运行通过。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python-Numpy学习">
+<meta property="og:url" content="https://fangyeqing.github.io/2017/02/25/Python-Numpy学习/index.html">
+<meta property="og:site_name" content="小懒的博客">
+<meta property="og:description" content="本文是《用Python做科学计算》的学习笔记，并且参考《Python for Data Analysis》，内容稍作整合，代码均在Pycharm中运行通过。">
+<meta property="og:image" content="http://old.sebug.net/paper/books/scipydoc/_images/numpy_intro_02.png">
+<meta property="og:image" content="http://old.sebug.net/paper/books/scipydoc/_images/numpy_intro_03.png">
+<meta property="og:image" content="http://old.sebug.net/paper/books/scipydoc/_images/numpy_memory_struct.png">
+<meta property="og:image" content="http://old.sebug.net/paper/books/scipydoc/_images/numpy_intro_01.png">
+<meta property="og:updated_time" content="2017-02-28T08:45:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python-Numpy学习">
+<meta name="twitter:description" content="本文是《用Python做科学计算》的学习笔记，并且参考《Python for Data Analysis》，内容稍作整合，代码均在Pycharm中运行通过。">
+<meta name="twitter:image" content="http://old.sebug.net/paper/books/scipydoc/_images/numpy_intro_02.png">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="小懒的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/xiaolan.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Python-Numpy学习 | 小懒的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?7fb806568d59e1b131e6cd93134ab91e";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">小懒</a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">文章分类</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/监控/">监控</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">小懒</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">小懒</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">文章分类</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Python-Numpy学习" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/02/25/Python-Numpy学习/" class="article-date">
+      <time datetime="2017-02-25T12:55:50.000Z" itemprop="datePublished">2017-02-25</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python-Numpy学习
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/python/">python</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据分析/">数据分析</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <excerpt in="" index="" |="" 首页摘要="">  
+
+<p>本文是<a href="http://old.sebug.net/paper/books/scipydoc/numpy_intro.html#" target="_blank" rel="external">《用Python做科学计算》</a>的学习笔记，并且参考<a href="http://pda.readthedocs.io/en/latest/chp4.html" target="_blank" rel="external">《Python for Data Analysis》</a>，内容稍作整合，代码均在Pycharm中运行通过。</p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h2 id="Numpy"><a href="#Numpy" class="headerlink" title="Numpy"></a>Numpy</h2><p>NumPy 是 Numerical Python 的简称，是高性能计算和数据分析的基础包。下面是它所能做的一些事情：</p>
+<ul>
+<li>ndarray，快速和节省空间的多维数组，提供数组化的算术运算和高级的 广播 功能。</li>
+<li>ufunc，使用标准数学函数对整个数组的数据进行快速运算，而不需要编写循环。</li>
+<li>读取/写入磁盘上的阵列数据和操作存储器映像文件的工具。</li>
+<li>线性代数，随机数生成，和傅里叶变换的能力。</li>
+<li>集成C，C++，Fortran代码的工具。<h3 id="为什么要Numpy"><a href="#为什么要Numpy" class="headerlink" title="为什么要Numpy"></a>为什么要Numpy</h3>Python中用列表(list)保存一组值，可以用来当作数组使用，不过由于列表的元素可以是任何对象，因此列表中所保存的是对象的指针。这样为了保存一个简单的[1,2,3]，需要有3个指针和三个整数对象。对于数值运算来说这种结构显然比较浪费内存和CPU计算时间。</li>
+</ul>
+<p>此外Python还提供了一个array模块，array对象和列表不同，它直接保存数值，和C语言的一维数组比较类似。但是由于它不支持多维，也没有各种运算函数，因此也不适合做数值运算。</p>
+<p>NumPy的诞生弥补了这些不足，提供了两种基本的对象：</p>
+<ul>
+<li>ndarray（N-dimensional array object，下文统一称之为数组）是存储单一数据类型的多维数组</li>
+<li>ufunc（universal function object），是能够对数组进行处理的函数</li>
+</ul>
+<h3 id="模块导入"><a href="#模块导入" class="headerlink" title="模块导入"></a>模块导入</h3><p>导入NumPy函数库:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">import numpy as np</div></pre></td></tr></table></figure></p>
+<h2 id="ndarray对象"><a href="#ndarray对象" class="headerlink" title="ndarray对象"></a>ndarray对象</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><h4 id="从python序列创建"><a href="#从python序列创建" class="headerlink" title="从python序列创建"></a>从python序列创建</h4><p>通过np.array()，可选参数：</p>
+<ul>
+<li>dtype：指定元素类型，np.float/np.complex/np.</li>
+<li>order：内存顺序，后续会讲<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a = np.array([1, 2, 3, 4])</div><div class="line">b = np.array((1, 2, 3, 4), dtype=np.float)</div><div class="line">c = np.array([[1, 2, 3, 4], [4, 5, 6, 7], [7, 8, 9, 10]])</div><div class="line">print(a, &apos;\n&apos;, b, &apos;\n&apos;, c)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>数组大小可以通过shape属性获得，shape相关：</p>
+<ul>
+<li>n维数组会有n个轴，其shape会有n个元素。一维数组的shape会有一个元素，二位数组的shape会有两个元素。</li>
+<li>通过改变shape可以改变每个轴的长度，数组元素在内存中的位置不变</li>
+<li>当某个轴的元素为-1时，将根据数组元素的个数自动计算此轴的长度</li>
+<li>reshape方法，可以创建一个改变了尺寸的新数组，原数组的shape保持不变。并且新旧数组共享内存区域，修改其中一个会改变另一个。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">print(a.dtype, b.dtype, a.shape, c.shape)</div><div class="line">c.shape = 4, 3</div><div class="line">print(c)</div><div class="line">c.shape = 2, -1</div><div class="line">print(c)</div><div class="line">d = a.reshape((2, 2))</div><div class="line">print(d)</div><div class="line">a[1] = 100  # 将数组a的第一个元素改为100</div><div class="line">print(d)    # 注意数组d中的2也被改变了</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="由numpy函数创建"><a href="#由numpy函数创建" class="headerlink" title="由numpy函数创建"></a>由numpy函数创建</h4><p>先创建一个Python序列，然后通过array函数将其转换为数组，这样做显然效率不高。因此NumPy提供了很多专门用来创建数组的函数：</p>
+<ul>
+<li>数值构造型<ul>
+<li>arange函数：类似于python的range函数，通过指定开始值、终值和步长来创建一维数组，注意数组不包括终值</li>
+<li>linspace函数：通过指定开始值、终值和元素个数来创建一维数组，可以通过endpoint关键字指定是否包括终值，缺省设置是包括终值</li>
+<li>logspace函数和linspace类似，不过它创建等比数列，下面的例子产生1(10^0)到100(10^2)、有20个元素的等比数列</li>
+<li>ones, ones_like    根据提供的shape和dtype产生一个全1的数组。ones_like使用另一歌数组为入参，产生一个shape和dtype都相同的数组。</li>
+<li>zeros, zeros_like    同ones和ones_like，但是生成全0的数组</li>
+<li>empty, enpty_like    通过分配新内存来构造新的数组，但不同与ones 和 zeros，不初始任何值。</li>
+<li>eye, identity    生成一个NxN的单位方阵（对角线上为1，其它地方为0）</li>
+</ul>
+</li>
+<li>字节序列型<ul>
+<li>frombuffer</li>
+<li>fromfile</li>
+<li>fromstring：Python的字符串实际上是字节序列，每个字符占一个字节。因此如果从字符串s创建一个8bit的整数数组的话，所得到的数组正好就是字符串中每个字符的ASCII编码。如果从字符串s创建16bit的整数数组，那么两个相邻的字节就表示一个整数</li>
+</ul>
+</li>
+<li>函数构造型：np.fromfunction，参数：<ul>
+<li>function:构造函数，由元素的index构造元素，其中二维：a(i,j)=fun(i,j)</li>
+<li>shape:生成的shape<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"># 数值型</div><div class="line">print(np.arange(0, 1, 0.1))</div><div class="line">print(np.linspace(0, 1, 12))</div><div class="line">print(np.logspace(0, 2, 20))</div><div class="line"># 字符型</div><div class="line">s = &quot;abcdefgh&quot;</div><div class="line">print(np.fromstring(s, dtype=np.int8))</div><div class="line">print(np.fromstring(s, dtype=np.int16))</div><div class="line"># 函数型</div><div class="line"># 构造一维数组，a(i)=i%4+1</div><div class="line">def func(i):</div><div class="line">    return i % 4 + 1</div><div class="line">print(np.fromfunction(func, (10,)))</div><div class="line"># 构造二位数组，a（i,j）=(i+1)*(j+1)</div><div class="line">def func2(i, j):</div><div class="line">    return (i+1) * (j+1)</div><div class="line">print(np.fromfunction(func2, (9, 9)))</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p>Dtypes是使NumPy如此强大和灵活的一部分。在大多数情况下，它们直接映射到底层的机器表示，这是的很容易地读取和写入二进制流到磁盘上，也能链接低级语言，如C 或Fortran编写的代码</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>类型码</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int8, uint8</td>
+<td>i1, u1</td>
+<td>有符号和无符号8位（1字节）整数类型</td>
+</tr>
+<tr>
+<td>int16, uint16</td>
+<td>i2, u2</td>
+<td>有符号和无符号16位整数类型</td>
+</tr>
+<tr>
+<td>int32, uint32</td>
+<td>i4, u4</td>
+<td>有符号和无符号32位整数类型</td>
+</tr>
+<tr>
+<td>int64, uint64</td>
+<td>i8, u8</td>
+<td>有符号和无符号64位整数类型</td>
+</tr>
+<tr>
+<td>float16</td>
+<td>f2</td>
+<td>半精度浮点类型</td>
+</tr>
+<tr>
+<td>float32</td>
+<td>f4 or f</td>
+<td>标准精度浮点。与C的 float 兼容</td>
+</tr>
+<tr>
+<td>float64, float128</td>
+<td>f8 or d</td>
+<td>标准双精度浮点。与C的 double 和Python 的 folat 对象兼容</td>
+</tr>
+<tr>
+<td>float128</td>
+<td>f16 or g</td>
+<td>扩展精度浮点</td>
+</tr>
+<tr>
+<td>complex64, complex128, complex256</td>
+<td>c8, c16, c32</td>
+<td>分别使用两个32，64，128位浮点表示的复数</td>
+</tr>
+<tr>
+<td>bool</td>
+<td>?</td>
+<td>布尔值，存储 True 和 False</td>
+</tr>
+<tr>
+<td>object</td>
+<td>O</td>
+<td>Python对象类型</td>
+</tr>
+<tr>
+<td>string_</td>
+<td>S</td>
+<td>定长字符窜类型（每字符一字节）。例如，为了生成长度为10的字符窜，使用 ‘S10’</td>
+</tr>
+<tr>
+<td>unicode_</td>
+<td>f16 or g</td>
+<td>扩展精度浮点（字节书依赖平台）。同 string_ 有相同的语义规范（例如：U10 ）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="存取元素"><a href="#存取元素" class="headerlink" title="存取元素"></a>存取元素</h3><h4 id="通过下标-切片"><a href="#通过下标-切片" class="headerlink" title="通过下标(切片)"></a>通过下标(切片)</h4><p>数组元素的存取方法和Python的标准方法相同，可以使用切片。和Python的列表序列不同，通过下标范围获取的新的数组是原始数组的一个视图。它与原始数组共享同一块数据空间。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">b = a[3:7]  # 通过下标范围产生一个新的数组b，b和a共享同一块数据空间</div><div class="line">print(b)</div><div class="line">b[2] = -10  # 将b的第2个元素修改为-10</div><div class="line">print(a)  # a的第5个元素也被修改为10</div></pre></td></tr></table></figure></p>
+<h4 id="通过整数序列"><a href="#通过整数序列" class="headerlink" title="通过整数序列"></a>通过整数序列</h4><p>当使用整数序列对数组元素进行存取时，将使用整数序列中的每个元素作为下标，整数序列可以是列表或者数组。使用整数序列作为下标获得的数组不和原始数组共享数据空间。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">x = np.arange(10, 1, -1)</div><div class="line">print(x)</div><div class="line">print(x[[3, 3, 1, 8]])  # 获取x中的下标为3, 3, 1, 8的4个元素，组成一个新的数组</div><div class="line">b = x[np.array([3, 3, -3, 8])]  # 下标可以是负数</div><div class="line">b[2] = 100</div><div class="line">print(x)  # 由于b和x不共享数据空间，因此x中的值并没有改变</div><div class="line">x[[3, 5, 1]] = -1, -2, -3  # 整数序列下标也可以用来修改元素的值</div><div class="line">print(x)</div></pre></td></tr></table></figure></p>
+<h4 id="使用布尔数组"><a href="#使用布尔数组" class="headerlink" title="使用布尔数组"></a>使用布尔数组</h4><p>当使用布尔数组b作为下标存取数组x中的元素时，将收集数组x中所有在数组b中对应下标为True的元素。使用布尔数组作为下标获得的数组不和原始数组共享数据空间，注意这种方式只对应于布尔数组，不能使用布尔列表。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">x = np.arange(5, 0, -1)</div><div class="line">print(x)</div><div class="line">print(x[np.array([True, False, True, False, False])])  # 布尔数组中下标为0，2的元素为True，因此获取x中下标为0,2的元素</div><div class="line">print(x[[True, False, True, False, False]])  # 如果是布尔列表，则把True当作1, False当作0，按照整数序列方式获取x中的元素</div><div class="line">print(x[np.array([True, False, True, True])])  # 布尔数组的长度不够时，不够的部分都当作False</div><div class="line">x[np.array([True, False, True, True])] = -1, -2, -3  # 布尔数组下标也可以用来修改元素</div><div class="line">print(x)</div></pre></td></tr></table></figure></p>
+<h3 id="多维数组"><a href="#多维数组" class="headerlink" title="多维数组"></a>多维数组</h3><p>多维数组的存取和一维数组类似，因为多维数组有多个轴，因此它的下标需要用多个值来表示，NumPy采用组元(tuple)作为数组的下标。</p>
+<h4 id="下标存取（切片）"><a href="#下标存取（切片）" class="headerlink" title="下标存取（切片）"></a>下标存取（切片）</h4><p><img src="http://old.sebug.net/paper/books/scipydoc/_images/numpy_intro_02.png" alt="image"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">a = np.arange(0, 60, 10).reshape(-1, 1) + np.arange(0, 6)</div><div class="line">print(a)</div><div class="line">print(a[0, 3:5])</div><div class="line">print(a[4:, 4:])</div><div class="line">print(a[:, 2])</div><div class="line">print(a[2::2, ::2])</div></pre></td></tr></table></figure></p>
+<h4 id="整数序列、布尔数组"><a href="#整数序列、布尔数组" class="headerlink" title="整数序列、布尔数组"></a>整数序列、布尔数组</h4><p><img src="http://old.sebug.net/paper/books/scipydoc/_images/numpy_intro_03.png" alt="image">  </p>
+<ul>
+<li>a[(0,1,2,3,4),(1,2,3,4,5)] : 用于存取数组的下标和仍然是一个有两个元素的组元，组元中的每个元素都是整数序列，分别对应数组的第0轴和第1轴。从两个序列的对应位置取出两个整数组成下标： a[0,1], a[1,2], …, a[4,5]。</li>
+<li>a[3:, [0, 2, 5]] : 下标中的第0轴是一个范围，它选取第3行之后的所有行；第1轴是整数序列，它选取第0, 2, 5三列。</li>
+<li>a[mask, 2] : 下标的第0轴是一个布尔数组，它选取第0，2，5行；第1轴是一个整数，选取第2列。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">print(a[(0, 1, 2, 3, 4), (1, 2, 3, 4, 5)])   </div><div class="line">print(a[3:, [0, 2, 5]])</div><div class="line">mask = np.array([1, 0, 1, 0, 0, 1], dtype=np.bool)</div><div class="line">print(a[mask, 2])</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="结构数组"><a href="#结构数组" class="headerlink" title="结构数组"></a>结构数组</h3><p>类似于C语言的结构体struct</p>
+<ul>
+<li>name：定义字段名</li>
+<li>formats：定义每个字段的类型<ul>
+<li>S32 : 32个字节的字符串类型，由于结构中的每个元素的大小必须固定，因此需要指定字符串的长度</li>
+<li>i : 32bit的整数类型，相当于np.int32</li>
+<li>f : 32bit的单精度浮点数类型，相当于np.float32<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">persontype = np.dtype(&#123;</div><div class="line">    &apos;names&apos;: [&apos;name&apos;, &apos;age&apos;, &apos;weight&apos;],</div><div class="line">    &apos;formats&apos;: [&apos;S32&apos;, &apos;i&apos;, &apos;f&apos;]&#125;)</div><div class="line">a = np.array([(&quot;Zhang&quot;, 32, 75.5), (&quot;Wang&quot;, 24, 65.2)], dtype=persontype)</div><div class="line">print(a)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<p>通过dtype获取a的类型,类型描述前面为我们添加了 ‘|’, ‘&lt;’ 等字符，这些字符用来描述字段值的字节顺序:</p>
+<ul>
+<li>‘|’: 忽视字节顺序</li>
+<li>‘&lt;’: 低位字节在前</li>
+<li>‘&gt;’: 高位字节在前<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print(a.dtype)</div><div class="line">print(a[0].dtype)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>通过a构造出来的子数组，它和数组a共享内存数据，因此可以通过修改它的字段，改变原始数组中的对应字段<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">c = a[1]</div><div class="line">c[&quot;name&quot;] = &quot;Li&quot;</div><div class="line">print(a[1][&quot;name&quot;])</div><div class="line">b = a[:][&quot;age&quot;]</div><div class="line">print(b)</div><div class="line">b[0] = 40</div><div class="line">print(a[0][&quot;age&quot;])</div></pre></td></tr></table></figure></p>
+<h5 id="内存对齐"><a href="#内存对齐" class="headerlink" title="内存对齐"></a>内存对齐</h5><p>C语言的结构体为了内存寻址方便，会自动的添加一些填充用的字节，这叫做内存对齐。例如如果把下面的name[32]改为name[30]的话，由于内存对齐问题，在name和age中间会填补两个字节，最终的结构体大小不会改变。因此如果numpy中的所配置的内存大小不符合C语言的对齐规范的话，将会出现数据错位。为了解决这个问题，在创建dtype对象时，可以传递参数align=True，这样numpy的结构数组的内存对齐和C语言的结构体就一致了。</p>
+<h3 id="内存结构"><a href="#内存结构" class="headerlink" title="内存结构"></a>内存结构</h3><p>关于数组的描述信息保存在一个数据结构中，这个结构引用两个对象：</p>
+<ul>
+<li>一个用于描述元素类型的dtype对象：知道如何将元素的二进制数据转换为可用的值  </li>
+<li><p>一块用于保存数据的存储区域：保存着数组中所有元素的二进制数据<br><img src="http://old.sebug.net/paper/books/scipydoc/_images/numpy_memory_struct.png" alt="image">  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">a = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]], dtype=np.float32)</div><div class="line">print(a.dtype)</div><div class="line">print(a.ndim)</div><div class="line">print(a.shape)</div><div class="line">print(a.strides)</div><div class="line">print(a.data)</div></pre></td></tr></table></figure>
+</li>
+<li><p>strides：保存的是当每个轴的下标增加1时，数据存储区中的指针所增加的字节数。例如图中的strides为12,4，即第0轴的下标增加1时，数据的地址增加12个字节：即a[1,0]的地址比a[0,0]的地址要高12个字节，正好是3个单精度浮点数的总字节数；第1轴下标增加1时，数据的地址增加4个字节，正好是单精度浮点数的字节数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">b = a[::2, ::2]</div><div class="line">print(b)</div><div class="line">print(b.strides)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>由于数组b和数组a共享数据存储区，而b中的第0轴和第1轴都是数组a中隔一个元素取一个，因此数组b的strides变成了24,8，正好都是数组a的两倍。 对照前面的图很容易看出数据0和2的地址相差8个字节，而0和6的地址相差24个字节。</p>
+<h4 id="内存顺序"><a href="#内存顺序" class="headerlink" title="内存顺序"></a>内存顺序</h4><p>元素在数据存储区中的排列格式有两种，创建时通过参数order指定：</p>
+<ul>
+<li>order=”C”（缺省值），在C语言中，多维数组的第0轴是最上位的，即第0轴的下标增加1时，元素的地址增加的字节数最多</li>
+<li>order=”F”，Fortan语言的多维数组的第0轴是最下位的，即第0轴的下标增加1时，地址只增加一个元素的字节数。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">c = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]], dtype=np.float32, order=&quot;F&quot;)</div><div class="line">print(c.strides)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>以一个二维数组a[2][2]为例</p>
+<ul>
+<li>在C语言中，其在内存中存储为a[0][0] a[0][1] a[1][0] a[1][1]  </li>
+<li>而在Fortran语言中，其顺序为a[0][0] a[1][0] a[0][1] a[1][1]</li>
+</ul>
+<h2 id="ufunc运算"><a href="#ufunc运算" class="headerlink" title="ufunc运算"></a>ufunc运算</h2><p>它是一种能对数组的每个元素进行操作的函数。NumPy内置的许多ufunc函数都是在C语言级别实现的，因此它们的计算速度非常快。</p>
+<h3 id="单输入函数"><a href="#单输入函数" class="headerlink" title="单输入函数"></a>单输入函数</h3><h4 id="sin"><a href="#sin" class="headerlink" title="sin"></a>sin</h4><p>np.sin对x中的每个元素求正弦值，然后将结果返回。可选参数out：结果输出到out，如果要覆盖x，则将out赋值为x<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">x = np.linspace(0, 2*np.pi, 10)</div><div class="line">y = np.sin(x)</div><div class="line">print(y)</div><div class="line">t = np.sin(x, x)</div><div class="line">print(id(t) == id(x))</div></pre></td></tr></table></figure></p>
+<h4 id="与Python标准库速度对比"><a href="#与Python标准库速度对比" class="headerlink" title="与Python标准库速度对比"></a>与Python标准库速度对比</h4><p>计算100万次正弦值，所用时间的对比：</p>
+<ul>
+<li>np.sin处理数组(C级别循环)：0.011924890681391243</li>
+<li>python级别循环 + math.sin处理单个值：0.41831748538827573</li>
+<li>python级别循环 + np.sin处理单个值：1.4091675317012233<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">import time</div><div class="line">import math</div><div class="line">import numpy as np</div><div class="line"># python级别循环 + math.sin</div><div class="line">x = [i * 0.001 for i in xrange(1000000)]</div><div class="line">start = time.clock()</div><div class="line">for i, t in enumerate(x):</div><div class="line">    x[i] = math.sin(t)</div><div class="line">print &quot;math.sin:&quot;, time.clock() - start</div><div class="line"># np.sin(C级别循环)</div><div class="line">x = [i * 0.001 for i in xrange(1000000)]</div><div class="line">x = np.array(x)</div><div class="line">start = time.clock()</div><div class="line">np.sin(x,x)</div><div class="line">print &quot;numpy.sin:&quot;, time.clock() - start</div><div class="line"># python级别循环 + np.sin处理单个值</div><div class="line">x = [i * 0.001 for i in range(1000000)]</div><div class="line">start = time.clock()</div><div class="line">for i, t in enumerate(x):</div><div class="line">    x[i] = np.sin(t)</div><div class="line">print(&quot;numpy.sin loop:&quot;, time.clock() - start)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>结论：numpy.sin处理数组比math.sin+python循环处理数组快几十倍。这得利于numpy.sin在C语言级别的循环计算   </p>
+<p>但是numpy.sin处理单个值的计算速度比math.sin要慢。这是因为numpy.sin为了同时支持数组和单个值的计算，其C语言的内部实现要比math.sin复杂很多。</p>
+<h3 id="多输入函数"><a href="#多输入函数" class="headerlink" title="多输入函数"></a>多输入函数</h3><h4 id="add函数"><a href="#add函数" class="headerlink" title="add函数"></a>add函数</h4><p>add函数返回一个新的数组，此数组的每个元素都为两个参数数组的对应元素之和。它接受第3个参数指定计算结果所要写入的数组，如果指定的话，add函数就不再产生新的数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">a = np.arange(0, 4)</div><div class="line">b = np.arange(1, 5)</div><div class="line">print(a)</div><div class="line">print(b)</div><div class="line">print(np.add(a, b))   #  a+b</div><div class="line">print(np.add(a, b, a))   #  a+=b</div><div class="line">print(a)</div></pre></td></tr></table></figure></p>
+<h4 id="其他函数"><a href="#其他函数" class="headerlink" title="其他函数"></a>其他函数</h4><ul>
+<li>y = x1 + x2:    add(x1, x2 [, y])</li>
+<li>y = x1 - x2:    subtract(x1, x2 [, y])</li>
+<li>y = x1 * x2:    multiply (x1, x2 [, y])</li>
+<li>y = x1 / x2:    divide (x1, x2 [, y]), 如果两个数组的元素为整数，那么用整数除法</li>
+<li>y = x1 / x2:    true divide (x1, x2 [, y]), 总是返回精确的商</li>
+<li>y = x1 // x2:    floor divide (x1, x2 [, y]), 总是对返回值取整</li>
+<li>y = -x:    negative(x [,y])</li>
+<li>y = x1**x2:    power(x1, x2 [, y])</li>
+<li>y = x1 % x2:    remainder(x1, x2 [, y]), mod(x1, x2, [, y])</li>
+</ul>
+<h4 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h4><p>数组对象支持这些操作符，极大地简化了算式的编写，不过要注意如果你的算式很复杂，并且要运算的数组很大的话，会因为产生大量的中间结果而降低程序的运算效率。例如：假设a b c三个数组采用算式x=a*b+c计算，那么它相当于:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">t = a * b</div><div class="line">x = t + c</div><div class="line">del t</div></pre></td></tr></table></figure></p>
+<p>也就是说需要产生一个数组t保存乘法的计算结果，然后再产生最后的结果数组x。我们可以通过手工将一个算式分解为x = a*b; x += c，以减少一次内存分配。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">a = np.arange(0, 100000000)</div><div class="line">b = np.arange(0, 100000000)</div><div class="line">start = time.clock()</div><div class="line">x = a*b + a</div><div class="line">print(&quot;x = a*b+c time:&quot;, time.clock() - start)</div><div class="line">start = time.clock()</div><div class="line">y = a*b</div><div class="line">y += a</div><div class="line">print(&quot;y = a*b,y += c time:&quot;, time.clock() - start)</div></pre></td></tr></table></figure></p>
+<p>输出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">x = a*b+c time: 0.6211750219831841</div><div class="line">y = a*b,y += c time: 0.48815467969828963</div></pre></td></tr></table></figure></p>
+<h3 id="frompyfunc"><a href="#frompyfunc" class="headerlink" title="frompyfunc"></a>frompyfunc</h3><p>可以用frompyfunc函数将一个计算单个元素的函数转换成ufunc函数。这样就可以方便地用所产生的ufunc函数对数组进行计算了</p>
+<p>frompyfunc的调用格式为frompyfunc(func, nin, nout)，其中func是计算单个元素的函数，nin是此函数的输入参数的个数，nout是此函数的返回值的个数。</p>
+<p><img src="http://old.sebug.net/paper/books/scipydoc/_images/numpy_intro_01.png" alt="image"><br>我们很容易根据上图所示写出如下的计算三角波某点y坐标的函数，有三种方式:</p>
+<ul>
+<li>可以用下面的方法先使用列表包容(List comprehension)，计算出一个list，然后用array函数将列表转换为数组</li>
+<li>用一个lambda函数对triangle_wave的参数进行一次包装。这样传入frompyfunc的函数就只有一个参数了</li>
+<li>通过函数triangle_func包装三角波的三个参数，在其内部定义一个计算三角波的函数trifunc，trifunc函数在调用时会采用triangle_func的参数进行计算。最后triangle_func返回用frompyfunc转换结果。</li>
+</ul>
+<p>值得注意的是用frompyfunc得到的函数计算出的数组元素的类型为object，因为frompyfunc函数无法保证Python函数返回的数据类型都完全一致。因此还需要再次 y2.astype(np.float64)将其转换为双精度浮点数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">def triangle_wave(x, c, c0, hc):</div><div class="line">    x = x - int(x) # 三角波的周期为1，因此只取x坐标的小数部分进行计算</div><div class="line">    if x &gt;= c: r = 0.0</div><div class="line">    elif x &lt; c0: r = x / c0 * hc</div><div class="line">    else: r = (c-x) / (c-c0) * hc</div><div class="line">    return r</div><div class="line"></div><div class="line">x = np.linspace(0, 2, 1000)</div><div class="line">y = np.array([triangle_wave(t, 0.6, 0.4, 1.0) for t in x])</div><div class="line"></div><div class="line">triangle_ufunc = np.frompyfunc( lambda x: triangle_wave(x, 0.6, 0.4, 1.0), 1, 1)</div><div class="line">y2 = triangle_ufunc(x)</div><div class="line">    </div><div class="line">def triangle_func(c, c0, hc):</div><div class="line">    def trifunc(x):</div><div class="line">        x = x - int(x) # 三角波的周期为1，因此只取x坐标的小数部分进行计算</div><div class="line">        if x &gt;= c: r = 0.0</div><div class="line">        elif x &lt; c0: r = x / c0 * hc</div><div class="line">        else: r = (c-x) / (c-c0) * hc</div><div class="line">        return r</div><div class="line">    # 用trifunc函数创建一个ufunc函数，可以直接对数组进行计算, 不过通过此函数</div><div class="line">    # 计算得到的是一个Object数组，需要进行类型转换</div><div class="line">    return np.frompyfunc(trifunc, 1, 1)</div><div class="line">y2 = triangle_func(0.6, 0.4, 1.0)(x)</div></pre></td></tr></table></figure></p>
+<h3 id="广播"><a href="#广播" class="headerlink" title="广播"></a>广播</h3><p>当我们使用ufunc函数对两个数组进行计算时，ufunc函数会对这两个数组的对应元素进行计算，因此它要求这两个数组有相同的大小(shape相同)。如果两个数组的shape不同的话，会进行如下的广播(broadcasting)处理：</p>
+<ul>
+<li>让所有输入数组都向其中shape最长的数组看齐，shape中不足的部分都通过在前面加1补齐</li>
+<li>输出数组的shape是输入数组shape的各个轴上的最大值</li>
+<li>如果输入数组的某个轴和输出数组的对应轴的长度相同或者其长度为1时，这个数组能够用来计算，否则出错</li>
+<li>当输入数组的某个轴的长度为1时，沿着此轴运算时都用此轴上的第一组值</li>
+</ul>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><p>之前：</p>
+<ul>
+<li>先创建一个二维数组a，其shape为(6,1)，再创建一维数组b，其shape为(5,)。  </li>
+<li>由于a和b的shape长度(也就是ndim属性)不同，根据规则1，需要让b的shape向a对齐，于是将b的shape前面加1，补齐为(1,5)</li>
+<li>这样加法运算的两个输入数组的shape分别为(6,1)和(1,5)，根据规则2，可知输出数组的shape为(6,5)</li>
+<li>由于b的第0轴上的长度为1，而a的第0轴上的长度为6，因此为了让它们在第0轴上能够相加，需要将b在第0轴上的长度扩展为6，相当于b向下复制5行。同理，a向右复制4列。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">a = np.arange(0, 60, 10).reshape(-1, 1)    # [[ 0], [10], [20], [30], [40], [50]]</div><div class="line">b = np.arange(0, 5)    # [0 1 2 3 4]</div><div class="line">print(a.shape, b.shape)    # 输出：(6, 1) (5,)</div><div class="line">print(a + b)</div><div class="line"></div><div class="line">b.shape = 1, 5    # [[0 1 2 3 4]]</div><div class="line">b = b.repeat(6, axis=0)</div><div class="line">a = a.repeat(5, axis=1)</div><div class="line">print(a, b, sep=&apos;\n&apos;)</div><div class="line">print(a + b)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="ogrid对象"><a href="#ogrid对象" class="headerlink" title="ogrid对象"></a>ogrid对象</h4><p>当然，numpy在执行a+b运算时，其内部并不会真正将长度为1的轴用repeat函数进行扩展，如果这样做的话就太浪费空间了。numpy提供了一个快速产生如上面a,b数组的方法： ogrid对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">x, y = np.ogrid[0:1:4j, 0:1:3j]</div><div class="line">print(x, y)</div></pre></td></tr></table></figure></p>
+<p>ogrid是一个很有趣的对象，它像一个多维数组一样，用切片组元作为下标进行存取，返回的是一组可以用来广播计算的数组。其切片下标有两种形式：</p>
+<ul>
+<li>开始值:结束值:步长，和np.arange(开始值, 结束值, 步长)类似</li>
+<li>开始值:结束值:长度j，当第三个参数为虚数时，它表示返回的数组的长度，和np.linspace(开始值, 结束值, 长度)类似：</li>
+</ul>
+<h3 id="ufunc的方法"><a href="#ufunc的方法" class="headerlink" title="ufunc的方法"></a>ufunc的方法</h3><p>ufunc函数本身还有些方法，这些方法只对两个输入一个输出的ufunc函数有效，其它的ufunc对象调用这些方法时会抛出ValueError异常</p>
+<h4 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h4><p>方法和Python的reduce函数类似，它沿着axis轴对array进行操作，相当于将<op>运算符插入到沿axis轴的所有子数组或者元素当中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a = np.add.reduce([1, 2, 3])  # 1 + 2 + 3</div><div class="line">b = np.add.reduce([[1, 2, 3], [4, 5, 6]], axis=0)  # 1+2+3 , 4+5+6</div><div class="line">c = np.add.reduce([[1, 2, 3], [4, 5, 6]], axis=1)  # 1+4 , 2+5 ,3+6</div><div class="line">print(a, b, c, sep=&apos;\n&apos;)</div></pre></td></tr></table></figure></op></p>
+<h4 id="accumulate"><a href="#accumulate" class="headerlink" title="accumulate"></a>accumulate</h4><p>reduce方法类似，只是它返回的数组和输入的数组的shape相同，保存所有的中间计算结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a = np.add.accumulate([1, 2, 3])  # [1 3 6]</div><div class="line">b = np.add.accumulate([[1, 2, 3], [4, 5, 6]], axis=0)  # [[1 2 3],[5 7 9]]</div><div class="line">c = np.add.accumulate([[1, 2, 3], [4, 5, 6]], axis=1)  # [[ 1  3  6],[ 4  9 15]]</div><div class="line">print(a, b, c, sep=&apos;\n&apos;)</div></pre></td></tr></table></figure></p>
+<h4 id="reduceat"><a href="#reduceat" class="headerlink" title="reduceat"></a>reduceat</h4><p>计算多组reduce的结果，通过indices参数指定一系列reduce的起始和终了位置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">a = np.array([1, 2, 3, 4])</div><div class="line">result = np.add.reduceat(a, indices=[0, 1, 0, 2, 0, 3, 0])</div><div class="line">print(result)  # [ 1  2  3  3  6  4 10]</div></pre></td></tr></table></figure></p>
+<h4 id="outer-a-b-方法的计算等同于如下程序："><a href="#outer-a-b-方法的计算等同于如下程序：" class="headerlink" title=".outer(a,b)方法的计算等同于如下程序："></a><op>.outer(a,b)方法的计算等同于如下程序：</op></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">a.shape += (1,)*b.ndim</div><div class="line">&lt;op&gt;(a,b)</div><div class="line">a = a.squeeze()  # 剔除数组a中长度为1的轴</div></pre></td></tr></table></figure>
+<p>通过outer方法计算的结果是乘法表。如果将这两个数组按照等同程序一步一步的计算的话，就会发现乘法表最终是通过广播的方式计算出来的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">x = np.multiply.outer([1, 2, 3, 4, 5], [2, 3, 4])</div><div class="line">print(x)   # [[ 2  3  4],[ 4  6  8],[ 6  9 12],[ 8 12 16],[10 15 20]]</div></pre></td></tr></table></figure></p>
+<h2 id="矩阵运算"><a href="#矩阵运算" class="headerlink" title="矩阵运算"></a>矩阵运算</h2><p>NumPy和Matlab不一样，对于多维数组的运算，缺省情况下并不使用矩阵运算，如果你希望对数组进行矩阵运算的话，可以调用相应的函数</p>
+<h3 id="matrix对象"><a href="#matrix对象" class="headerlink" title="matrix对象"></a>matrix对象</h3><p>numpy库提供了matrix类，使用matrix类创建的是矩阵对象，它们的加减乘除运算缺省采用矩阵方式计算，因此用法和matlab十分类似。但是由于NumPy中同时存在ndarray和matrix对象，因此用户很容易将两者弄混。这有违Python的“显式优于隐式”的原则，因此并不推荐在较复杂的程序中使用matrix。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a = np.matrix([[1, 2, 3], [5, 5, 6], [7, 9, 9]])</div><div class="line">print(a*a**-1)</div></pre></td></tr></table></figure></p>
+<p>计算的是矩阵a和其逆矩阵的乘积，结果是一个单位矩阵</p>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><h4 id="dot"><a href="#dot" class="headerlink" title="dot"></a>dot</h4><p>对于两个一维的数组，计算的是这两个数组对应下标元素的乘积和(数学上称之为内积)；对于二维数组，计算的是两个数组的矩阵乘积；对于多维数组，它的通用计算公式如下，即结果数组中的每个元素都是：数组a的最后一维上的所有元素与数组b的倒数第二位上的所有元素的乘积和</p>
+<h4 id="inner"><a href="#inner" class="headerlink" title="inner"></a>inner</h4><p>和dot乘积一样，对于两个一维数组，计算的是这两个数组对应下标元素的乘积和；对于多维数组，它计算的结果数组中的每个元素都是：数组a和b的最后一维的内积，因此数组a和b的最后一维的长度必须相同</p>
+<h4 id="outer"><a href="#outer" class="headerlink" title="outer"></a>outer</h4><p>只按照一维数组进行计算，如果传入参数是多维数组，则先将此数组展平为一维数组之后再进行运算。outer乘积计算的列向量和行向量的矩阵乘积</p>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><p>矩阵中更高级的一些运算可以在NumPy的线性代数子库linalg中找到</p>
+<h2 id="文件存取"><a href="#文件存取" class="headerlink" title="文件存取"></a>文件存取</h2><p>NumPy提供了多种文件操作函数方便我们存取数组内容。文件存取的格式分为：</p>
+<ul>
+<li>文本</li>
+<li>二进制<ul>
+<li>NumPy专用的格式化二进制类型</li>
+<li>无格式类型。</li>
+</ul>
+</li>
+</ul>
+<h3 id="tofile-amp-amp-fromfile"><a href="#tofile-amp-amp-fromfile" class="headerlink" title="tofile &amp;&amp; fromfile"></a>tofile &amp;&amp; fromfile</h3><p>使用数组的方法函数tofile可以方便地将数组中数据以二进制的格式写进文件。tofile输出的数据没有格式，因此用numpy.fromfile需要在读入的时候设置正确的dtype和shape才能保证数据一致：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">a = np.arange(0, 12)</div><div class="line">a.shape = 3, 4</div><div class="line">print(a)</div><div class="line">a.tofile(&quot;a.bin&quot;)</div><div class="line">b = np.fromfile(&quot;a.bin&quot;, dtype=np.float)  # 按照float类型读入数据</div><div class="line">print(b)  # 读入的数据是错误的</div><div class="line">b = np.fromfile(&quot;a.bin&quot;, dtype=np.int32)  # 按照int32类型读入数据</div><div class="line">print(b)  # 数据是一维的</div><div class="line">b.shape = 3, 4  # 按照a的shape修改b的shape</div><div class="line">print(b)  # 这次终于正确了</div></pre></td></tr></table></figure></p>
+<h3 id="numpy-load-amp-amp-numpy-save"><a href="#numpy-load-amp-amp-numpy-save" class="headerlink" title="numpy.load &amp;&amp; numpy.save"></a>numpy.load &amp;&amp; numpy.save</h3><p>以NumPy专用的二进制类型保存数据，这两个函数会自动处理元素类型和shape等信息，使用它们读写数组就方便多了，但是numpy.save输出的文件很难和其它语言编写的程序读入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">np.save(&quot;a.npy&quot;, a)</div><div class="line">c = np.load(&quot;a.npy&quot;)</div><div class="line">print(c)</div></pre></td></tr></table></figure></p>
+<p>如果你想将多个数组保存到一个文件中的话，可以使用numpy.savez函数。savez函数的第一个参数是文件名，其后的参数都是需要保存的数组，也可以使用关键字参数为数组起一个名字，非关键字参数传递的数组会自动起名为arr_0, arr_1, …。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">a = np.array([[1, 2, 3], [4, 5, 6]])</div><div class="line">b = np.arange(0, 1.0, 0.1)</div><div class="line">c = np.sin(b)</div><div class="line">np.savez(&quot;result.npz&quot;, a, b, sin_array=c)</div><div class="line">r = np.load(&quot;result.npz&quot;)</div><div class="line">print(r[&quot;arr_0&quot;])  # 数组a</div><div class="line">print(r[&quot;arr_1&quot;])  # 数组b</div><div class="line">print(r[&quot;sin_array&quot;])  # 数组c</div></pre></td></tr></table></figure></p>
+<p>如果你用解压软件打开result.npz文件的话，会发现其中有三个文件：arr_0.npy， arr_1.npy， sin_array.npy，其中分别保存着数组a, b, c的内容。</p>
+<h3 id="numpy-savetxt-amp-amp-numpy-loadtxt"><a href="#numpy-savetxt-amp-amp-numpy-loadtxt" class="headerlink" title="numpy.savetxt &amp;&amp; numpy.loadtxt"></a>numpy.savetxt &amp;&amp; numpy.loadtxt</h3><p>numpy.savetxt和numpy.loadtxt可以读写1维和2维的数组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">a = np.arange(0, 12, 0.5).reshape(4, -1)</div><div class="line">np.savetxt(&quot;a.txt&quot;, a)  # 缺省按照&apos;%.18e&apos;格式保存数据，以空格分隔</div><div class="line">b = np.loadtxt(&quot;a.txt&quot;)</div><div class="line">np.savetxt(&quot;a.txt&quot;, a, fmt=&quot;%d&quot;, delimiter=&quot;,&quot;)  # 改为保存为整数，以逗号分隔</div><div class="line">c = np.loadtxt(&quot;a.txt&quot;, delimiter=&quot;,&quot;)  # 读入的时候也需要指定逗号分隔</div><div class="line">print(a, b, c, sep=&apos;\n&apos;)</div></pre></td></tr></table></figure></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://old.sebug.net/paper/books/scipydoc/numpy_intro.html#" target="_blank" rel="external">在线电子书：用Python做科学计算——NumPy-快速处理数据</a>  </p>
+</the></excerpt>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/02/25/Python-Numpy学习/">Python-Numpy学习</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
+        <p><span>发布时间:</span>2017-02-25, 20:55:50</p>
+        <p><span>最后更新:</span>2017-02-28, 16:45:49</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/02/25/Python-Numpy学习/" title="Python-Numpy学习">https://fangyeqing.github.io/2017/02/25/Python-Numpy学习/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/02/25/Python-Numpy学习/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/02/25/Python-Pandas学习/">
+                    Python-Pandas学习
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/02/25/Python-Web学习(Flask框架初探)/">
+                    Python-Web学习(Flask框架初探)
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Numpy"><span class="toc-number">1.</span> <span class="toc-text">Numpy</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么要Numpy"><span class="toc-number">1.1.</span> <span class="toc-text">为什么要Numpy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模块导入"><span class="toc-number">1.2.</span> <span class="toc-text">模块导入</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ndarray对象"><span class="toc-number">2.</span> <span class="toc-text">ndarray对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建"><span class="toc-number">2.1.</span> <span class="toc-text">创建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#从python序列创建"><span class="toc-number">2.1.1.</span> <span class="toc-text">从python序列创建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#由numpy函数创建"><span class="toc-number">2.1.2.</span> <span class="toc-text">由numpy函数创建</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据类型"><span class="toc-number">2.2.</span> <span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#存取元素"><span class="toc-number">2.3.</span> <span class="toc-text">存取元素</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#通过下标-切片"><span class="toc-number">2.3.1.</span> <span class="toc-text">通过下标(切片)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#通过整数序列"><span class="toc-number">2.3.2.</span> <span class="toc-text">通过整数序列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用布尔数组"><span class="toc-number">2.3.3.</span> <span class="toc-text">使用布尔数组</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多维数组"><span class="toc-number">2.4.</span> <span class="toc-text">多维数组</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#下标存取（切片）"><span class="toc-number">2.4.1.</span> <span class="toc-text">下标存取（切片）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#整数序列、布尔数组"><span class="toc-number">2.4.2.</span> <span class="toc-text">整数序列、布尔数组</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结构数组"><span class="toc-number">2.5.</span> <span class="toc-text">结构数组</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#内存对齐"><span class="toc-number">2.5.0.1.</span> <span class="toc-text">内存对齐</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内存结构"><span class="toc-number">2.6.</span> <span class="toc-text">内存结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#内存顺序"><span class="toc-number">2.6.1.</span> <span class="toc-text">内存顺序</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ufunc运算"><span class="toc-number">3.</span> <span class="toc-text">ufunc运算</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#单输入函数"><span class="toc-number">3.1.</span> <span class="toc-text">单输入函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#sin"><span class="toc-number">3.1.1.</span> <span class="toc-text">sin</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#与Python标准库速度对比"><span class="toc-number">3.1.2.</span> <span class="toc-text">与Python标准库速度对比</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多输入函数"><span class="toc-number">3.2.</span> <span class="toc-text">多输入函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#add函数"><span class="toc-number">3.2.1.</span> <span class="toc-text">add函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#其他函数"><span class="toc-number">3.2.2.</span> <span class="toc-text">其他函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#优化"><span class="toc-number">3.2.3.</span> <span class="toc-text">优化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#frompyfunc"><span class="toc-number">3.3.</span> <span class="toc-text">frompyfunc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#广播"><span class="toc-number">3.4.</span> <span class="toc-text">广播</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#举例"><span class="toc-number">3.4.1.</span> <span class="toc-text">举例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ogrid对象"><span class="toc-number">3.4.2.</span> <span class="toc-text">ogrid对象</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ufunc的方法"><span class="toc-number">3.5.</span> <span class="toc-text">ufunc的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#reduce"><span class="toc-number">3.5.1.</span> <span class="toc-text">reduce</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#accumulate"><span class="toc-number">3.5.2.</span> <span class="toc-text">accumulate</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#reduceat"><span class="toc-number">3.5.3.</span> <span class="toc-text">reduceat</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#outer-a-b-方法的计算等同于如下程序："><span class="toc-number">3.5.4.</span> <span class="toc-text">.outer(a,b)方法的计算等同于如下程序：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#矩阵运算"><span class="toc-number">4.</span> <span class="toc-text">矩阵运算</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#matrix对象"><span class="toc-number">4.1.</span> <span class="toc-text">matrix对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数"><span class="toc-number">4.2.</span> <span class="toc-text">函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#dot"><span class="toc-number">4.2.1.</span> <span class="toc-text">dot</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#inner"><span class="toc-number">4.2.2.</span> <span class="toc-text">inner</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#outer"><span class="toc-number">4.2.3.</span> <span class="toc-text">outer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#其他"><span class="toc-number">4.2.4.</span> <span class="toc-text">其他</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文件存取"><span class="toc-number">5.</span> <span class="toc-text">文件存取</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#tofile-amp-amp-fromfile"><span class="toc-number">5.1.</span> <span class="toc-text">tofile && fromfile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#numpy-load-amp-amp-numpy-save"><span class="toc-number">5.2.</span> <span class="toc-text">numpy.load && numpy.save</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#numpy-savetxt-amp-amp-numpy-loadtxt"><span class="toc-number">5.3.</span> <span class="toc-text">numpy.savetxt && numpy.loadtxt</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">6.</span> <span class="toc-text">参考</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Python-Numpy学习　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/02/25/Python-Numpy学习/" data-title="Python-Numpy学习" data-url="https://fangyeqing.github.io/2017/02/25/Python-Numpy学习/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/02/25/Python-Pandas学习/" title="上一篇: Python-Pandas学习">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/02/25/Python-Web学习(Flask框架初探)/" title="下一篇: Python-Web学习(Flask框架初探)">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Pandas学习/">Python-Pandas学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Numpy学习/">Python-Numpy学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Web学习(Flask框架初探)/">Python-Web学习(Flask框架初探)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/10/Vmware虚拟机安装Ubuntu/">Vmware虚拟机安装Ubuntu</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/spark---RDD/">spark---RDD</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/spark---hello_spark_java版/">spark---hello spark java版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/druid.io实践4---druid监控/">druid.io实践4---druid监控</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 小懒
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

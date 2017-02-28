@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="小懒" />
+
+
+
+<meta name="description" content="pandas建造在NumPy之上，它使得以NumPy为中心的应用很容易使用。pandas数据结构主要有：Series、DataFrame。首先引入模块：12import pandas as pdimport numpy as np">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python-Pandas学习">
+<meta property="og:url" content="https://fangyeqing.github.io/2017/02/25/Python-Pandas学习/index.html">
+<meta property="og:site_name" content="小懒的博客">
+<meta property="og:description" content="pandas建造在NumPy之上，它使得以NumPy为中心的应用很容易使用。pandas数据结构主要有：Series、DataFrame。首先引入模块：12import pandas as pdimport numpy as np">
+<meta property="og:updated_time" content="2017-02-28T08:44:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python-Pandas学习">
+<meta name="twitter:description" content="pandas建造在NumPy之上，它使得以NumPy为中心的应用很容易使用。pandas数据结构主要有：Series、DataFrame。首先引入模块：12import pandas as pdimport numpy as np">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="小懒的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/xiaolan.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Python-Pandas学习 | 小懒的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?7fb806568d59e1b131e6cd93134ab91e";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">小懒</a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">文章分类</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/监控/">监控</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">小懒</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">小懒</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">文章分类</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Python-Pandas学习" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/02/25/Python-Pandas学习/" class="article-date">
+      <time datetime="2017-02-25T12:56:50.000Z" itemprop="datePublished">2017-02-25</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python-Pandas学习
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/python/">python</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据分析/">数据分析</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <excerpt in="" index="" |="" 首页摘要="">  
+
+<p>pandas建造在NumPy之上，它使得以NumPy为中心的应用很容易使用。pandas数据结构主要有：Series、DataFrame。首先引入模块：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">import pandas as pd</div><div class="line">import numpy as np</div></pre></td></tr></table></figure></p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文="">
+
+<h2 id="Series"><a href="#Series" class="headerlink" title="Series"></a>Series</h2><p>Series是一个类似一维数组的对象，包含:</p>
+<ul>
+<li>values:任何NumPy的数据类型组成的数组</li>
+<li>index:与数组关联的标签</li>
+</ul>
+<p>可以分别的通过它的 values 和 index 属性来获取Series的数组表示和索引对象</p>
+<h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p>创建可以有几种方式：</p>
+<ul>
+<li>由数组(list/tuple)创建：<ul>
+<li>不指定索引：默认索引为整数0到 N-1（N为数组长度）</li>
+<li>指定索引：index参数指定索引</li>
+</ul>
+</li>
+<li>由dict创建：key–&gt;index，value–&gt;values</li>
+<li>由Series创建：指定index时，只提取原Series的index对应的值，没有的为NAN<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"># 不指定索引</div><div class="line">obj = pd.Series([4, 7, -5, 3])  </div><div class="line">print(obj.values, obj.index, obj, sep=&apos;\n&apos;)</div><div class="line"># 指定索引</div><div class="line">obj2 = pd.Series((4, 7, -5, 3), index=[&apos;d&apos;, &apos;b&apos;, &apos;a&apos;, &apos;c&apos;])</div><div class="line">print(obj2.values, obj2.index, obj2, sep=&apos;\n&apos;)</div><div class="line"># 字典创建</div><div class="line">sdata = &#123;&apos;Ohio&apos;: 35000, &apos;Texas&apos;: 71000, &apos;Oregon&apos;: 16000, &apos;Utah&apos;: 5000&#125;</div><div class="line">obj3 = pd.Series(sdata)</div><div class="line"># Series创建</div><div class="line">states = [&apos;California&apos;, &apos;Ohio&apos;, &apos;Oregon&apos;, &apos;Texas&apos;]</div><div class="line">obj4 = pd.Series(sdata, index=states)</div><div class="line">print(obj3, obj4, sep=&apos;\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h3><h4 id="增"><a href="#增" class="headerlink" title="增"></a>增</h4><p>与dict新增属性一样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">obj[&apos;hehe&apos;] = 110</div><div class="line">print(obj)</div></pre></td></tr></table></figure></p>
+<h4 id="删"><a href="#删" class="headerlink" title="删"></a>删</h4><p>drop 方法将会返回一个新的对象并从坐标轴中删除指定的一个或多个值，inplace参数决定是否输出到原df<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">obj.drop(&apos;Bob&apos;, inplace=True)</div><div class="line">print(obj)</div></pre></td></tr></table></figure></p>
+<h4 id="改"><a href="#改" class="headerlink" title="改"></a>改</h4><p>分为值修改和索引更改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 索引更改</div><div class="line">obj.index = [&apos;Bob&apos;, &apos;Steve&apos;, &apos;Jeff&apos;, &apos;Ryan&apos;]</div><div class="line">print(obj)</div><div class="line"># 值更改</div><div class="line">obj[&apos;Bob&apos;] = 6</div><div class="line">print(obj)</div></pre></td></tr></table></figure></p>
+<p>说明：reindex()跟直接修改index属性的对比在重新索引部分会讲到</p>
+<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><ul>
+<li>NumPy查询，将会保持索引和值间的关联 <ul>
+<li>下标取数据</li>
+<li>布尔数组过滤</li>
+<li>纯量乘法</li>
+<li>使用数学函数</li>
+</ul>
+</li>
+<li>与NumPy不同的查询，可以使用索引里的值来选择一个单一值或一个值集<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">print(obj2[&apos;a&apos;, &apos;c&apos;])</div><div class="line">print(obj2[:2])</div><div class="line">print(obj2[obj2 &gt; 0], obj2 * 2, np.exp(obj2))</div><div class="line">print(&apos;b&apos; in obj2, &apos;e&apos; in obj2, sep=&apos;\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>算术运算：会自动对齐不同索引的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print(pd.isnull(obj4), obj4.isnull(), sep=&apos;\n&apos;)</div><div class="line">print(obj3 + obj4)</div></pre></td></tr></table></figure></p>
+<p>name属性：Series对象本身和它的索引都有一个name 属性，它和pandas的其它一些关键功能整合在一起<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">obj4.name = &apos;population&apos;</div><div class="line">obj4.index.name = &apos;state&apos;</div><div class="line">print(obj4)</div></pre></td></tr></table></figure></p>
+<h2 id="DataFrame"><a href="#DataFrame" class="headerlink" title="DataFrame"></a>DataFrame</h2><p>DataFrame类似于数据库中的表，不过DataFrame不仅仅限制于2维，可以创建多维数据表。DataFrame既有行索引，也有列索引，可以看做是Series组成的字典，每个Series看做DataFrame的一个列。</p>
+<h3 id="创建-1"><a href="#创建-1" class="headerlink" title="创建"></a>创建</h3><h4 id="由字典创建"><a href="#由字典创建" class="headerlink" title="由字典创建"></a>由字典创建</h4><p>可选参数：</p>
+<ul>
+<li>columns：可以决定列的顺序，没有的会以NaN补充</li>
+<li>index：索引值，默认值为0到N-1<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">data = &#123;&apos;state&apos;: [&apos;Ohio&apos;, &apos;Ohio&apos;, &apos;Ohio&apos;, &apos;Nevada&apos;, &apos;Nevada&apos;],</div><div class="line">        &apos;year&apos;: [2000, 2001, 2002, 2001, 2002],</div><div class="line">        &apos;pop&apos;: [1.5, 1.7, 3.6, 2.4, 2.9]&#125;</div><div class="line">frame = pd.DataFrame(data)</div><div class="line">print(frame)</div><div class="line">frame2 = pd.DataFrame(data, columns=[&apos;year&apos;, &apos;state&apos;, &apos;pop&apos;])</div><div class="line">print(frame2)</div><div class="line">frame2 = pd.DataFrame(data, columns=[&apos;year&apos;, &apos;state&apos;, &apos;pop&apos;, &apos;debt&apos;])</div><div class="line">print(frame2)</div><div class="line">frame2 = pd.DataFrame(data, columns=[&apos;year&apos;, &apos;state&apos;, &apos;pop&apos;, &apos;debt&apos;], index=[&apos;one&apos;, &apos;two&apos;, &apos;three&apos;, &apos;four&apos;, &apos;five&apos;])</div><div class="line">print(frame2)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="numpy数组创建"><a href="#numpy数组创建" class="headerlink" title="numpy数组创建"></a>numpy数组创建</h4><p>等长的numpy数组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">frame = pd.DataFrame(np.arange(16).reshape((4, 4)), index=[&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;], columns=[&apos;one&apos;, &apos;two&apos;, &apos;three&apos;, &apos;four&apos;])</div><div class="line">print(frame)</div></pre></td></tr></table></figure></p>
+<h4 id="嵌套字典的字典"><a href="#嵌套字典的字典" class="headerlink" title="嵌套字典的字典"></a>嵌套字典的字典</h4><p>它的外部键会被解释为列索引，内部键会被解释为行索引<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">pop = &#123;&apos;Nevada&apos;: &#123;2001: 2.4, 2002: 2.9&#125;,</div><div class="line">       &apos;Ohio&apos;: &#123;2000: 1.5, 2001: 1.7, 2002: 3.6&#125;&#125;</div><div class="line">frame3 = pd.DataFrame(pop)</div><div class="line">print(frame3)</div></pre></td></tr></table></figure></p>
+<h4 id="其他-1"><a href="#其他-1" class="headerlink" title="其他"></a>其他</h4><p>由其他df创建：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">pdata = &#123;&apos;Ohio&apos;: frame3[&apos;Ohio&apos;][:-1],</div><div class="line">         &apos;Nevada&apos;: frame3[&apos;Nevada&apos;][:2]&#125;</div><div class="line">print(pd.DataFrame(pdata))</div></pre></td></tr></table></figure></p>
+<p>可能的传递到DataFrame的构造器：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>二维ndarray</td>
+<td>一个数据矩阵，有可选的行标和列标</td>
+</tr>
+<tr>
+<td>数组，列表或元组的字典</td>
+<td>每一个序列成为DataFrame中的一列。所有的序列必须有相同的长度。</td>
+</tr>
+<tr>
+<td>NumPy的结构/记录数组</td>
+<td>和“数组字典”一样处理</td>
+</tr>
+<tr>
+<td>Series的字典</td>
+<td>每一个值成为一列。如果没有明显的传递索引，将结合每一个Series的索引来形成结果的行索引。</td>
+</tr>
+<tr>
+<td>字典的字典</td>
+<td>每一个内部的字典成为一列。和“Series的字典”一样，结合键值来形成行索引。</td>
+</tr>
+<tr>
+<td>字典或Series的列表</td>
+<td>每一项成为DataFrame中的一列。结合字典键或Series索引形成DataFrame的列标。</td>
+</tr>
+<tr>
+<td>列表或元组的列表</td>
+<td>和“二维ndarray”一样处理</td>
+</tr>
+<tr>
+<td>另一个DataFrame</td>
+<td>DataFrame的索引将被使用，除非传递另外一个</td>
+</tr>
+<tr>
+<td>NumPy伪装数组（MaskedArray）</td>
+<td>除了蒙蔽值在DataFrame中成为NA/丢失数据之外，其它的和“二维ndarray”一样</td>
+</tr>
+</tbody>
+</table>
+<h3 id="修改-1"><a href="#修改-1" class="headerlink" title="修改"></a>修改</h3><h4 id="增-1"><a href="#增-1" class="headerlink" title="增"></a>增</h4><p>增加新的一列，跟dict操作一样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">frame2[&apos;eastern&apos;] = frame2.state == &apos;Ohio&apos;</div><div class="line">print(frame2)</div></pre></td></tr></table></figure></p>
+<h4 id="删-1"><a href="#删-1" class="headerlink" title="删"></a>删</h4><p>del：删除一列，跟dict一样<br>dorp()：删除行或者列</p>
+<ul>
+<li>axis：删除轴，跟numpy一样，axis=0表示行，axis=1表示列</li>
+<li>inplace：是否替换原函数<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">del frame2[&apos;eastern&apos;]</div><div class="line">print(frame2.columns, frame2, sep=&apos;\n&apos;)</div><div class="line">print(frame2.drop(&apos;one&apos;, axis=0))</div><div class="line">print(frame2.drop([&apos;year&apos;, &apos;debt&apos;], axis=1))</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="改-1"><a href="#改-1" class="headerlink" title="改"></a>改</h4><p>列可以通过赋值来修改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">frame2[&apos;debt&apos;] = 16.5</div><div class="line">print(frame2)</div><div class="line">frame2[&apos;debt&apos;] = np.arange(5.)</div><div class="line">print(frame2)</div></pre></td></tr></table></figure></p>
+<p>通过列表或数组给一列赋值时，所赋的值的长度必须和DataFrame的长度相匹配。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">val = pd.Series([-1.2, -1.5, -1.7], index=[&apos;two&apos;, &apos;four&apos;, &apos;five&apos;])</div><div class="line">frame2[&apos;debt&apos;] = val</div><div class="line">print(frame2)</div></pre></td></tr></table></figure></p>
+<h3 id="选择、查询"><a href="#选择、查询" class="headerlink" title="选择、查询"></a>选择、查询</h3><h4 id="查看数据"><a href="#查看数据" class="headerlink" title="查看数据"></a>查看数据</h4><ul>
+<li>head()、tail(): 查看顶部和底部</li>
+<li>index、column、values: 显示索引,列,和底层numpy数据</li>
+<li>describe(): 描述显示数据快速统计摘要,包括count、mean、std、min、25%、50%、75%、max</li>
+<li>转置数据：T</li>
+<li>按轴排序，按值排序<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">dates = pd.date_range(&apos;20130101&apos;, periods=6)</div><div class="line">df = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list(&apos;ABCD&apos;))</div><div class="line">print(df, df.head(), df.tail(1), </div><div class="line">      df.index, df.columns, df.values, </div><div class="line">      df.describe(), df.T,</div><div class="line">      df.sort_index(axis=1, ascending=False), df.sort(columns=&apos;B&apos;), sep=&apos;\n-------\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="选择数据"><a href="#选择数据" class="headerlink" title="选择数据"></a>选择数据</h4><p>选择单列：通过字典记法或属性来检索。建议使用列标签[ ]选取方式，‘.’的写法容易与其他预留关键字产生冲突。返回的Series包含和DataFrame相同的索引，并且继承name 属性。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(df[&apos;A&apos;], df.A, sep=&apos;\n------\n&apos;)</div></pre></td></tr></table></figure></p>
+<p>选择片段：使用[]<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(df[0:3], df[&apos;20130102&apos;:&apos;20130104&apos;], sep=&apos;\n------\n&apos;)</div></pre></td></tr></table></figure></p>
+<h5 id="使用标签选择"><a href="#使用标签选择" class="headerlink" title="使用标签选择"></a>使用标签选择</h5><p>loc(行标签,列标签)：</p>
+<ul>
+<li>行标签和列标签都可以为切片或者单个值</li>
+<li>两者都为单个值时为选择单个数据，等价于at<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">print(df.loc[dates[0]], df.loc[:, [&apos;A&apos;, &apos;B&apos;]], df.loc[&apos;20130102&apos;:&apos;20130104&apos;, [&apos;A&apos;, &apos;B&apos;]], df.loc[&apos;20130102&apos;, [&apos;A&apos;, &apos;B&apos;]], sep=&apos;\n------\n&apos;)</div><div class="line"></div><div class="line">print(df.loc[dates[0], &apos;A&apos;], df.at[dates[0], &apos;A&apos;], sep=&apos;\n------\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="按位置选择"><a href="#按位置选择" class="headerlink" title="按位置选择"></a>按位置选择</h5><p>iloc(行位置,列位置):</p>
+<ul>
+<li>行位置和列位置都可以为切片或者单个值</li>
+<li>两者都为单个值时为选择单个数据，等价于iat<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 传递整数选择位置</div><div class="line">print(df.iloc[3], df.iloc[3:5, 0:2], df.iloc[[1, 2, 4], [0, 2]], df.iloc[1:3, :], df.iloc[:, 1:3], sep=&apos;\n------\n&apos;)</div><div class="line"># 显式获取一个值(两者等价)</div><div class="line">print(df.iloc[1, 1], df.iat[1, 1], sep=&apos;\n------\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="布尔索引"><a href="#布尔索引" class="headerlink" title="布尔索引"></a>布尔索引</h5><p>跟Series基本一样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(df[df.A &gt; 0], df[df &gt; 0], sep=&apos;\n-------\n&apos;)</div></pre></td></tr></table></figure></p>
+<h2 id="索引对象"><a href="#索引对象" class="headerlink" title="索引对象"></a>索引对象</h2><p>pandas的索引对象用来保存坐标轴标签和其它元数据（如坐标轴名或名称）。</p>
+<p>索引对象是不可变的，从上文Series部分可以看出可以通过整个替换index对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">obj = pd.Series([4, 7, -5, 3])</div><div class="line">obj.index = [&apos;Bob&apos;, &apos;Steve&apos;, &apos;Jeff&apos;, &apos;Ryan&apos;]</div><div class="line">print(obj)</div><div class="line"># 索引对象不可变</div><div class="line"># index = obj.index</div><div class="line"># index[1] = &apos;hehe&apos;</div></pre></td></tr></table></figure></p>
+<h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><p>pandas中的主要索引对象：</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Index</td>
+<td>最通用的索引对象，使用Python对象的NumPy数组来表示坐标轴标签。</td>
+</tr>
+<tr>
+<td>Int64Index</td>
+<td>对整形值的特化索引。</td>
+</tr>
+<tr>
+<td>MultiIndex</td>
+<td>“分层”索引对象，表示单个轴的多层次的索引。可以被认为是类似的元组的数组。</td>
+</tr>
+<tr>
+<td>DatetimeIndex</td>
+<td>存储纳秒时间戳（使用NumPy的datetime64 dtyppe来表示）。</td>
+</tr>
+<tr>
+<td>PeriodIndex</td>
+<td>对周期数据（时间间隔的）的特化索引。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><p>除了类似于阵列，索引也有类似固定大小集合一样的功能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print(&apos;Ohio&apos; in frame3.columns)</div><div class="line">print(2003 in frame3.index)</div></pre></td></tr></table></figure></p>
+<p>每个索引都有许多关于集合逻辑的方法和属性：</p>
+<table>
+<thead>
+<tr>
+<th>索引方法和属性</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>append</td>
+<td>链接额外的索引对象，产生一个新的索引</td>
+</tr>
+<tr>
+<td>diff</td>
+<td>计算索引的差集</td>
+</tr>
+<tr>
+<td>intersection</td>
+<td>计算交集</td>
+</tr>
+<tr>
+<td>union</td>
+<td>计算并集</td>
+</tr>
+<tr>
+<td>isin</td>
+<td>计算出一个布尔数组表示每一个值是否包含在所传递的集合里</td>
+</tr>
+<tr>
+<td>delete</td>
+<td>计算删除位置i的元素的索引</td>
+</tr>
+<tr>
+<td>drop</td>
+<td>计算删除所传递的值后的索引</td>
+</tr>
+<tr>
+<td>insert</td>
+<td>计算在位置i插入元素后的索引</td>
+</tr>
+<tr>
+<td>is_monotonic</td>
+<td>返回True，如果每一个元素都比它前面的元素大或相等</td>
+</tr>
+<tr>
+<td>is_unique</td>
+<td>返回True，如果索引没有重复的值</td>
+</tr>
+<tr>
+<td>unique</td>
+<td>计算索引的唯一值数组</td>
+</tr>
+</tbody>
+</table>
+<h3 id="重新索引"><a href="#重新索引" class="headerlink" title="重新索引"></a>重新索引</h3><p>reindex：根据新的index来进行排序，使得它符合新的索引，如果那个索引的值不存在就引入缺失数据值。</p>
+<p>没有的值填充可选配置：</p>
+<ul>
+<li>fill_value: 填充单个值，例如填0</li>
+<li>method: 对时间序列内插或填充<ul>
+<li>ffill或pad: 前向（或进位）填充，例如ffill跟前一位相同</li>
+<li>bfill或backfill: 后向（或进位）填充<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">obj = pd.Series([4.5, 7.2, -5.3, 3.6], index=[&apos;d&apos;, &apos;b&apos;, &apos;a&apos;, &apos;c&apos;])</div><div class="line">obj2 = obj.reindex([&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;], fill_value=0)</div><div class="line">obj.index = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;]</div><div class="line">print(obj, obj2, sep=&apos;\n------\n&apos;)</div><div class="line"></div><div class="line">obj3 = pd.Series([&apos;blue&apos;, &apos;purple&apos;, &apos;yellow&apos;], index=[0, 2, 4])</div><div class="line">obj4 = obj3.reindex(range(6), method=&apos;ffill&apos;)</div><div class="line">print(obj4)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<p>reindex与修改index的结果对比：obj vs obj2<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"># 直接通过修改index属性只是把index换掉，并且长度必须一样，没有填NaN一说</div><div class="line">a    4.5</div><div class="line">b    7.2</div><div class="line">c   -5.3</div><div class="line">d    3.6</div><div class="line">dtype: float64</div><div class="line"># reindex会根据新的index对以前的进行排序。</div><div class="line">a   -5.3</div><div class="line">b    7.2</div><div class="line">c    3.6</div><div class="line">d    4.5</div><div class="line">e    0</div><div class="line">dtype: float64</div></pre></td></tr></table></figure></p>
+<h4 id="DataFrame重新索引"><a href="#DataFrame重新索引" class="headerlink" title="DataFrame重新索引"></a>DataFrame重新索引</h4><p>reindex 可以改变（行）索引，列或两者：</p>
+<ul>
+<li>columns：列重新索引</li>
+<li>index： 行重新索引</li>
+<li>只传入一个序列：相当于index，行重新索引<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">frame = pd.DataFrame(np.arange(9).reshape((3, 3)), index=[&apos;a&apos;, &apos;c&apos;, &apos;d&apos;],</div><div class="line">                     columns=[&apos;Ohio&apos;, &apos;Texas&apos;, &apos;California&apos;])</div><div class="line">frame2 = frame.reindex([&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;])</div><div class="line">states = [&apos;Texas&apos;, &apos;Utah&apos;, &apos;California&apos;]</div><div class="line">frame3 = frame.reindex(columns=states)</div><div class="line">print(frame, frame2, frame3, sep=&apos;\n------\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>插值只在行侧（0坐标轴）进行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">frame.reindex(index=[&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;], method=&apos;ffill&apos;, columns=states)</div></pre></td></tr></table></figure></p>
+<h2 id="其他-2"><a href="#其他-2" class="headerlink" title="其他"></a>其他</h2><h3 id="丢失的数据"><a href="#丢失的数据" class="headerlink" title="丢失的数据"></a>丢失的数据</h3><p>pandas主要使用np.nan替换丢失的数据. 默认情况下它并不包含在计算中:</p>
+<ul>
+<li>dropna():删除丢失数据的行,how=’any’表示删除任何</li>
+<li>fillna():填充丢失数据</li>
+<li>isnull():获取值是否nan的布尔标记<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">df2 = df[df &gt; 0]</div><div class="line">print(df2.dropna(how=&apos;any&apos;))</div><div class="line">print(df2.fillna(value=0))</div><div class="line">print(df2.isnull())</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="运算"><a href="#运算" class="headerlink" title="运算"></a>运算</h3><h4 id="算术运算"><a href="#算术运算" class="headerlink" title="算术运算"></a>算术运算</h4><p>基本的加减乘除运算：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">df1 + df2</div><div class="line">df1 * df2</div></pre></td></tr></table></figure></p>
+<h4 id="二元运算"><a href="#二元运算" class="headerlink" title="二元运算"></a>二元运算</h4><p>类似于numpy的运算</p>
+<ul>
+<li>广播机制</li>
+<li>缺失数据的计算</li>
+<li>通过axis指定轴</li>
+</ul>
+<h4 id="Apply"><a href="#Apply" class="headerlink" title="Apply"></a>Apply</h4><p>在数据上使用函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print(df.apply(np.cumsum))</div><div class="line">print(df.apply(lambda x: x.max() - x.min()))</div></pre></td></tr></table></figure></p>
+<h4 id="字符串方法"><a href="#字符串方法" class="headerlink" title="字符串方法"></a>字符串方法</h4><p>具体参见<a href="http://pandas.pydata.org/pandas-docs/stable/text.html#text-string-methods" target="_blank" rel="external">官方文档:Working with Text Data</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">s = pd.Series([&apos;A&apos;, &apos;B&apos;, &apos;C&apos;, &apos;Aaba&apos;, &apos;Baca&apos;, np.nan, &apos;CABA&apos;, &apos;dog&apos;, &apos;cat&apos;])</div><div class="line">print(s.str.lower())</div></pre></td></tr></table></figure></p>
+<h3 id="Merge"><a href="#Merge" class="headerlink" title="Merge"></a>Merge</h3><p>pandas提供各种工具以简便合并序列,数据桢,和组合对象, 在连接/合并类型操作中使用多种类型索引和相关数学函数，具体参见<a href="http://pandas.pydata.org/pandas-docs/stable/merging.html" target="_blank" rel="external">官方文档</a></p>
+<h4 id="concat"><a href="#concat" class="headerlink" title="concat"></a>concat</h4><p>把pandas对象连接到一起<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">df = pd.DataFrame(np.random.randn(10, 4))</div><div class="line">print(df[:3], df[3:7], df[7:], sep=&apos;\n-------\n&apos;)</div><div class="line">pieces = [df[:3], df[3:7], df[7:]]</div><div class="line">print(pd.concat(pieces))</div></pre></td></tr></table></figure></p>
+<h4 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h4><p>SQL样式合并:</p>
+<ul>
+<li>on:merge的列</li>
+<li>how：选择左连接、右连接、全连接，默认内连接</li>
+<li>suffixes：重名列后缀<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">left = pd.DataFrame(&#123;&apos;key&apos;: [&apos;K0&apos;, &apos;K1&apos;, &apos;K2&apos;, &apos;K3&apos;],</div><div class="line">                     &apos;key2&apos;: [&apos;K0&apos;, &apos;K1&apos;, &apos;K0&apos;, &apos;K1&apos;],</div><div class="line">                     &apos;A&apos;: [&apos;A0&apos;, &apos;A1&apos;, &apos;A2&apos;, &apos;A3&apos;],</div><div class="line">                     &apos;B&apos;: [&apos;B0&apos;, &apos;B1&apos;, &apos;B2&apos;, &apos;B3&apos;]&#125;)</div><div class="line">right = pd.DataFrame(&#123;&apos;key&apos;: [&apos;K0&apos;, &apos;K1&apos;, &apos;K2&apos;, &apos;K3&apos;, &apos;K4&apos;],</div><div class="line">                     &apos;key2&apos;: [&apos;K0&apos;, &apos;K0&apos;, &apos;K0&apos;, &apos;K0&apos;, &apos;K0&apos;],</div><div class="line">                      &apos;C&apos;: [&apos;C0&apos;, &apos;C1&apos;, &apos;C2&apos;, &apos;C3&apos;, &apos;C4&apos;],</div><div class="line">                      &apos;D&apos;: [&apos;D0&apos;, &apos;D1&apos;, &apos;D2&apos;, &apos;D3&apos;, &apos;D4&apos;]&#125;)</div><div class="line"></div><div class="line">df3 = pd.merge(left, right, on=&apos;key&apos;, suffixes=(&apos;_left&apos;, &apos;_right&apos;))</div><div class="line"></div><div class="line">df4 = pd.merge(left, right, on=[&apos;key&apos;, &apos;key2&apos;])</div><div class="line">df5 = pd.merge(left, right, on=[&apos;key&apos;, &apos;key2&apos;], how=&apos;left&apos;)</div><div class="line">df6 = pd.merge(left, right, on=[&apos;key&apos;, &apos;key2&apos;], how=&apos;right&apos;)</div><div class="line">df7 = pd.merge(left, right, on=[&apos;key&apos;, &apos;key2&apos;], how=&apos;outer&apos;)</div><div class="line"></div><div class="line">print(df3, df4, df5, df6, df7, sep=&apos;\n--------\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="append"><a href="#append" class="headerlink" title="append"></a>append</h4><p>添加行到数据增,下例中取第4行，append到df最后一行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">df = pd.DataFrame(np.random.randn(8, 4), columns=[&apos;A&apos;, &apos;B&apos;, &apos;C&apos;, &apos;D&apos;])</div><div class="line">s = df.iloc[3]</div><div class="line">print(df.append(s, ignore_index=True))</div></pre></td></tr></table></figure></p>
+<h3 id="Group-by"><a href="#Group-by" class="headerlink" title="Group by"></a>Group by</h3><p>对于“group by”指的是以下一个或多个处理：</p>
+<ul>
+<li>将数据按某些标准分割为不同的组</li>
+<li>在每个独立组上应用函数</li>
+<li>组合结果为一个数据结构<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">df = pd.DataFrame(&#123;&apos;A&apos;: [&apos;foo&apos;, &apos;bar&apos;, &apos;foo&apos;, &apos;bar&apos;,&apos;foo&apos;, &apos;bar&apos;, &apos;foo&apos;, &apos;foo&apos;],</div><div class="line">                   &apos;B&apos;: [&apos;one&apos;, &apos;one&apos;, &apos;two&apos;, &apos;three&apos;, &apos;two&apos;, &apos;two&apos;, &apos;one&apos;, &apos;three&apos;],</div><div class="line">                   &apos;C&apos;: np.random.randn(8),</div><div class="line">                   &apos;D&apos;: np.random.randn(8)&#125;)</div><div class="line">print(df, df.groupby(&apos;A&apos;).sum(), df.groupby([&apos;A&apos;, &apos;B&apos;]).sum(), sep=&apos;\n------\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Pivot-talbe-数据透视表"><a href="#Pivot-talbe-数据透视表" class="headerlink" title="Pivot talbe(数据透视表)"></a>Pivot talbe(数据透视表)</h3><p>我们可以从此数据非常容易的产生数据透视表:</p>
+<ul>
+<li>values: 聚合列</li>
+<li>index: group列</li>
+<li>columns: 新df的索引列</li>
+<li>aggfunc：聚合函数<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">df = pd.DataFrame(&#123;&apos;A&apos;: [&apos;one&apos;, &apos;one&apos;, &apos;two&apos;, &apos;three&apos;] * 3,</div><div class="line">                   &apos;B&apos;: [&apos;A&apos;, &apos;B&apos;, &apos;C&apos;] * 4,</div><div class="line">                   &apos;C&apos;: [&apos;foo&apos;, &apos;foo&apos;, &apos;foo&apos;, &apos;bar&apos;, &apos;bar&apos;, &apos;bar&apos;] * 2,</div><div class="line">                   &apos;D&apos;: np.random.randn(12),</div><div class="line">                   &apos;E&apos;: np.random.randn(12)&#125;)</div><div class="line">df_pivot = pd.pivot_table(df, values=&apos;D&apos;, index=[&apos;A&apos;, &apos;B&apos;], columns=[&apos;C&apos;])</div><div class="line">print(df, df_pivot, sep=&apos;\n-----pivot-----\n&apos;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://pda.readthedocs.io/en/latest/chp5.html" target="_blank" rel="external">Python for Data Analysis</a><br><a href="http://blog.csdn.net/zutsoft/article/details/51482573" target="_blank" rel="external">【pandas】[1] Series 入门(创建和增删改查)</a><br><a href="http://blog.csdn.net/zutsoft/article/details/51483710" target="_blank" rel="external">【pandas】[2] DataFrame 基础，创建DataFrame和增删改查基本操作（1）</a><br><a href="http://www.shizhuolin.com/2015/04/19/978.html" target="_blank" rel="external">十分钟搞定pandas</a><br><a href="http://pandas.pydata.org/pandas-docs/stable/indexing.html" target="_blank" rel="external">官方文档：Indexing and Selecting Data</a>  </p>
+</the></excerpt>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/02/25/Python-Pandas学习/">Python-Pandas学习</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
+        <p><span>发布时间:</span>2017-02-25, 20:56:50</p>
+        <p><span>最后更新:</span>2017-02-28, 16:44:15</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/02/25/Python-Pandas学习/" title="Python-Pandas学习">https://fangyeqing.github.io/2017/02/25/Python-Pandas学习/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/02/25/Python-Pandas学习/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/02/25/Python-Numpy学习/">
+                    Python-Numpy学习
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Series"><span class="toc-number">1.</span> <span class="toc-text">Series</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建"><span class="toc-number">1.1.</span> <span class="toc-text">创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改"><span class="toc-number">1.2.</span> <span class="toc-text">修改</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#增"><span class="toc-number">1.2.1.</span> <span class="toc-text">增</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删"><span class="toc-number">1.2.2.</span> <span class="toc-text">删</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#改"><span class="toc-number">1.2.3.</span> <span class="toc-text">改</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查询"><span class="toc-number">1.3.</span> <span class="toc-text">查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他"><span class="toc-number">1.4.</span> <span class="toc-text">其他</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DataFrame"><span class="toc-number">2.</span> <span class="toc-text">DataFrame</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建-1"><span class="toc-number">2.1.</span> <span class="toc-text">创建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#由字典创建"><span class="toc-number">2.1.1.</span> <span class="toc-text">由字典创建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#numpy数组创建"><span class="toc-number">2.1.2.</span> <span class="toc-text">numpy数组创建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#嵌套字典的字典"><span class="toc-number">2.1.3.</span> <span class="toc-text">嵌套字典的字典</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#其他-1"><span class="toc-number">2.1.4.</span> <span class="toc-text">其他</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改-1"><span class="toc-number">2.2.</span> <span class="toc-text">修改</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#增-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">增</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删-1"><span class="toc-number">2.2.2.</span> <span class="toc-text">删</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#改-1"><span class="toc-number">2.2.3.</span> <span class="toc-text">改</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选择、查询"><span class="toc-number">2.3.</span> <span class="toc-text">选择、查询</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#查看数据"><span class="toc-number">2.3.1.</span> <span class="toc-text">查看数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#选择数据"><span class="toc-number">2.3.2.</span> <span class="toc-text">选择数据</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#使用标签选择"><span class="toc-number">2.3.2.1.</span> <span class="toc-text">使用标签选择</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#按位置选择"><span class="toc-number">2.3.2.2.</span> <span class="toc-text">按位置选择</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#布尔索引"><span class="toc-number">2.3.2.3.</span> <span class="toc-text">布尔索引</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#索引对象"><span class="toc-number">3.</span> <span class="toc-text">索引对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#类型"><span class="toc-number">3.1.</span> <span class="toc-text">类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#属性"><span class="toc-number">3.2.</span> <span class="toc-text">属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重新索引"><span class="toc-number">3.3.</span> <span class="toc-text">重新索引</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#DataFrame重新索引"><span class="toc-number">3.3.1.</span> <span class="toc-text">DataFrame重新索引</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他-2"><span class="toc-number">4.</span> <span class="toc-text">其他</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#丢失的数据"><span class="toc-number">4.1.</span> <span class="toc-text">丢失的数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运算"><span class="toc-number">4.2.</span> <span class="toc-text">运算</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#算术运算"><span class="toc-number">4.2.1.</span> <span class="toc-text">算术运算</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二元运算"><span class="toc-number">4.2.2.</span> <span class="toc-text">二元运算</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Apply"><span class="toc-number">4.2.3.</span> <span class="toc-text">Apply</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#字符串方法"><span class="toc-number">4.2.4.</span> <span class="toc-text">字符串方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Merge"><span class="toc-number">4.3.</span> <span class="toc-text">Merge</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#concat"><span class="toc-number">4.3.1.</span> <span class="toc-text">concat</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#merge"><span class="toc-number">4.3.2.</span> <span class="toc-text">merge</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#append"><span class="toc-number">4.3.3.</span> <span class="toc-text">append</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Group-by"><span class="toc-number">4.4.</span> <span class="toc-text">Group by</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pivot-talbe-数据透视表"><span class="toc-number">4.5.</span> <span class="toc-text">Pivot talbe(数据透视表)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Python-Pandas学习　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/02/25/Python-Pandas学习/" data-title="Python-Pandas学习" data-url="https://fangyeqing.github.io/2017/02/25/Python-Pandas学习/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/02/25/Python-Numpy学习/" title="下一篇: Python-Numpy学习">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Pandas学习/">Python-Pandas学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Numpy学习/">Python-Numpy学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Web学习(Flask框架初探)/">Python-Web学习(Flask框架初探)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/10/Vmware虚拟机安装Ubuntu/">Vmware虚拟机安装Ubuntu</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/spark---RDD/">spark---RDD</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/spark---hello_spark_java版/">spark---hello spark java版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/druid.io实践4---druid监控/">druid.io实践4---druid监控</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 小懒
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
