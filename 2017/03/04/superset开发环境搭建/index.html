@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="小懒" />
+
+
+
+<meta name="description" content="在ubuntu环境下,利用Pycharm进行跟查询druid有关的二次开发，踩了一些坑，记录了一下。为了开发，也学习了一些相关的东西，博客如下：Vmware虚拟机安装UbuntuPython-Web学习(Flask框架初探))Python-Numpy学习Python-Pandas学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="superset开发环境搭建">
+<meta property="og:url" content="https://fangyeqing.github.io/2017/03/04/superset开发环境搭建/index.html">
+<meta property="og:site_name" content="小懒的博客">
+<meta property="og:description" content="在ubuntu环境下,利用Pycharm进行跟查询druid有关的二次开发，踩了一些坑，记录了一下。为了开发，也学习了一些相关的东西，博客如下：Vmware虚拟机安装UbuntuPython-Web学习(Flask框架初探))Python-Numpy学习Python-Pandas学习">
+<meta property="og:updated_time" content="2017-03-09T08:09:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="superset开发环境搭建">
+<meta name="twitter:description" content="在ubuntu环境下,利用Pycharm进行跟查询druid有关的二次开发，踩了一些坑，记录了一下。为了开发，也学习了一些相关的东西，博客如下：Vmware虚拟机安装UbuntuPython-Web学习(Flask框架初探))Python-Numpy学习Python-Pandas学习">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="小懒的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/xiaolan.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>superset开发环境搭建 | 小懒的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?7fb806568d59e1b131e6cd93134ab91e";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/xiaolan.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">小懒</a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">文章分类</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camus/">Camus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid/">druid</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hello-world/">hello world</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samza/">samza</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/superset/">superset</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习/">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实践/">实践</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流处理/">流处理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息系统/">消息系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/监控/">监控</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/经验/">经验</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/语言/">语言</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Re0：从零开始的程序猿世界</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">小懒</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/xiaolan.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">小懒</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">文章分类</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:fangyeqing123@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/fangyeqing" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-superset开发环境搭建" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/03/04/superset开发环境搭建/" class="article-date">
+      <time datetime="2017-03-04T12:41:00.000Z" itemprop="datePublished">2017-03-04</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      superset开发环境搭建
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/druid/">druid</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid/">druid</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/superset/">superset</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/实践/">实践</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <excerpt in="" index="" |="" 首页摘要="">   
+
+<p>在ubuntu环境下,利用Pycharm进行跟查询druid有关的二次开发，踩了一些坑，记录了一下。为了开发，也学习了一些相关的东西，博客如下：<br><a href="https://fangyeqing.github.io/2017/02/10/Vmware%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85Ubuntu/">Vmware虚拟机安装Ubuntu</a><br><a href="https://fangyeqing.github.io/2017/02/25/Python-Web%E5%AD%A6%E4%B9%A0(Flask%E6%A1%86%E6%9E%B6%E5%88%9D%E6%8E%A2">Python-Web学习(Flask框架初探)</a>)<br><a href="https://fangyeqing.github.io/2017/02/25/Python-Numpy%E5%AD%A6%E4%B9%A0/">Python-Numpy学习</a><br><a href="https://fangyeqing.github.io/2017/02/25/Python-Pandas%E5%AD%A6%E4%B9%A0/">Python-Pandas学习</a>  </p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><h3 id="坑说明"><a href="#坑说明" class="headerlink" title="坑说明"></a>坑说明</h3><h4 id="pip"><a href="#pip" class="headerlink" title="pip"></a>pip</h4><p>pip安装某些依赖，有些速度太慢了</p>
+<blockquote>
+<p>ReadTimeoutError: HTTPSConnectionPool(host=’pypi.python.org’, port=443): Read timed out</p>
+</blockquote>
+<p>改成国内镜像，举个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo pip install superset==0.17.0 -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com</div></pre></td></tr></table></figure></p>
+<p>或者建个文件~/.pip/pip.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[global]</div><div class="line">index-url = http://mirrors.aliyun.com/pypi/simple</div><div class="line">[install]</div><div class="line">use-mirrors = true</div><div class="line">mirrors = http://mirrors.aliyun.com/pypi</div></pre></td></tr></table></figure></p>
+<h4 id="npm"><a href="#npm" class="headerlink" title="npm"></a>npm</h4><p>npm如果慢的话<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">--registry=https://registry.npm.taobao.org</div></pre></td></tr></table></figure></p>
+<p>或者编辑~/.npmrc,加入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">registry = https://registry.npm.taobao.org</div></pre></td></tr></table></figure></p>
+<p>或者安装cnpm，后的npm命令都改成cnpm：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo npm install -g cnpm --registry=https://registry.npm.taobao.org</div></pre></td></tr></table></figure></p>
+<p>系统依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install build-essential libssl-dev libffi-dev python-dev python-pip libsasl2-dev libldap2-dev</div></pre></td></tr></table></figure></p>
+<p>安装superset,需要先安装node+npm:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sudo apt install nodejs-legacy   #安装node</div><div class="line">sudo apt install npm       #安装npm</div><div class="line">sudo npm install -g cnpm --registry=https://registry.npm.taobao.org  #安装淘宝的 cnpm </div><div class="line"></div><div class="line">sudo cnpm install npm -g    # npm升级到最新版本，-g全局安装</div><div class="line">sudo cnpm install -g n      # 安装nodejs的版本管理模块n</div><div class="line">sudo n latest               # nodejs版本升级到最新，参数可换：latest/stable/lts/vx.x.x</div></pre></td></tr></table></figure></p>
+<p>初始化管理员信息，这里通过pip装superset只是为了初始化管理员信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sudo -H pip install superset -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com</div><div class="line">sudo fabmanager create-admin --app superset</div><div class="line">sudo superset db upgrade                      # Initialize the database</div><div class="line">sudo superset load_examples                  # Load some data to play with</div><div class="line">sudo superset init                           # Create default roles and permissions</div></pre></td></tr></table></figure></p>
+<p>版本更新<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">superset version</div><div class="line">pip install superset --upgrade -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com</div><div class="line">superset db upgrade</div><div class="line">superset init</div></pre></td></tr></table></figure></p>
+<p>Pycharm虚拟环境<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Setting---Project:superset----Project Interperter----Create VirtualEnv</div></pre></td></tr></table></figure></p>
+<h3 id="编译前端部分"><a href="#编译前端部分" class="headerlink" title="编译前端部分"></a>编译前端部分</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cd $SUPERSET_HOME/superset/assets</div><div class="line">cnpm install -d</div><div class="line">npm run build</div></pre></td></tr></table></figure>
+<ul>
+<li>npm install:安装依赖到node_modules(-g参数安装到全局，/usr/local)，先检查当前目录下node_modules有没有模块，没有的话会从registry中下载。<a href="http://www.ruanyifeng.com/blog/2016/01/npm-install.html" target="_blank" rel="external">参考</a><ul>
+<li>发出npm install命令</li>
+<li>npm 向 registry 查询模块压缩包的网址</li>
+<li>下载压缩包，存放在~/.npm目录</li>
+<li>解压压缩包到当前项目的node_modules目录</li>
+</ul>
+</li>
+<li>npm run xxx：执行package.json，xxx可以在”scripts”中找到，build、prod之类的都是自己配的。每当执行npm run，就会自动新建一个 Shell，在这个 Shell 里面执行指定的脚本命令。会生成dist目录</li>
+</ul>
+<p>总之，上面两个命令，会生成node_modules和dist。</p>
+<h4 id="当然没那么顺利"><a href="#当然没那么顺利" class="headerlink" title="当然没那么顺利"></a>当然没那么顺利</h4><p>先卡在78%，然后报错。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ERROR in ./~/.15.3.2@react-dom/index.js</div><div class="line">Module not found: Error: Cannot resolve module &apos;react/lib/ReactDOM&apos; in /root/PycharmProjects/superset_2017/superset/assets/node_modules/.15.3.2@react-dom</div><div class="line"> @ ./~/.15.3.2@react-dom/index.js 3:17-46</div></pre></td></tr></table></figure></p>
+<h4 id="办法1"><a href="#办法1" class="headerlink" title="办法1"></a>办法1</h4><p>报错是用了两种版本的react，如果只把他缺少的ReactDOM从0.15.3复制过去，又会有新的错误提示少了东西。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">ERROR in ./~/.15.4.2@react/lib/ReactDOM.js</div><div class="line">Module not found: Error: Cannot resolve &apos;file&apos; or &apos;directory&apos; ./ReactDOMComponentTree in /root/PycharmProjects/superset_2017/superset/assets/node_modules/.15.4.2@react/lib</div><div class="line"> @ ./~/.15.4.2@react/lib/ReactDOM.js 16:28-62</div><div class="line"></div><div class="line">ERROR in ./~/.15.4.2@react/lib/ReactDOM.js</div><div class="line">Module not found: Error: Cannot resolve &apos;file&apos; or &apos;directory&apos; ./ReactDefaultInjection in /root/PycharmProjects/superset_2017/superset/assets/node_modules/.15.4.2@react/lib</div><div class="line"> @ ./~/.15.4.2@react/lib/ReactDOM.js 17:28-62</div><div class="line"></div><div class="line">ERROR in ./~/.15.4.2@react/lib/ReactDOM.js</div><div class="line">Module not found: Error: Cannot resolve &apos;file&apos; or &apos;directory&apos; ./ReactMount in /root/PycharmProjects/superset_2017/superset/assets/node_modules/.15.4.2@react/lib</div><div class="line"> @ ./~/.15.4.2@react/lib/ReactDOM.js 18:17-40</div><div class="line"></div><div class="line">ERROR in ./~/.15.4.2@react/lib/ReactDOM.js</div><div class="line">Module not found: Error: Cannot resolve &apos;file&apos; or &apos;directory&apos; ./ReactReconciler in /root/PycharmProjects/superset_2017/superset/assets/node_modules/.15.4.2@react/lib</div><div class="line"> @ ./~/.15.4.2@react/lib/ReactDOM.js 19:22-50</div><div class="line"></div><div class="line">ERROR in ./~/.15.4.2@react/lib/ReactDOM.js</div><div class="line">Module not found: Error: Cannot resolve &apos;file&apos; or &apos;directory&apos; ./ReactUpdates in /root/PycharmProjects/superset_2017/superset/assets/node_modules/.15.4.2@react/lib</div><div class="line"> @ ./~/.15.4.2@react/lib/ReactDOM.js 20:19-44</div><div class="line"></div><div class="line">ERROR in ./~/.15.4.2@react/lib/ReactDOM.js</div><div class="line">Module not found: Error: Cannot resolve &apos;file&apos; or &apos;directory&apos; ./findDOMNode in /root/PycharmProjects/superset_2017/superset/assets/node_modules/.15.4.2@react/lib</div><div class="line"> @ ./~/.15.4.2@react/lib/ReactDOM.js 23:18-42</div><div class="line"></div><div class="line">ERROR in ./~/.15.4.2@react/lib/ReactDOM.js</div><div class="line">Module not found: Error: Cannot resolve &apos;file&apos; or &apos;directory&apos; ./getHostComponentFromComposite in /root/PycharmProjects/superset_2017/superset/assets/node_modules/.15.4.2@react/lib</div><div class="line"> @ ./~/.15.4.2@react/lib/ReactDOM.js 24:36-78</div><div class="line"></div><div class="line">ERROR in ./~/.15.4.2@react/lib/ReactDOM.js</div><div class="line">Module not found: Error: Cannot resolve &apos;file&apos; or &apos;directory&apos; ./renderSubtreeIntoContainer in /root/PycharmProjects/superset_2017/superset/assets/node_modules/.15.4.2@react/lib</div><div class="line"> @ ./~/.15.4.2@react/lib/ReactDOM.js 25:33-72</div></pre></td></tr></table></figure></p>
+<p>先把react的lib删掉，然后把.15.3.2\@react的lib拷贝过去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rm -rf node_modules/react/lib </div><div class="line">cp -r node_modules/.15.3.2\@react/lib node_modules/react</div></pre></td></tr></table></figure></p>
+<h4 id="办法2"><a href="#办法2" class="headerlink" title="办法2"></a>办法2</h4><p>这样会缺少前端的组件,改成直接从pip安装好的superset中拷贝下来。static/assets只是一个软连接指向assets<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 先删除assets再拷贝</div><div class="line">cp -r /usr/local/lib/python2.7/dist-packages/superset/static/assets/ /home/fyq/coding/PycharmProjects/superset/assets</div></pre></td></tr></table></figure></p>
+<h3 id="后端部分"><a href="#后端部分" class="headerlink" title="后端部分"></a>后端部分</h3><p>Pycharm中导入项目后，可能一直扫描建索引，需把node_modules排除在项目外，assets和static里都有。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Scanning file to index</div></pre></td></tr></table></figure></p>
+<p>在ide中，项目superset目录下添加run.py，然后run就可以在浏览器8088访问到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">from superset import app</div><div class="line">app.run(debug=True, port=8088)</div></pre></td></tr></table></figure></p>
+<p>superset-python安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd $SUPERSET_HOME</div><div class="line">python setup.py install</div></pre></td></tr></table></figure></p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>如果之前配置过，直接拷贝配置.superset/db也可</p>
+<h3 id="顶部选项卡"><a href="#顶部选项卡" class="headerlink" title="顶部选项卡"></a>顶部选项卡</h3><p>Dashboard：展示板，可以每张表建一个，展示这张表需要展示的<br>Slices：Dashboard中的分片，相当于一个查询语句<br>Source：数据源 </p>
+<h3 id="Cluster配置"><a href="#Cluster配置" class="headerlink" title="Cluster配置"></a>Cluster配置</h3><p>顶部选项卡Source-Druid Cluster-“+”新建  </p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>填入内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cluster</td>
+<td>druid集群名，随意</td>
+</tr>
+<tr>
+<td>Coordinator Host</td>
+<td>coordinator地址</td>
+</tr>
+<tr>
+<td>Coordinator Port</td>
+<td>coordinator端口</td>
+<td></td>
+</tr>
+<tr>
+<td>Coordinator Endpoint</td>
+<td>默认值：druid/coordinator/v1/metadata </td>
+</tr>
+<tr>
+<td>Broker Host</td>
+<td>broker地址 </td>
+</tr>
+<tr>
+<td>Broker Port</td>
+<td>broker端口</td>
+</tr>
+<tr>
+<td>Broker Endpoint</td>
+<td>默认值：druid/v2                           </td>
+</tr>
+<tr>
+<td>Cache Timeout</td>
+<td>缓存时间：s</td>
+</tr>
+</tbody>
+</table>
+<h3 id="DataSource配置"><a href="#DataSource配置" class="headerlink" title="DataSource配置"></a>DataSource配置</h3><h4 id="Source-Refresh-Druid-MetaData"><a href="#Source-Refresh-Druid-MetaData" class="headerlink" title="Source-Refresh Druid MetaData"></a>Source-Refresh Druid MetaData</h4><p>读取元数据，第一次可能会等待几分钟,开调试模式可以看到debug日志里自动同步了druid里的所有表。 </p>
+<p>日志输出内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">2016-10-28 11:42:58,117:INFO:root:Syncing Druid datasource [x1_stat]</div><div class="line">2016-10-28 11:43:00,313:INFO:root:Syncing Druid datasource [x2_stat]</div><div class="line">2016-10-28 11:43:01,323:INFO:root:Syncing Druid datasource [x3_stat]</div><div class="line">2016-10-28 11:43:02,065:INFO:root:Syncing Druid datasource [x4_stat]</div></pre></td></tr></table></figure></p>
+<h4 id="Source-DataSource"><a href="#Source-DataSource" class="headerlink" title="Source-DataSource"></a>Source-DataSource</h4><p>在对应的dataSource处<strong>edit record</strong>  </p>
+<ul>
+<li>List Druid Column选项卡中，可以看到自动导入了column，但是metrix聚合字段并没有选择聚合方法，编辑选择SUM或者MIN，MAX之类的聚合方法。druid lookup也可以在本选项卡中配置，配置方法在文末。</li>
+<li>Detail选项卡中，Time offset填入时区偏移,配置已配成本地时区。<strong>点save保存</strong>。 </li>
+<li>List Druid Metrix选项卡中，List Druid Column中刚才添加的聚合字段会看到。同时也可以通过“Metric”字段编辑自定义图中显示的中文或者post-agg。</li>
+</ul>
+<h4 id="DashBoard添加"><a href="#DashBoard添加" class="headerlink" title="DashBoard添加"></a>DashBoard添加</h4><ul>
+<li>步骤<br>以Source-Druid DataSource做入口，选某个表进行编辑，然后保存成Slices，添加到DashBoard</li>
+<li>界面<br>左边栏为查询条件，右边为查询结果。 </li>
+</ul>
+<p>Query为查询，Save为保存到Slices<br>Table View为结果显示样式（图，表类型），<br>查询出结果之后，左边栏可以对图形属性进行编辑<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Legend：为显示或隐藏group by  </div><div class="line">Y Log：对于dsp按平台分，除了sdk之外特别小的可以勾上</div><div class="line">X axis format：选Time Series时可以调整日期格式</div></pre></td></tr></table></figure></p>
+<h4 id="角色权限配置"><a href="#角色权限配置" class="headerlink" title="角色权限配置"></a>角色权限配置</h4><p>Admin新建用户时，有几种权限可以选择Admin、Alpha、Gamma、Public。  </p>
+<ul>
+<li>Admin：有所有权限，创建用户、权限管理、访问所有数据源、</li>
+<li>Alpha：可以访问、添加、修改所有数据源。添加和修改面板和切面。</li>
+<li>Gamma：访问dashboard需要添加访问datasource的权限。搜索：“datasource access on”。另外，配置时，可以搜索druid有关的权限，全部删掉。</li>
+</ul>
+<h2 id="代码提交到github"><a href="#代码提交到github" class="headerlink" title="代码提交到github"></a>代码提交到github</h2><p>自己尝试着提了几个feature，在公司的superset已经用上了。提交到github，感觉很难被merge，可能是没写测试用例的原因，以后有时间再搞了。各位可以帮忙顶一下~ </p>
+<ul>
+<li>issues:  <a href="https://github.com/airbnb/superset/issues/created_by/fangyeqing" target="_blank" rel="external">https://github.com/airbnb/superset/issues/created_by/fangyeqing</a>  </li>
+<li>pr:<ul>
+<li><a href="https://github.com/airbnb/superset/pull/2325" target="_blank" rel="external">TableView add TimeShift</a></li>
+<li><a href="https://github.com/airbnb/superset/pull/2345" target="_blank" rel="external">fix bug in Support more druid postaggregations</a>  </li>
+<li><a href="https://github.com/airbnb/superset/pull/2346" target="_blank" rel="external">druid Quantiles Display</a></li>
+</ul>
+</li>
+</ul>
+</the></excerpt>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/03/04/superset开发环境搭建/">superset开发环境搭建</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
+        <p><span>发布时间:</span>2017-03-04, 20:41:00</p>
+        <p><span>最后更新:</span>2017-03-09, 16:09:48</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/03/04/superset开发环境搭建/" title="superset开发环境搭建">https://fangyeqing.github.io/2017/03/04/superset开发环境搭建/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/03/04/superset开发环境搭建/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/02/25/Python-Pandas学习/">
+                    Python-Pandas学习
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开发环境"><span class="toc-number">1.</span> <span class="toc-text">开发环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#坑说明"><span class="toc-number">1.1.</span> <span class="toc-text">坑说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pip"><span class="toc-number">1.1.1.</span> <span class="toc-text">pip</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#npm"><span class="toc-number">1.1.2.</span> <span class="toc-text">npm</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编译前端部分"><span class="toc-number">1.2.</span> <span class="toc-text">编译前端部分</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#当然没那么顺利"><span class="toc-number">1.2.1.</span> <span class="toc-text">当然没那么顺利</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#办法1"><span class="toc-number">1.2.2.</span> <span class="toc-text">办法1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#办法2"><span class="toc-number">1.2.3.</span> <span class="toc-text">办法2</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后端部分"><span class="toc-number">1.3.</span> <span class="toc-text">后端部分</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置"><span class="toc-number">2.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#顶部选项卡"><span class="toc-number">2.1.</span> <span class="toc-text">顶部选项卡</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cluster配置"><span class="toc-number">2.2.</span> <span class="toc-text">Cluster配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSource配置"><span class="toc-number">2.3.</span> <span class="toc-text">DataSource配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Source-Refresh-Druid-MetaData"><span class="toc-number">2.3.1.</span> <span class="toc-text">Source-Refresh Druid MetaData</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Source-DataSource"><span class="toc-number">2.3.2.</span> <span class="toc-text">Source-DataSource</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DashBoard添加"><span class="toc-number">2.3.3.</span> <span class="toc-text">DashBoard添加</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#角色权限配置"><span class="toc-number">2.3.4.</span> <span class="toc-text">角色权限配置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码提交到github"><span class="toc-number">3.</span> <span class="toc-text">代码提交到github</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-4 i,
+        .toc-level-4 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"superset开发环境搭建　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/03/04/superset开发环境搭建/" data-title="superset开发环境搭建" data-url="https://fangyeqing.github.io/2017/03/04/superset开发环境搭建/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"fangyeqing"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/02/25/Python-Pandas学习/" title="下一篇: Python-Pandas学习">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/03/04/superset开发环境搭建/">superset开发环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Pandas学习/">Python-Pandas学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Numpy学习/">Python-Numpy学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Web学习(Flask框架初探)/">Python-Web学习(Flask框架初探)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/10/Vmware虚拟机安装Ubuntu/">Vmware虚拟机安装Ubuntu</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/spark---RDD/">spark---RDD</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/spark---hello_spark_java版/">spark---hello spark java版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/druid.io实践4---druid监控/">druid.io实践4---druid监控</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 小懒
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
