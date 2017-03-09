@@ -41,7 +41,7 @@ SqlAlchemy（数据库ORM）
 
 前端：用到了npm、react、webpack
 d3 (数据可">
-<meta property="og:updated_time" content="2017-03-09T10:00:16.000Z">
+<meta property="og:updated_time" content="2017-03-09T10:08:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="superset开发环境搭建">
 <meta name="twitter:description" content="本文在ubuntu环境下,进行druid有关的二次开发，由于是个python新手，加上前端根本不会，踩了一些坑，记录了一下。
@@ -353,7 +353,14 @@ d3 (数据可">
 </ul>
 </li>
 </ul>
-<p>为了开发，当然也学习相关的东西，有兴趣的可以一起探讨，博客如下：<br><a href="https://fangyeqing.github.io/2017/02/10/Vmware%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85Ubuntu/">Vmware虚拟机安装Ubuntu</a><br><a href="https://fangyeqing.github.io/2017/02/25/Python-Web%E5%AD%A6%E4%B9%A0(Flask%E6%A1%86%E6%9E%B6%E5%88%9D%E6%8E%A2">Python-Web学习(Flask框架初探)</a>)<br><a href="https://fangyeqing.github.io/2017/02/25/Python-Numpy%E5%AD%A6%E4%B9%A0/">Python-Numpy学习</a><br><a href="https://fangyeqing.github.io/2017/02/25/Python-Pandas%E5%AD%A6%E4%B9%A0/">Python-Pandas学习</a>  </p>
+<p>为了开发，当然也学习相关的东西，有兴趣的可以一起探讨，博客如下：  </p>
+<ul>
+<li><a href="https://fangyeqing.github.io/2016/11/04/Druid.io%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E7%A0%94/">Druid.io可视化调研</a>  </li>
+<li><a href="https://fangyeqing.github.io/2017/02/10/Vmware%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85Ubuntu/">Vmware虚拟机安装Ubuntu</a>  </li>
+<li><a href="https://fangyeqing.github.io/2017/02/25/Python-Web%E5%AD%A6%E4%B9%A0(Flask%E6%A1%86%E6%9E%B6%E5%88%9D%E6%8E%A2">Python-Web学习(Flask框架初探)</a>)  </li>
+<li><a href="https://fangyeqing.github.io/2017/02/25/Python-Numpy%E5%AD%A6%E4%B9%A0/">Python-Numpy学习</a>  </li>
+<li><a href="https://fangyeqing.github.io/2017/02/25/Python-Pandas%E5%AD%A6%E4%B9%A0/">Python-Pandas学习</a>  </li>
+</ul>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
@@ -393,73 +400,7 @@ d3 (数据可">
 <h3 id="后端部分"><a href="#后端部分" class="headerlink" title="后端部分"></a>后端部分</h3><p>Pycharm虚拟环境<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Setting---Project:superset----Project Interperter----Create VirtualEnv</div></pre></td></tr></table></figure></p>
 <p>在ide中，项目superset目录下添加run.py，然后run就可以在浏览器8088访问到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">from superset import app</div><div class="line">app.run(debug=True, port=8088)</div></pre></td></tr></table></figure></p>
 <p>superset-python安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd $SUPERSET_HOME</div><div class="line">python setup.py install</div></pre></td></tr></table></figure></p>
-<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>如果之前配置过，直接拷贝配置.superset/db也可</p>
-<h3 id="顶部选项卡"><a href="#顶部选项卡" class="headerlink" title="顶部选项卡"></a>顶部选项卡</h3><p>Dashboard：展示板，可以每张表建一个，展示这张表需要展示的<br>Slices：Dashboard中的分片，相当于一个查询语句<br>Source：数据源 </p>
-<h3 id="Cluster配置"><a href="#Cluster配置" class="headerlink" title="Cluster配置"></a>Cluster配置</h3><p>顶部选项卡Source-Druid Cluster-“+”新建  </p>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>填入内容</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Cluster</td>
-<td>druid集群名，随意</td>
-</tr>
-<tr>
-<td>Coordinator Host</td>
-<td>coordinator地址</td>
-</tr>
-<tr>
-<td>Coordinator Port</td>
-<td>coordinator端口</td>
-<td></td>
-</tr>
-<tr>
-<td>Coordinator Endpoint</td>
-<td>默认值：druid/coordinator/v1/metadata </td>
-</tr>
-<tr>
-<td>Broker Host</td>
-<td>broker地址 </td>
-</tr>
-<tr>
-<td>Broker Port</td>
-<td>broker端口</td>
-</tr>
-<tr>
-<td>Broker Endpoint</td>
-<td>默认值：druid/v2                           </td>
-</tr>
-<tr>
-<td>Cache Timeout</td>
-<td>缓存时间：s</td>
-</tr>
-</tbody>
-</table>
-<h3 id="DataSource配置"><a href="#DataSource配置" class="headerlink" title="DataSource配置"></a>DataSource配置</h3><h4 id="Source-Refresh-Druid-MetaData"><a href="#Source-Refresh-Druid-MetaData" class="headerlink" title="Source-Refresh Druid MetaData"></a>Source-Refresh Druid MetaData</h4><p>读取元数据，第一次可能会等待几分钟,开调试模式可以看到debug日志里自动同步了druid里的所有表。 </p>
-<p>日志输出内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">2016-10-28 11:42:58,117:INFO:root:Syncing Druid datasource [x1_stat]</div><div class="line">2016-10-28 11:43:00,313:INFO:root:Syncing Druid datasource [x2_stat]</div><div class="line">2016-10-28 11:43:01,323:INFO:root:Syncing Druid datasource [x3_stat]</div><div class="line">2016-10-28 11:43:02,065:INFO:root:Syncing Druid datasource [x4_stat]</div></pre></td></tr></table></figure></p>
-<h4 id="Source-DataSource"><a href="#Source-DataSource" class="headerlink" title="Source-DataSource"></a>Source-DataSource</h4><p>在对应的dataSource处<strong>edit record</strong>  </p>
-<ul>
-<li>List Druid Column选项卡中，可以看到自动导入了column，但是metrix聚合字段并没有选择聚合方法，编辑选择SUM或者MIN，MAX之类的聚合方法。druid lookup也可以在本选项卡中配置。</li>
-<li>Detail选项卡中，Time offset填入时区偏移,配置已配成本地时区。<strong>点save保存</strong>。 </li>
-<li>List Druid Metrix选项卡中，List Druid Column中刚才添加的聚合字段会看到。同时也可以通过“Metric”字段编辑自定义图中显示的中文或者post-agg。</li>
-</ul>
-<p>post-agg示例：展示率=展示/竞价<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">&quot;type&quot;: &quot;arithmetic&quot;,</div><div class="line">&quot;name&quot;: &quot;bid_rates&quot;,</div><div class="line">&quot;fn&quot;: &quot;/&quot;,</div><div class="line">&quot;fields&quot;: [&#123;</div><div class="line">&quot;type&quot;: &quot;fieldAccess&quot;,</div><div class="line">&quot;fieldName&quot;: &quot;展示&quot;</div><div class="line">&#125;, &#123;</div><div class="line">&quot;type&quot;: &quot;fieldAccess&quot;,</div><div class="line">&quot;fieldName&quot;: &quot;竞价&quot;</div><div class="line">&#125;]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>lookup示例：把sponsor_id对应到广告商名字<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&#123; </div><div class="line">&quot;type&quot;:&quot;extraction&quot;,</div><div class="line">&quot;dimension&quot;:&quot;sponsor_id&quot;,</div><div class="line">&quot;outputName&quot;:&quot;sponsor广告商&quot;,</div><div class="line">&quot;extractionFn&quot; : &#123;</div><div class="line">	&quot;type&quot; : &quot;lookup&quot;,</div><div class="line">	&quot;lookup&quot; : &#123;</div><div class="line">		&quot;type&quot; : &quot;namespace&quot;,</div><div class="line">		&quot;namespace&quot; : &quot;sponsorId_name&quot;</div><div class="line">	&#125;,</div><div class="line">	&quot;retainMissingValue&quot; : true,</div><div class="line">	&quot;injective&quot; : true</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h4 id="DashBoard添加"><a href="#DashBoard添加" class="headerlink" title="DashBoard添加"></a>DashBoard添加</h4><ul>
-<li>步骤<br>以Source-Druid DataSource做入口，选某个表进行编辑，然后保存成Slices，添加到DashBoard</li>
-<li>界面<br>左边栏为查询条件，右边为查询结果。 </li>
-</ul>
-<p>Query为查询，Save为保存到Slices<br>Table View为结果显示样式（图，表类型），<br>查询出结果之后，左边栏可以对图形属性进行编辑<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Legend：为显示或隐藏group by  </div><div class="line">Y Log：Y轴取对数，如果值相差特别大，可以勾上</div><div class="line">X axis format：选Time Series时可以调整日期格式</div></pre></td></tr></table></figure></p>
-<h4 id="角色权限配置"><a href="#角色权限配置" class="headerlink" title="角色权限配置"></a>角色权限配置</h4><p>Admin新建用户时，有几种权限可以选择Admin、Alpha、Gamma、Public。  </p>
-<ul>
-<li>Admin：有所有权限，创建用户、权限管理、访问所有数据源、</li>
-<li>Alpha：可以访问、添加、修改所有数据源。添加和修改面板和切面。</li>
-<li>Gamma：访问dashboard需要添加访问datasource的权限。搜索：“datasource access on”。另外，配置时，可以搜索druid有关的权限，全部删掉。</li>
-</ul>
+<h2 id="druid相关配置"><a href="#druid相关配置" class="headerlink" title="druid相关配置"></a>druid相关配置</h2><p>superset连接druid之类的一些设置，可以参考我之前的博客<a href="https://fangyeqing.github.io/2016/11/04/Druid.io%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E7%A0%94/#superset配置">Druid.io可视化调研</a></p>
 <h2 id="代码提交到github"><a href="#代码提交到github" class="headerlink" title="代码提交到github"></a>代码提交到github</h2><p>自己尝试着提了几个feature，在公司的superset已经用上了。提交pr到github，最开始持续集成travis-ci都跑不过，因为我开发用的python2，有些函数在python3都废除了。现在持续集成跑过了，可能是没写测试用例的原因，感觉很难被merge，以后有时间再搞了。各位可以帮忙顶一下这几个~ </p>
 <ul>
 <li>issues:  <a href="https://github.com/airbnb/superset/issues/created_by/fangyeqing" target="_blank" rel="external">https://github.com/airbnb/superset/issues/created_by/fangyeqing</a>  </li>
@@ -481,7 +422,7 @@ d3 (数据可">
         <p><span>本文标题:</span><a href="/2017/03/04/superset开发环境搭建/">superset开发环境搭建</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2017-03-04, 20:41:00</p>
-        <p><span>最后更新:</span>2017-03-09, 18:00:16</p>
+        <p><span>最后更新:</span>2017-03-09, 18:08:44</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/03/04/superset开发环境搭建/" title="superset开发环境搭建">https://fangyeqing.github.io/2017/03/04/superset开发环境搭建/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/03/04/superset开发环境搭建/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -511,7 +452,7 @@ d3 (数据可">
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开发环境"><span class="toc-number">1.</span> <span class="toc-text">开发环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#坑说明"><span class="toc-number">1.1.</span> <span class="toc-text">坑说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pip"><span class="toc-number">1.1.1.</span> <span class="toc-text">pip</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#npm"><span class="toc-number">1.1.2.</span> <span class="toc-text">npm</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#依赖安装"><span class="toc-number">1.2.</span> <span class="toc-text">依赖安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化数据库信息"><span class="toc-number">1.3.</span> <span class="toc-text">初始化数据库信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在IDE中运行"><span class="toc-number">2.</span> <span class="toc-text">在IDE中运行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#编译前端部分"><span class="toc-number">2.1.</span> <span class="toc-text">编译前端部分</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#前端问题记录"><span class="toc-number">2.1.1.</span> <span class="toc-text">前端问题记录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#办法1"><span class="toc-number">2.1.2.</span> <span class="toc-text">办法1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#办法2"><span class="toc-number">2.1.3.</span> <span class="toc-text">办法2</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后端部分"><span class="toc-number">2.2.</span> <span class="toc-text">后端部分</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置"><span class="toc-number">3.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#顶部选项卡"><span class="toc-number">3.1.</span> <span class="toc-text">顶部选项卡</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cluster配置"><span class="toc-number">3.2.</span> <span class="toc-text">Cluster配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSource配置"><span class="toc-number">3.3.</span> <span class="toc-text">DataSource配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Source-Refresh-Druid-MetaData"><span class="toc-number">3.3.1.</span> <span class="toc-text">Source-Refresh Druid MetaData</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Source-DataSource"><span class="toc-number">3.3.2.</span> <span class="toc-text">Source-DataSource</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DashBoard添加"><span class="toc-number">3.3.3.</span> <span class="toc-text">DashBoard添加</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#角色权限配置"><span class="toc-number">3.3.4.</span> <span class="toc-text">角色权限配置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码提交到github"><span class="toc-number">4.</span> <span class="toc-text">代码提交到github</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开发环境"><span class="toc-number">1.</span> <span class="toc-text">开发环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#坑说明"><span class="toc-number">1.1.</span> <span class="toc-text">坑说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pip"><span class="toc-number">1.1.1.</span> <span class="toc-text">pip</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#npm"><span class="toc-number">1.1.2.</span> <span class="toc-text">npm</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#依赖安装"><span class="toc-number">1.2.</span> <span class="toc-text">依赖安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化数据库信息"><span class="toc-number">1.3.</span> <span class="toc-text">初始化数据库信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在IDE中运行"><span class="toc-number">2.</span> <span class="toc-text">在IDE中运行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#编译前端部分"><span class="toc-number">2.1.</span> <span class="toc-text">编译前端部分</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#前端问题记录"><span class="toc-number">2.1.1.</span> <span class="toc-text">前端问题记录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#办法1"><span class="toc-number">2.1.2.</span> <span class="toc-text">办法1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#办法2"><span class="toc-number">2.1.3.</span> <span class="toc-text">办法2</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后端部分"><span class="toc-number">2.2.</span> <span class="toc-text">后端部分</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#druid相关配置"><span class="toc-number">3.</span> <span class="toc-text">druid相关配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码提交到github"><span class="toc-number">4.</span> <span class="toc-text">代码提交到github</span></a></li></ol>
         
     </div>
     <style>
