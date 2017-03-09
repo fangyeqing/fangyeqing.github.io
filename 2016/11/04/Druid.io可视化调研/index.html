@@ -15,46 +15,23 @@
 
 
 
-<meta name="description" content="本文在ubuntu环境下,进行druid有关的二次开发，由于是个python新手，加上前端根本不会，踩了一些坑，记录了一下。
-superset整个项目用到的一些技术：
-
-后端：整个项目的后端是基于Python的
-Flask AppBuilder(鉴权、CRUD、规则）
-Pandas（分析）
-SqlAlchemy（数据库ORM）  
-
-
-前端：用到了npm、react、webpack
-d3 (数据可">
+<meta name="description" content="Druid可视化在Druid.io可视化问题上，调研了几个druid官方推荐工具，都自己试验了一遍，最后选择superset。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="superset开发环境搭建">
-<meta property="og:url" content="https://fangyeqing.github.io/2017/03/04/superset开发环境搭建/index.html">
+<meta property="og:title" content="Druid.io可视化调研">
+<meta property="og:url" content="https://fangyeqing.github.io/2016/11/04/Druid.io可视化调研/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="本文在ubuntu环境下,进行druid有关的二次开发，由于是个python新手，加上前端根本不会，踩了一些坑，记录了一下。
-superset整个项目用到的一些技术：
-
-后端：整个项目的后端是基于Python的
-Flask AppBuilder(鉴权、CRUD、规则）
-Pandas（分析）
-SqlAlchemy（数据库ORM）  
-
-
-前端：用到了npm、react、webpack
-d3 (数据可">
-<meta property="og:updated_time" content="2017-03-09T10:00:16.000Z">
+<meta property="og:description" content="Druid可视化在Druid.io可视化问题上，调研了几个druid官方推荐工具，都自己试验了一遍，最后选择superset。">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/95d0e1df9797751328318e843e22e3c9/AB215481AF1249579789EC605ECB1297">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/CF4AC2EC0A5C4FBABD1265A87E0A2D5A">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/F0AA1C508B1B43F1BBD875794FB713BC">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/655A32A4A51A42BDBA1145B201D25D05">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/614AA1C8315E46C38C1D69058EB9BDB1">
+<meta property="og:image" content="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/C7F79C7D8AE54B74807AC5D0EF3FE973">
+<meta property="og:updated_time" content="2017-03-09T10:02:05.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="superset开发环境搭建">
-<meta name="twitter:description" content="本文在ubuntu环境下,进行druid有关的二次开发，由于是个python新手，加上前端根本不会，踩了一些坑，记录了一下。
-superset整个项目用到的一些技术：
-
-后端：整个项目的后端是基于Python的
-Flask AppBuilder(鉴权、CRUD、规则）
-Pandas（分析）
-SqlAlchemy（数据库ORM）  
-
-
-前端：用到了npm、react、webpack
-d3 (数据可">
+<meta name="twitter:title" content="Druid.io可视化调研">
+<meta name="twitter:description" content="Druid可视化在Druid.io可视化问题上，调研了几个druid官方推荐工具，都自己试验了一遍，最后选择superset。">
+<meta name="twitter:image" content="http://note.youdao.com/yws/public/resource/95d0e1df9797751328318e843e22e3c9/AB215481AF1249579789EC605ECB1297">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -86,7 +63,7 @@ d3 (数据可">
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>superset开发环境搭建 | 小懒的博客</title>
+<title>Druid.io可视化调研 | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -294,11 +271,11 @@ d3 (数据可">
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-superset开发环境搭建" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Druid.io可视化调研" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/03/04/superset开发环境搭建/" class="article-date">
-      <time datetime="2017-03-04T12:41:00.000Z" itemprop="datePublished">2017-03-04</time>
+      <a href="/2016/11/04/Druid.io可视化调研/" class="article-date">
+      <time datetime="2016-11-04T12:41:00.000Z" itemprop="datePublished">2016-11-04</time>
 </a>
 
 
@@ -313,7 +290,7 @@ d3 (数据可">
         
   
     <h1 class="article-title" itemprop="name">
-      superset开发环境搭建
+      Druid.io可视化调研
     </h1>
   
 
@@ -328,7 +305,7 @@ d3 (数据可">
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/superset/">superset</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据可视化/">数据可视化</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据可视化/">数据可视化</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -338,62 +315,87 @@ d3 (数据可">
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p><excerpt in="" index="" |="" 首页摘要=""><br>本文在ubuntu环境下,进行druid有关的二次开发，由于是个python新手，加上前端根本不会，踩了一些坑，记录了一下。</excerpt></p>
-<p>superset整个项目用到的一些技术：</p>
-<ul>
-<li>后端：整个项目的后端是基于Python的<ul>
-<li>Flask AppBuilder(鉴权、CRUD、规则）</li>
-<li>Pandas（分析）</li>
-<li>SqlAlchemy（数据库ORM）  </li>
-</ul>
-</li>
-<li>前端：用到了npm、react、webpack<ul>
-<li>d3 (数据可视化)</li>
-<li>nvd3.org(可重用图表)</li>
-</ul>
-</li>
-</ul>
-<p>为了开发，当然也学习相关的东西，有兴趣的可以一起探讨，博客如下：<br><a href="https://fangyeqing.github.io/2017/02/10/Vmware%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85Ubuntu/">Vmware虚拟机安装Ubuntu</a><br><a href="https://fangyeqing.github.io/2017/02/25/Python-Web%E5%AD%A6%E4%B9%A0(Flask%E6%A1%86%E6%9E%B6%E5%88%9D%E6%8E%A2">Python-Web学习(Flask框架初探)</a>)<br><a href="https://fangyeqing.github.io/2017/02/25/Python-Numpy%E5%AD%A6%E4%B9%A0/">Python-Numpy学习</a><br><a href="https://fangyeqing.github.io/2017/02/25/Python-Pandas%E5%AD%A6%E4%B9%A0/">Python-Pandas学习</a>  </p>
+        <excerpt in="" index="" |="" 首页摘要="">   
+
+
+<h2 id="Druid可视化"><a href="#Druid可视化" class="headerlink" title="Druid可视化"></a>Druid可视化</h2><p>在Druid.io可视化问题上，调研了几个<a href="http://druid.io/libraries.html" target="_blank" rel="external">druid官方推荐工具</a>，都自己试验了一遍，最后选择superset。</p>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
-<h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><h3 id="坑说明"><a href="#坑说明" class="headerlink" title="坑说明"></a>坑说明</h3><h4 id="pip"><a href="#pip" class="headerlink" title="pip"></a>pip</h4><p>pip安装某些依赖，有些速度太慢了</p>
-<blockquote>
-<p>ReadTimeoutError: HTTPSConnectionPool(host=’pypi.python.org’, port=443): Read timed out</p>
-</blockquote>
-<p>改成国内镜像，举个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo pip install superset==0.17.0 -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com</div></pre></td></tr></table></figure></p>
-<p>或者建个文件~/.pip/pip.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[global]</div><div class="line">index-url = http://mirrors.aliyun.com/pypi/simple</div><div class="line">[install]</div><div class="line">use-mirrors = true</div><div class="line">mirrors = http://mirrors.aliyun.com/pypi</div></pre></td></tr></table></figure></p>
-<h4 id="npm"><a href="#npm" class="headerlink" title="npm"></a>npm</h4><p>npm如果慢的话<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">--registry=https://registry.npm.taobao.org</div></pre></td></tr></table></figure></p>
-<p>或者编辑~/.npmrc,加入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">registry = https://registry.npm.taobao.org</div></pre></td></tr></table></figure></p>
-<p>或者安装cnpm，后面的npm命令可以改成cnpm：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo npm install -g cnpm --registry=https://registry.npm.taobao.org</div></pre></td></tr></table></figure></p>
-<h3 id="依赖安装"><a href="#依赖安装" class="headerlink" title="依赖安装"></a>依赖安装</h3><p>系统依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install build-essential libssl-dev libffi-dev python-dev python-pip libsasl2-dev libldap2-dev</div></pre></td></tr></table></figure></p>
-<p>node+npm:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sudo apt install nodejs-legacy   #安装node</div><div class="line">sudo apt install npm       #安装npm</div><div class="line">sudo npm install -g cnpm --registry=https://registry.npm.taobao.org  #安装淘宝的 cnpm </div><div class="line"></div><div class="line">sudo cnpm install npm -g    # npm升级到最新版本，-g全局安装</div><div class="line">sudo cnpm install -g n      # 安装nodejs的版本管理模块n</div><div class="line">sudo n latest               # nodejs版本升级到最新，参数可换：latest/stable/lts/vx.x.x</div></pre></td></tr></table></figure></p>
-<h3 id="初始化数据库信息"><a href="#初始化数据库信息" class="headerlink" title="初始化数据库信息"></a>初始化数据库信息</h3><p>pip安装superset，初始化管理员信息，这里只是为了得到运行需要的~/.superset/superset.db<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sudo -H pip install superset -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com</div><div class="line">sudo fabmanager create-admin --app superset</div><div class="line">sudo superset db upgrade                      # Initialize the database</div><div class="line">sudo superset load_examples                  # Load some data to play with</div><div class="line">sudo superset init                           # Create default roles and permissions</div></pre></td></tr></table></figure></p>
-<p>后续版本如果更新<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">superset version</div><div class="line">pip install superset --upgrade -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com</div><div class="line">superset db upgrade</div><div class="line">superset init</div></pre></td></tr></table></figure></p>
-<h2 id="在IDE中运行"><a href="#在IDE中运行" class="headerlink" title="在IDE中运行"></a>在IDE中运行</h2><p>直接从git上clone下来就行了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/airbnb/superset.git</div></pre></td></tr></table></figure></p>
-<p>Pycharm中导入项目后，可能一直卡着出现下面的扫描建索引提示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Scanning file to index</div></pre></td></tr></table></figure></p>
-<p>需把assets和static里的node_modules排除在项目外，点右键Mark Directory As-Excluded。</p>
-<h3 id="编译前端部分"><a href="#编译前端部分" class="headerlink" title="编译前端部分"></a>编译前端部分</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cd superset/assets</div><div class="line">cnpm install -d</div><div class="line">npm run build</div></pre></td></tr></table></figure>
-<ul>
-<li>npm install:安装依赖到node_modules(-g参数安装到全局，/usr/local)，先检查当前目录下node_modules有没有模块，没有的话会从registry中下载。<a href="http://www.ruanyifeng.com/blog/2016/01/npm-install.html" target="_blank" rel="external">参考</a><ul>
-<li>发出npm install命令</li>
-<li>npm 向 registry 查询模块压缩包的网址</li>
-<li>下载压缩包，存放在~/.npm目录</li>
-<li>解压压缩包到当前项目的node_modules目录</li>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>描述</th>
+<th>实现</th>
+<th>其他</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/Quantiply/grafana-plugins/tree/master/features/druid" target="_blank" rel="external">grafana</a></td>
+<td>grafana的druid插件，比较简陋，github一年不更新了</td>
+<td>js</td>
+<td><img src="http://note.youdao.com/yws/public/resource/95d0e1df9797751328318e843e22e3c9/AB215481AF1249579789EC605ECB1297" alt="image"> </td>
+</tr>
+<tr>
+<td><a href="https://github.com/metabase/metabase" target="_blank" rel="external">Metabase</a></td>
+<td>支持数据库种类多，启动方便，支持json查询。图形化查询，只能有一个聚合字段，两个维度</td>
+<td>Clojure</td>
+<td><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/CF4AC2EC0A5C4FBABD1265A87E0A2D5A" alt="image"></td>
+</tr>
+<tr>
+<td><a href="https://github.com/implydata/pivot" target="_blank" rel="external">imply-pivot</a></td>
+<td>基于Plywood，部署方便，能构造复杂的查询。目前已经闭源了，没法二次开发</td>
+<td>js</td>
+<td><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/F0AA1C508B1B43F1BBD875794FB713BC" alt="image"> </td>
+</tr>
+<tr>
+<td><a href="https://github.com/airbnb/superset" target="_blank" rel="external">airbnb/superset</a></td>
+<td>权限管理完善，图形可定制性也比较高，github持续更新,集合了metabase的Dashboard和pivot的查询可定制性优点，部署相对麻烦</td>
+<td>python+js</td>
+<td><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/655A32A4A51A42BDBA1145B201D25D05" alt="image"></td>
+</tr>
+</tbody>
+</table>
+<h2 id="metabase使用"><a href="#metabase使用" class="headerlink" title="metabase使用"></a>metabase使用</h2><p>需要jdk1.6以上的环境，使用的jdk1.8<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">wget http://downloads.metabase.com/v0.19.3/metabase.jar</div><div class="line">java -jar metabase.jar</div></pre></td></tr></table></figure></p>
+<p>然后就可以访问：<br><a href="http://localhost:3000/" target="_blank" rel="external">http://localhost:3000/</a></p>
+<h3 id="初始化步骤："><a href="#初始化步骤：" class="headerlink" title="初始化步骤："></a>初始化步骤：</h3><ul>
+<li>填写个人基本信息和用户名密码</li>
+<li>连接数据库基本信息，数据库类型选druid，取数据库名字，填host和broker port。</li>
+<li>关闭收集数据选项（Allow Metabase to anonymously collect usage events）<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3></li>
+<li>新建dashboards，可以把每个表新建一个dashboard</li>
+<li>新建question，每个question相当于一个查询语句，但是每个question只能选一个聚合字段，可以显示不同类型的图形</li>
 </ul>
-</li>
-<li>npm run xxx：执行package.json，xxx可以在”scripts”中找到，build、prod之类的都是自己配的。每当执行npm run，就会自动新建一个 Shell，在这个 Shell 里面执行指定的脚本命令。会生成dist目录</li>
+<p>|<img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/614AA1C8315E46C38C1D69058EB9BDB1" alt="image"></p>
+<h2 id="imply-pivot使用"><a href="#imply-pivot使用" class="headerlink" title="imply-pivot使用"></a>imply-pivot使用</h2><h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>node+npm环境<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">npm i -g imply-pivot</div><div class="line">pivot --druid druid-broker:8080</div></pre></td></tr></table></figure></p>
+<p>然后就可以访问了：<br><a href="http://localhost:9090/" target="_blank" rel="external">http://localhost:9090/</a></p>
+<h3 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h3><ul>
+<li>左上角选择表名，右上角选择展示方式</li>
+<li>左上的Dimensions包括时间和维度，可以拖到filter为where条件，拖到split为group by</li>
+<li>查询之后的表结果，可以选择之后点右键，select可以添加查询条件;view raw data，相当于drill down  </li>
 </ul>
-<p>总之，上面两个命令，会生成node_modules和dist。</p>
-<h4 id="前端问题记录"><a href="#前端问题记录" class="headerlink" title="前端问题记录"></a>前端问题记录</h4><p>先卡在78%，然后报错。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ERROR in ./~/.15.3.2@react-dom/index.js</div><div class="line">Module not found: Error: Cannot resolve module &apos;react/lib/ReactDOM&apos; in /root/PycharmProjects/superset_2017/superset/assets/node_modules/.15.3.2@react-dom</div><div class="line"> @ ./~/.15.3.2@react-dom/index.js 3:17-46</div></pre></td></tr></table></figure></p>
-<h4 id="办法1"><a href="#办法1" class="headerlink" title="办法1"></a>办法1</h4><p>报错是用了两种版本的react，如果只把他缺少的ReactDOM从0.15.3复制过去，又会有新的错误提示少了东西。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ERROR in ./~/.15.4.2@react/lib/ReactDOM.js</div><div class="line">Module not found: Error: Cannot resolve &apos;file&apos; or &apos;directory&apos; ./ReactDOMComponentTree in /root/PycharmProjects/superset_2017/superset/assets/node_modules/.15.4.2@react/lib</div><div class="line"> @ ./~/.15.4.2@react/lib/ReactDOM.js 16:28-62</div><div class="line">//此处省略一万字</div><div class="line">ERROR in ./~/.15.4.2@react/lib/ReactDOM.js</div><div class="line">Module not found: Error: Cannot resolve &apos;file&apos; or &apos;directory&apos; ./renderSubtreeIntoContainer in /root/PycharmProjects/superset_2017/superset/assets/node_modules/.15.4.2@react/lib</div><div class="line"> @ ./~/.15.4.2@react/lib/ReactDOM.js 25:33-72</div></pre></td></tr></table></figure></p>
-<p>先把node_modules/react的lib删掉，然后把.15.3.2\@react的lib拷贝过去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rm -rf node_modules/react/lib </div><div class="line">cp -r node_modules/.15.3.2\@react/lib node_modules/react</div></pre></td></tr></table></figure></p>
-<h4 id="办法2"><a href="#办法2" class="headerlink" title="办法2"></a>办法2</h4><p>这样会缺少前端的组件,改成直接从pip安装好的superset中拷贝下来。static/assets只是一个软连接指向assets<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 先删除assets再拷贝</div><div class="line">cp -r /usr/local/lib/python2.7/dist-packages/superset/static/assets/ /home/fyq/coding/PycharmProjects/superset/assets</div></pre></td></tr></table></figure></p>
-<p>如果需要修改前端代码，肯定还是只能用方法1，需要重新编译</p>
-<h3 id="后端部分"><a href="#后端部分" class="headerlink" title="后端部分"></a>后端部分</h3><p>Pycharm虚拟环境<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Setting---Project:superset----Project Interperter----Create VirtualEnv</div></pre></td></tr></table></figure></p>
-<p>在ide中，项目superset目录下添加run.py，然后run就可以在浏览器8088访问到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">from superset import app</div><div class="line">app.run(debug=True, port=8088)</div></pre></td></tr></table></figure></p>
-<p>superset-python安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd $SUPERSET_HOME</div><div class="line">python setup.py install</div></pre></td></tr></table></figure></p>
-<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>如果之前配置过，直接拷贝配置.superset/db也可</p>
+<p><img src="http://note.youdao.com/yws/public/resource/32442f2d923ee4564e15f34e1a33fdd5/C7F79C7D8AE54B74807AC5D0EF3FE973" alt="image"></p>
+<p>图中split条件为xxx_id,xxx_id,xxx_id,xx_id。<br>filter中条件为时间为1天内，网络类型为4G,xxx-id为2。<br>点击某xxx=221660，xxx_id=1340之后可以添加这些条件，点select为查询添加了这些条件之后的结果，点view raw data为查询添加了这些条件中所有的结果。</p>
+<h2 id="superset部署"><a href="#superset部署" class="headerlink" title="superset部署"></a>superset部署</h2><h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>在公司集群上部署，系统依赖可能需要root权限，需要运维帮忙</p>
+<h4 id="安装Python"><a href="#安装Python" class="headerlink" title="安装Python"></a>安装Python</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz --no-check-certificate</div><div class="line">tar -zxvf Python-3.5.2.tgz</div><div class="line">cd Python-3.5.2/</div><div class="line">./configure --prefix=/global/exec/fangyeqing/python-3.5.2/</div><div class="line">make&amp;&amp;make install</div></pre></td></tr></table></figure>
+<h4 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h4><p>环境变量添加，将刚才configure设置的地址添加到环境变量中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vi ~/.bash_profile</div></pre></td></tr></table></figure></p>
+<p>内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#python</div><div class="line">export PATH=/global/exec/fangyeqing/python-3.5.2/bin:$PATH</div></pre></td></tr></table></figure></p>
+<p>source之后测试是否安装成功:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">source ~/.bash_profile</div><div class="line">python3</div></pre></td></tr></table></figure></p>
+<h4 id="部署SuperSet"><a href="#部署SuperSet" class="headerlink" title="部署SuperSet"></a>部署SuperSet</h4><p>python，安装pip等一堆东西，需要运维帮忙，rpm安装的可以用rpm -qa openssl-devel查询<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo yum upgrade python-setuptools</div><div class="line">sudo yum install gcc libffi-devel python-devel python-pip python-wheel openssl-devel libsasl2-devel openldap-devel</div></pre></td></tr></table></figure></p>
+<p>虚拟环境<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">pip3 install virtualenv</div><div class="line"></div><div class="line">mkdir superset</div><div class="line">cd superset</div><div class="line">virtualenv venv</div><div class="line">source ./venv/bin/activate              #进入虚拟环境，后续命令之前都会有(venv)</div><div class="line"></div><div class="line">deactivate                              # 退出虚拟环境</div></pre></td></tr></table></figure></p>
+<p>安装superset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">pip install --upgrade setuptools pip    # 更新pip和setuptools</div><div class="line">pip install superset                    # Install</div></pre></td></tr></table></figure></p>
+<p>建立软连接，防止在安装过程中卡死<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ln -s /disk2/fangyq/install/.superset/ ~/.superset      #superset/db，初始化卡死</div><div class="line">ln -s /disk2/fangyq/install/.cache/ ~/.cache            #pip安装路径，容易出现配额不足</div></pre></td></tr></table></figure></p>
+<p>安装ldap、mysql需要的包<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">pip install python-ldap==2.3.13          # ldap登录</div><div class="line">pip install mysql-python                 # 将db由默认的sqlite改为mysql</div></pre></td></tr></table></figure></p>
+<p>修改配置文件config.py，初始化(可以跳过这步，直接拷贝已有的.superset/db)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">fabmanager create-admin --app superset   # 管理员用户名、密码:eadata-service,Eadata201611</div><div class="line"></div><div class="line">superset db upgrade                      # Initialize the database</div><div class="line">superset load_examples                  # Load some data to play with</div><div class="line">superset init                           # Create default roles and permissions</div></pre></td></tr></table></figure></p>
+<p>启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">superset runserver -p 8088              # 启动，-p端口，-d打开调试模式</div></pre></td></tr></table></figure></p>
+<p>更新版本,最好先备份一个config.py文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">pip install superset --upgrade</div><div class="line">superset db upgrade</div><div class="line">superset init</div></pre></td></tr></table></figure></p>
+<h4 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h4><p>对比着刚才的安装操作，可以看下数据库怎么存的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">sqlite3 ~/.superset/superset.db</div><div class="line">.help</div><div class="line">.datatbase</div><div class="line">.tables</div><div class="line">.schema ab_user_role</div><div class="line">select * from ab_user_role;</div><div class="line">#修改为管理员用户</div><div class="line">update ab_user_role set role_id=1 where user_id=8;</div></pre></td></tr></table></figure></p>
+<p>执行完fabmanager</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">+-------------------------+</div><div class="line">| Tables_in_superset      |</div><div class="line">+-------------------------+</div><div class="line">| ab_permission           | </div><div class="line">| ab_permission_view      | </div><div class="line">| ab_permission_view_role | </div><div class="line">| ab_register_user        | </div><div class="line">| ab_role                 | </div><div class="line">| ab_user                 | </div><div class="line">| ab_user_role            | </div><div class="line">| ab_view_menu            | </div><div class="line">+-------------------------+</div></pre></td></tr></table></figure>
+<p>ab_user为用户表<br>ab_user_role为用户权限表</p>
+<p>执行完superset db upgrade<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">+-------------------------+</div><div class="line">| Tables_in_superset      |</div><div class="line">+-------------------------+</div><div class="line">| ab_permission           | </div><div class="line">| ab_permission_view      | </div><div class="line">| ab_permission_view_role | </div><div class="line">| ab_register_user        | </div><div class="line">| ab_role                 | </div><div class="line">| ab_user                 | </div><div class="line">| ab_user_role            | </div><div class="line">| ab_view_menu            | </div><div class="line">| access_request          | </div><div class="line">| alembic_version         | </div><div class="line">| clusters                | </div><div class="line">| columns                 | </div><div class="line">| css_templates           | </div><div class="line">| dashboard_slices        | </div><div class="line">| dashboard_user          | </div><div class="line">| dashboards              | </div><div class="line">| datasources             | </div><div class="line">| dbs                     | </div><div class="line">| favstar                 | </div><div class="line">| logs                    | </div><div class="line">| metrics                 | </div><div class="line">| query                   | </div><div class="line">| slice_user              | </div><div class="line">| slices                  | </div><div class="line">| sql_metrics             | </div><div class="line">| table_columns           | </div><div class="line">| tables                  | </div><div class="line">| url                     | </div><div class="line">+-------------------------+</div></pre></td></tr></table></figure></p>
+<h2 id="superset配置"><a href="#superset配置" class="headerlink" title="superset配置"></a>superset配置</h2><p>如果之前配置过，直接拷贝配置.superset/db也可</p>
 <h3 id="顶部选项卡"><a href="#顶部选项卡" class="headerlink" title="顶部选项卡"></a>顶部选项卡</h3><p>Dashboard：展示板，可以每张表建一个，展示这张表需要展示的<br>Slices：Dashboard中的分片，相当于一个查询语句<br>Source：数据源 </p>
 <h3 id="Cluster配置"><a href="#Cluster配置" class="headerlink" title="Cluster配置"></a>Cluster配置</h3><p>顶部选项卡Source-Druid Cluster-“+”新建  </p>
 <table>
@@ -460,17 +462,7 @@ d3 (数据可">
 <li>Alpha：可以访问、添加、修改所有数据源。添加和修改面板和切面。</li>
 <li>Gamma：访问dashboard需要添加访问datasource的权限。搜索：“datasource access on”。另外，配置时，可以搜索druid有关的权限，全部删掉。</li>
 </ul>
-<h2 id="代码提交到github"><a href="#代码提交到github" class="headerlink" title="代码提交到github"></a>代码提交到github</h2><p>自己尝试着提了几个feature，在公司的superset已经用上了。提交pr到github，最开始持续集成travis-ci都跑不过，因为我开发用的python2，有些函数在python3都废除了。现在持续集成跑过了，可能是没写测试用例的原因，感觉很难被merge，以后有时间再搞了。各位可以帮忙顶一下这几个~ </p>
-<ul>
-<li>issues:  <a href="https://github.com/airbnb/superset/issues/created_by/fangyeqing" target="_blank" rel="external">https://github.com/airbnb/superset/issues/created_by/fangyeqing</a>  </li>
-<li>pr:<ul>
-<li><a href="https://github.com/airbnb/superset/pull/2325" target="_blank" rel="external">TableView add TimeShift</a></li>
-<li><a href="https://github.com/airbnb/superset/pull/2345" target="_blank" rel="external">fix bug in Support more druid postaggregations</a>  </li>
-<li><a href="https://github.com/airbnb/superset/pull/2346" target="_blank" rel="external">druid Quantiles Display</a></li>
-</ul>
-</li>
-</ul>
-</the>
+</the></excerpt>
       
     </div>
     
@@ -478,13 +470,13 @@ d3 (数据可">
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/03/04/superset开发环境搭建/">superset开发环境搭建</a></p>
+        <p><span>本文标题:</span><a href="/2016/11/04/Druid.io可视化调研/">Druid.io可视化调研</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
-        <p><span>发布时间:</span>2017-03-04, 20:41:00</p>
-        <p><span>最后更新:</span>2017-03-09, 18:00:16</p>
+        <p><span>发布时间:</span>2016-11-04, 20:41:00</p>
+        <p><span>最后更新:</span>2017-03-09, 18:02:05</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/03/04/superset开发环境搭建/" title="superset开发环境搭建">https://fangyeqing.github.io/2017/03/04/superset开发环境搭建/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/03/04/superset开发环境搭建/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/11/04/Druid.io可视化调研/" title="Druid.io可视化调研">https://fangyeqing.github.io/2016/11/04/Druid.io可视化调研/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/11/04/Druid.io可视化调研/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -496,10 +488,16 @@ d3 (数据可">
 
     <nav id="article-nav">
         
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/11/05/Java程序员学python3.0--入门篇/">
+                    Java程序员学python3.0--入门篇
+                </a>
+            </div>
+        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2017/02/25/Python-Pandas学习/">
-                    Python-Pandas学习
+                <a href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">
+                    druid.io---Coordinator balancer源码解析
                 </a>
             </div>
         
@@ -511,7 +509,7 @@ d3 (数据可">
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开发环境"><span class="toc-number">1.</span> <span class="toc-text">开发环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#坑说明"><span class="toc-number">1.1.</span> <span class="toc-text">坑说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pip"><span class="toc-number">1.1.1.</span> <span class="toc-text">pip</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#npm"><span class="toc-number">1.1.2.</span> <span class="toc-text">npm</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#依赖安装"><span class="toc-number">1.2.</span> <span class="toc-text">依赖安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化数据库信息"><span class="toc-number">1.3.</span> <span class="toc-text">初始化数据库信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在IDE中运行"><span class="toc-number">2.</span> <span class="toc-text">在IDE中运行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#编译前端部分"><span class="toc-number">2.1.</span> <span class="toc-text">编译前端部分</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#前端问题记录"><span class="toc-number">2.1.1.</span> <span class="toc-text">前端问题记录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#办法1"><span class="toc-number">2.1.2.</span> <span class="toc-text">办法1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#办法2"><span class="toc-number">2.1.3.</span> <span class="toc-text">办法2</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后端部分"><span class="toc-number">2.2.</span> <span class="toc-text">后端部分</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置"><span class="toc-number">3.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#顶部选项卡"><span class="toc-number">3.1.</span> <span class="toc-text">顶部选项卡</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cluster配置"><span class="toc-number">3.2.</span> <span class="toc-text">Cluster配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSource配置"><span class="toc-number">3.3.</span> <span class="toc-text">DataSource配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Source-Refresh-Druid-MetaData"><span class="toc-number">3.3.1.</span> <span class="toc-text">Source-Refresh Druid MetaData</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Source-DataSource"><span class="toc-number">3.3.2.</span> <span class="toc-text">Source-DataSource</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DashBoard添加"><span class="toc-number">3.3.3.</span> <span class="toc-text">DashBoard添加</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#角色权限配置"><span class="toc-number">3.3.4.</span> <span class="toc-text">角色权限配置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码提交到github"><span class="toc-number">4.</span> <span class="toc-text">代码提交到github</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Druid可视化"><span class="toc-number">1.</span> <span class="toc-text">Druid可视化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#metabase使用"><span class="toc-number">2.</span> <span class="toc-text">metabase使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化步骤："><span class="toc-number">2.1.</span> <span class="toc-text">初始化步骤：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用"><span class="toc-number">2.2.</span> <span class="toc-text">使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#imply-pivot使用"><span class="toc-number">3.</span> <span class="toc-text">imply-pivot使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#环境"><span class="toc-number">3.1.</span> <span class="toc-text">环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-1"><span class="toc-number">3.2.</span> <span class="toc-text">使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#superset部署"><span class="toc-number">4.</span> <span class="toc-text">superset部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#部署"><span class="toc-number">4.1.</span> <span class="toc-text">部署</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装Python"><span class="toc-number">4.1.1.</span> <span class="toc-text">安装Python</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#环境变量"><span class="toc-number">4.1.2.</span> <span class="toc-text">环境变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#部署SuperSet"><span class="toc-number">4.1.3.</span> <span class="toc-text">部署SuperSet</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据库"><span class="toc-number">4.1.4.</span> <span class="toc-text">数据库</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#superset配置"><span class="toc-number">5.</span> <span class="toc-text">superset配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#顶部选项卡"><span class="toc-number">5.1.</span> <span class="toc-text">顶部选项卡</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cluster配置"><span class="toc-number">5.2.</span> <span class="toc-text">Cluster配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DataSource配置"><span class="toc-number">5.3.</span> <span class="toc-text">DataSource配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Source-Refresh-Druid-MetaData"><span class="toc-number">5.3.1.</span> <span class="toc-text">Source-Refresh Druid MetaData</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Source-DataSource"><span class="toc-number">5.3.2.</span> <span class="toc-text">Source-DataSource</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DashBoard添加"><span class="toc-number">5.3.3.</span> <span class="toc-text">DashBoard添加</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#角色权限配置"><span class="toc-number">5.3.4.</span> <span class="toc-text">角色权限配置</span></a></li></ol></li></ol></li></ol>
         
     </div>
     <style>
@@ -547,7 +545,7 @@ d3 (数据可">
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"superset开发环境搭建　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Druid.io可视化调研　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -563,7 +561,7 @@ d3 (数据可">
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2017/03/04/superset开发环境搭建/" data-title="superset开发环境搭建" data-url="https://fangyeqing.github.io/2017/03/04/superset开发环境搭建/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/11/04/Druid.io可视化调研/" data-title="Druid.io可视化调研" data-url="https://fangyeqing.github.io/2016/11/04/Druid.io可视化调研/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -586,13 +584,15 @@ d3 (数据可">
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a href="/2016/11/05/Java程序员学python3.0--入门篇/" title="上一篇: Java程序员学python3.0--入门篇">
+                <i class="fa fa-angle-left"></i>
+            </a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2017/02/25/Python-Pandas学习/" title="下一篇: Python-Pandas学习">
+            <a href="/2016/11/01/druid.io---Coordinator_balancer源码解析/" title="下一篇: druid.io---Coordinator balancer源码解析">
                 <i class="fa fa-angle-right"></i>
             </a>
         
