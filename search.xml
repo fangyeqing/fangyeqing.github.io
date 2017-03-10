@@ -55,8 +55,7 @@
 <p>总之，上面两个命令，会生成node_modules和dist。</p>
 <h3 id="后端部分"><a href="#后端部分" class="headerlink" title="后端部分"></a>后端部分</h3><p>Pycharm虚拟环境<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Setting---Project:superset----Project Interperter----Create VirtualEnv</div></pre></td></tr></table></figure></p>
 <p>在ide中，项目superset目录下添加run.py。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">from superset import app</div><div class="line">app.run(debug=True, host=&apos;0.0.0.0&apos;, port=8088)</div></pre></td></tr></table></figure></p>
-<p>然后运行run.py就可以在浏览器8088端口访问到。输入刚才初始化数据库时填的管理员用户和密码进行登录。</p>
-<p>如果使用的是ubuntu虚拟机，在虚拟机内部浏览器可以通过127.0.0.1:8088访问到，宿主机浏览器可以通过：虚拟机ip:8088访问到</p>
+<p>然后运行run.py就可以在浏览器127.0.0.1:8088问到。输入刚才初始化数据库时填的管理员用户和密码进行登录。如果使用的是ubuntu虚拟机，宿主机浏览器可以通过：虚拟机ip:8088访问到。</p>
 <p>登录之后，superset连接druid之类的一些设置，可以参考我之前的博客<a href="https://fangyeqing.github.io/2016/11/04/Druid.io%E5%8F%AF%E8%A7%86%E5%8C%96%E8%B0%83%E7%A0%94/#superset配置">Druid.io可视化调研</a></p>
 <h3 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h3><p>到这里，每次改完前端代码需要重新进行npm run build，改完后端python代码会自动重新加载服务。</p>
 <h3 id="setup"><a href="#setup" class="headerlink" title="setup"></a>setup</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd $SUPERSET_HOME</div><div class="line">python setup.py install</div></pre></td></tr></table></figure>
@@ -79,7 +78,8 @@
 <p>先把node_modules/react的lib删掉，然后把.15.3.2\@react的lib拷贝过去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rm -rf node_modules/react/lib </div><div class="line">cp -r node_modules/.15.3.2\@react/lib node_modules/react</div></pre></td></tr></table></figure></p>
 <h4 id="办法2"><a href="#办法2" class="headerlink" title="办法2"></a>办法2</h4><p>这样会缺少前端的组件,改成直接从pip安装好的superset中拷贝下来。static/assets只是一个软连接指向assets<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 先删除assets再拷贝</div><div class="line">cp -r /usr/local/lib/python2.7/dist-packages/superset/static/assets/ /home/fyq/coding/PycharmProjects/superset/assets</div></pre></td></tr></table></figure></p>
 <p>如果需要修改前端代码，肯定还是只能用方法1，需要重新编译</p>
-<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>开发环境搭建折腾了我很久，特别感谢superset群的月光，共同努力才搭建起来开发环境。还有公司的前端柱子，给我科普了一下前端，解决了前端的bug。</p>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>开发环境搭建折腾了我很久，特别感谢superset群的月光，共同努力才搭建起来开发环境。</p>
+<p>还有公司的前端柱子，给我科普了一下前端，解决了前端的bug。</p>
 </the>]]></content>
     </entry>
     
