@@ -21,7 +21,7 @@
 <meta property="og:url" content="https://fangyeqing.github.io/2017/03/14/druid.io实践5---druid.io问题记录/index.html">
 <meta property="og:site_name" content="小懒的博客">
 <meta property="og:description" content="本文记录了druid.io使用过程中碰到的一些问题，有的问题不是自己遇到的，是druid.io相关的群里别人遇到的，一起解决了，仅供参考。">
-<meta property="og:updated_time" content="2017-03-20T09:28:49.000Z">
+<meta property="og:updated_time" content="2017-03-20T12:43:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="druid.io实践5---druid.io问题记录">
 <meta name="twitter:description" content="本文记录了druid.io使用过程中碰到的一些问题，有的问题不是自己遇到的，是druid.io相关的群里别人遇到的，一起解决了，仅供参考。">
@@ -330,10 +330,12 @@
 <li>consumer.numThreads：启动的消费者个数，调大，默认为core-1</li>
 <li>量大的topic启动多个tranquility，使用同一个kafka.group.id</li>
 <li>调大”task.partitions”，分区数，即任务启动的poen个数，默认为”1”。</li>
+<li>增加middle Manager节点的个数，增加其能够处理的任务数配置druid.worker.capacity</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&quot;properties&quot; : &#123;</div><div class="line">    &quot;task.partitions&quot; : &quot;1&quot;,</div><div class="line">    &quot;task.replicants&quot; : &quot;1&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>当然，分区和备份也不能无限制调大。跟druid的Middle manager配置有关，druid.worker.capacity表示能够接受的最大任务数，默认为core-1。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">druid.worker.capacity</div></pre></td></tr></table></figure></p>
-<p>必须满足，此处<a href="https://github.com/druid-io/tranquility/blob/master/docs/overview.md" target="_blank" rel="external">参考</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">(2 * partitions * replicants) &lt; (middle manager个数) * (druid.worker.capacity)</div></pre></td></tr></table></figure></p>
+<p>tranquility配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&quot;properties&quot; : &#123;</div><div class="line">    &quot;task.partitions&quot; : &quot;1&quot;,</div><div class="line">    &quot;task.replicants&quot; : &quot;1&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>middle Manager配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">druid.worker.capacity = 7</div></pre></td></tr></table></figure></p>
+<p>例如，有3台不同机器上启动的middle节点，有2个tranquility，配置task.partitions为3，task.replicants为默认的1。那么每台middle Manager节点会启动两个poen来分别处理这两个tranquility的任务。</p>
+<p>当然，分区和备份、Middle manager的druid.worker.capacity也不能无限调大。<br>必须满足以下关系，此处参考<a href="https://github.com/druid-io/tranquility/blob/master/docs/overview.md" target="_blank" rel="external">官方文档</a>和<a href="https://groups.google.com/forum/#!topic/druid-user/qTleveGvXxI" target="_blank" rel="external">Google Group</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">druid.worker.capacity &gt;= (tranquility的个数 * partitions * replicants)/(middle manager个数)</div></pre></td></tr></table></figure></p>
 <h3 id="Ddruid-extensions-loadList错误"><a href="#Ddruid-extensions-loadList错误" class="headerlink" title="Ddruid.extensions.loadList错误"></a>Ddruid.extensions.loadList错误</h3><p>使用的官方提供的0.8.2的版本，json格式的topic<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java.lang.NoClassDefFoundError: io/druid/indexing/common/task/AbstractTask</div></pre></td></tr></table></figure></p>
 <p>开始以为是缺少了druid-extension之类的，该类所在的druid源码中的pom文件查找，下载druid-indexing-service-0.9.1.1.jar到lib，不起作用。</p>
 <p>最后从<a href="https://groups.google.com/forum/#!topic/druid-user/y43-b1z3c3E" target="_blank" rel="external">Google user group</a>找到答案:</p>
@@ -354,7 +356,7 @@
         <p><span>本文标题:</span><a href="/2017/03/14/druid.io实践5---druid.io问题记录/">druid.io实践5---druid.io问题记录</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2017-03-14, 20:33:00</p>
-        <p><span>最后更新:</span>2017-03-20, 17:28:49</p>
+        <p><span>最后更新:</span>2017-03-20, 20:43:25</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/03/14/druid.io实践5---druid.io问题记录/" title="druid.io实践5---druid.io问题记录">https://fangyeqing.github.io/2017/03/14/druid.io实践5---druid.io问题记录/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/03/14/druid.io实践5---druid.io问题记录/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
