@@ -15,19 +15,19 @@
 
 
 
-<meta name="description" content="Kafka是一种分布式的消息系统。本文基于0.9.0版本，利用自带的zookeeper，部署了3个broker节点的kafka集群。
-下载、配置下载123wget http://mirrors.cnnic.cn/apache/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgztar -xzf kafka_2.11-0.9.0.0.tgzcd kafka_2.11-0.9.0.">
+<meta name="description" content="直方图特性还在druid的实验特性里面，应该是还不太完善。
+添加扩展支持查看{DRUID}/extensions目录下druid-histogram存在。druid-histogram需要添加到extension：1druid.extensions.loadList=[&amp;quot;druid-histogram&amp;quot;,.....]">
 <meta property="og:type" content="article">
-<meta property="og:title" content="kafka---部署">
-<meta property="og:url" content="https://fangyeqing.github.io/2016/10/28/kafka---部署/index.html">
+<meta property="og:title" content="druid.io实践6---实现近似直方图和分位数">
+<meta property="og:url" content="https://fangyeqing.github.io/2017/03/15/druid.io实践6---实现近似直方图和分位数/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="Kafka是一种分布式的消息系统。本文基于0.9.0版本，利用自带的zookeeper，部署了3个broker节点的kafka集群。
-下载、配置下载123wget http://mirrors.cnnic.cn/apache/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgztar -xzf kafka_2.11-0.9.0.0.tgzcd kafka_2.11-0.9.0.">
-<meta property="og:updated_time" content="2016-11-18T02:39:52.000Z">
+<meta property="og:description" content="直方图特性还在druid的实验特性里面，应该是还不太完善。
+添加扩展支持查看{DRUID}/extensions目录下druid-histogram存在。druid-histogram需要添加到extension：1druid.extensions.loadList=[&amp;quot;druid-histogram&amp;quot;,.....]">
+<meta property="og:updated_time" content="2017-03-20T09:24:56.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="kafka---部署">
-<meta name="twitter:description" content="Kafka是一种分布式的消息系统。本文基于0.9.0版本，利用自带的zookeeper，部署了3个broker节点的kafka集群。
-下载、配置下载123wget http://mirrors.cnnic.cn/apache/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgztar -xzf kafka_2.11-0.9.0.0.tgzcd kafka_2.11-0.9.0.">
+<meta name="twitter:title" content="druid.io实践6---实现近似直方图和分位数">
+<meta name="twitter:description" content="直方图特性还在druid的实验特性里面，应该是还不太完善。
+添加扩展支持查看{DRUID}/extensions目录下druid-histogram存在。druid-histogram需要添加到extension：1druid.extensions.loadList=[&amp;quot;druid-histogram&amp;quot;,.....]">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -59,7 +59,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>kafka---部署 | 小懒的博客</title>
+<title>druid.io实践6---实现近似直方图和分位数 | 小懒的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -267,11 +267,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-kafka---部署" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-druid.io实践6---实现近似直方图和分位数" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/28/kafka---部署/" class="article-date">
-      <time datetime="2016-10-28T08:19:00.000Z" itemprop="datePublished">2016-10-28</time>
+      <a href="/2017/03/15/druid.io实践6---实现近似直方图和分位数/" class="article-date">
+      <time datetime="2017-03-15T12:33:00.000Z" itemprop="datePublished">2017-03-15</time>
 </a>
 
 
@@ -286,7 +286,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      kafka---部署
+      druid.io实践6---实现近似直方图和分位数
     </h1>
   
 
@@ -295,13 +295,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/kafka/">kafka</a>
+    <a class="article-category-link" href="/categories/druid-io/">druid.io</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/">kafka</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/学习/">学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/流处理/">流处理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/消息系统/">消息系统</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/druid-io/">druid.io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/实践/">实践</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -311,50 +311,71 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p><excerpt in="" index="" |="" 首页摘要=""><br>Kafka是一种分布式的消息系统。本文基于0.9.0版本，利用自带的zookeeper，部署了3个broker节点的kafka集群。</excerpt></p>
-<h2 id="下载、配置"><a href="#下载、配置" class="headerlink" title="下载、配置"></a>下载、配置</h2><p>下载<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget http://mirrors.cnnic.cn/apache/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgz</div><div class="line">tar -xzf kafka_2.11-0.9.0.0.tgz</div><div class="line">cd kafka_2.11-0.9.0.0</div></pre></td></tr></table></figure></p>
+        <excerpt in="" index="" |="" 首页摘要="">   
+
+<p>直方图特性还在druid的实验特性里面，应该是还不太完善。</p>
+<h2 id="添加扩展支持"><a href="#添加扩展支持" class="headerlink" title="添加扩展支持"></a>添加扩展支持</h2><p>查看{DRUID}/extensions目录下druid-histogram存在。<br>druid-histogram需要添加到extension：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">druid.extensions.loadList=[&quot;druid-histogram&quot;,.....]</div></pre></td></tr></table></figure></p>
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
-<h2 id="启动zookeeper"><a href="#启动zookeeper" class="headerlink" title="启动zookeeper"></a>启动zookeeper</h2><p>config/zookeeper.properties,配置可以改数据目录，端口可以不改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">dataDir=data/zookeeper              #数据目录，默认/tmp/zookeeper</div><div class="line">clientPort=2181                     #默认2181</div></pre></td></tr></table></figure></p>
-<p>启动zk<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nohup bin/zookeeper-server-start.sh config/zookeeper.properties &gt;&gt; zk.log &amp;</div></pre></td></tr></table></figure></p>
-<h2 id="启动kafka-broker"><a href="#启动kafka-broker" class="headerlink" title="启动kafka-broker"></a>启动kafka-broker</h2><h3 id="broker配置"><a href="#broker配置" class="headerlink" title="broker配置"></a>broker配置</h3><p>配置可以改一下日志目录，端口冲突了可以改一下端口。</p>
-<p>kafka-broker配置：config/server.properties<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">log.dirs=data/kafka-logs            #数据目录，默认/tmp/kafka-logs</div><div class="line">broker.id=0</div><div class="line">listeners=PLAINTEXT://:9092         #默认PLAINTEXT://:9092</div><div class="line">port=9092                           #端口默认为9092</div><div class="line">zookeeper.connect=localhost:2181    #zk连接信息</div><div class="line">delete.topic.enable=true            #在最后添加：可以删除topic</div></pre></td></tr></table></figure></p>
-<p>另外两个broker配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cp config/server.properties config/server-1.properties</div><div class="line">cp config/server.properties config/server-2.properties</div></pre></td></tr></table></figure></p>
-<p>config/server-1.properties<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">broker.id=1</div><div class="line">port=9093</div><div class="line">listeners=PLAINTEXT://:9093</div><div class="line">log.dir=data/kafka-logs-1</div></pre></td></tr></table></figure></p>
-<p>config/server-2.properties<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">broker.id=2</div><div class="line">port=9094</div><div class="line">listeners=PLAINTEXT://:9094</div><div class="line">log.dir=data/kafka-logs-2</div><div class="line">``` </div><div class="line"></div><div class="line">broker启动</div></pre></td></tr></table></figure></p>
-<p>nohup bin/kafka-server-start.sh config/server.properties &gt;&gt; broker1.log &amp;<br>nohup bin/kafka-server-start.sh config/server-1.properties &gt;&gt; broker2.log &amp;<br>nohup bin/kafka-server-start.sh config/server-2.properties &gt;&gt; broker3.log &amp;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## 创建topic</div><div class="line">- 创建topic：</div></pre></td></tr></table></figure></p>
-<p>bin/kafka-topics.sh –create –zookeeper localhost:2181 –partitions 3 –topic test3partitions –replication-factor 1  #包含3个分区，1个副本<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">为Topic创建分区时，分区数最好是broker数量的整数倍,这样才能是一个Topic的分区均匀的分布在整个Kafka集群中。  </div><div class="line"></div><div class="line">- 查看已经创建的topic：</div></pre></td></tr></table></figure></p>
-<p>bin/kafka-topics.sh –list –zookeeper localhost:2181<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- 查看某个topic：</div></pre></td></tr></table></figure></p>
-<p>bin/kafka-topics.sh –describe –zookeeper localhost:2181 –topic test3partitions<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- 删除topic：</div></pre></td></tr></table></figure></p>
-<p>bin/kafka-topics.sh –delete –topic test3partitions –zookeeper localhost:2181<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## producer</div><div class="line">在一终端A启动producer</div></pre></td></tr></table></figure></p>
-<p>bin/kafka-console-producer.sh –broker-list localhost:9092,localhost:9093,localhost:9094 –topic test3partitions<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## consumer</div><div class="line">config/consumer.properties修改：</div></pre></td></tr></table></figure></p>
-<p>zookeeper.connect=localhost:2181    #zookeeper，后面以host:port,host port,….<br>group.id=test-consumer-group          #消费者group-id<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">在另外的终端B、C、D启动consumer：</div></pre></td></tr></table></figure></p>
-<p>bin/kafka-console-consumer.sh –zookeeper localhost:2181 –topic test3partitions</p>
-<p>bin/kafka-console-consumer.sh –zookeeper localhost:2181 –consumer.config config/consumer.properties –topic test3partitions</p>
-<p>bin/kafka-console-consumer.sh –zookeeper localhost:2181 –consumer.config config/consumer.properties –topic test3partitions</p>
-<p>bin/kafka-console-consumer.sh –zookeeper localhost:2181 –consumer.config config/consumer.properties –topic test3partitions<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">后面加 --from-beginning表示从头开始收消息</div><div class="line"></div><div class="line">其中，B终端不配置group-id,将会为console-consumer-，加上随机数字。C、D、E终端读取配置文件中的group.id，为tet-consumer-group。</div><div class="line"></div><div class="line">### 测试</div><div class="line">在producer终端输入消息从1-20。可以看到B终端会输出1-20全部消息，图中B所示。而C、D、E终端由于属于同一个Consumer Group，partitions数量等于consumer，每个consumer消费了一个partition里的消息。图中为C、D、E。</div><div class="line"></div><div class="line">将C终端断开，剩下B、D、E去消费消息。B终端还是会输出1-20全部消息，图中为B1所示。而D、E属于同一个Consumer Group，且consumer数量少于partition数，可以看到D消费了两个partition中的数据，见图中D1所示。    </div><div class="line">![image](http://note.youdao.com/yws/public/resource/027eae2659928c104735afa6fe77369a/xmlnote/A6002CC243CC471FBF51E6BFDE0E1BA2/23687)  </div><div class="line"></div><div class="line">## Java api 测试</div><div class="line">利用Java api自己写一个与上面测试用例相同的例子。</div><div class="line"></div><div class="line">Producer</div></pre></td></tr></table></figure></p>
-<p>public class NewProducerSimple {<br>    public static void main(String [] args) {<br>        Properties props = new Properties();<br>        props.put(“bootstrap.servers”, “localhost:9092,localhost:9093,localhost:9094”);<br>        props.put(“acks”, “all”);<br>        props.put(“retries”, 0);<br>        props.put(“batch.size”, 16384);<br>        props.put(“linger.ms”, 1);<br>        props.put(“buffer.memory”, 33554432);<br>        props.put(“key.serializer”, “org.apache.kafka.common.serialization.StringSerializer”);<br>        props.put(“value.serializer”, “org.apache.kafka.common.serialization.StringSerializer”);<br>        props.put(“partitioner.class”,”com.youdao.newClient.SimplePartitioner”);<br>        Producer<string, string=""> producer = new KafkaProducer&lt;&gt;(props);<br>        for(int i = 0; i &lt; 20; i++)<br>            producer.send(new ProducerRecord<string, string="">(“test3partitions”, Integer.toString(i), Integer.toString(i)));</string,></string,></p>
-<pre><code>    producer.close();
-}
-</code></pre><p>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">分区规则，key.hash%3</div></pre></td></tr></table></figure></p>
-<p>public class SimplePartitioner implements Partitioner {</p>
-<pre><code>@Override
-public int partition(String topic, Object key, byte[] keyBytes, Object value, byte[] valueBytes, Cluster cluster) {
-    int partitionNum = 3;
-    String k = (String)key;
-    int partition = Math.abs(k.hashCode()) % partitionNum;
-    return partition;
-}
-@Override
-public void close() {
-}
-@Override
-public void configure(Map&lt;String, ?&gt; map) {
-}
-</code></pre><p>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Consumer,同样，可以启动3个相同的consumer</div></pre></td></tr></table></figure></p>
-<p>public class NewConsumerSimple {<br>    public static void main(String [] args) {<br>        Properties props = new Properties();<br>        props.put(“bootstrap.servers”, “localhost:9092,localhost:9093,localhost:9094”);<br>        props.put(“group.id”, “test”);<br>        props.put(“enable.auto.commit”, “true”);<br>        props.put(“auto.commit.interval.ms”, “1000”);<br>        props.put(“key.deserializer”, “org.apache.kafka.common.serialization.StringDeserializer”);<br>        props.put(“value.deserializer”, “org.apache.kafka.common.serialization.StringDeserializer”);<br>        KafkaConsumer<string, string=""> consumer = new KafkaConsumer&lt;&gt;(props);<br>        consumer.subscribe(Arrays.asList(“test3partitions”));<br>        while (true) {<br>            ConsumerRecords<string, string=""> records = consumer.poll(100);<br>            for (ConsumerRecord<string, string=""> record : records)<br>                System.out.printf(“offset = %d, key = %s, value = %s%n”, record.offset(), record.key(), record.value());<br>        }<br>    }<br>}<br>```</string,></string,></string,></p>
-</the>
+<p>节点需要重启来加载新添加的extension：</p>
+<ul>
+<li>查询端，需要重启historical节点和broker节点。  </li>
+<li>数据摄入端，需要重启overlord节点。</li>
+</ul>
+<p>重启节点输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">2017-02-17T14:22:30,007 INFO [main] io.druid.initialization.Initialization - Loading extension [druid-histogram] for class [io.druid.cli.CliCommandCreator]</div><div class="line">2017-02-17T14:22:30,008 INFO [main] io.druid.initialization.Initialization - added URL[file:/disk1/druid-0.9.1.1/extensions/druid-histogram/druid-histogram-0.9.1.1.jar]</div><div class="line">2017-02-17T14:22:30,426 INFO [main] io.druid.initialization.Initialization - Loading extension [druid-histogram] for class [io.druid.initialization.DruidModule]</div><div class="line">2017-02-17T14:22:30,429 INFO [main] io.druid.initialization.Initialization - Adding local file system extension module [io.druid.query.aggregation.histogram.ApproximateHistogramDruidModule] for class [io.druid.initialization.DruidModule]</div></pre></td></tr></table></figure></p>
+<h2 id="数据摄入–创建直方图的草图"><a href="#数据摄入–创建直方图的草图" class="headerlink" title="数据摄入–创建直方图的草图"></a>数据摄入–创建直方图的草图</h2><p>在索引时必须包含以下两种聚合器之一，并且只能适用于数值：</p>
+<ul>
+<li>approxHistogram：缺失值将被当成0</li>
+<li>approxHistogramFold：缺失值将被忽略。  </li>
+</ul>
+<p>查询结果时,“approxHistogramFold”聚合器必须包括在查询。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;type&quot; : &quot;approxHistogram/approxHistogramFold</div><div class="line">  &quot;name&quot; : &lt;output_name&gt;,</div><div class="line">  &quot;fieldName&quot; : &lt;metric_name&gt;,</div><div class="line">  &quot;resolution&quot; : &lt;integer&gt;,</div><div class="line">  &quot;numBuckets&quot; : &lt;integer&gt;,</div><div class="line">  &quot;lowerLimit&quot; : &lt;float&gt;,</div><div class="line">  &quot;upperLimit&quot; : &lt;float&gt;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>resolution</td>
+<td>数量的质心(数据点)来存储。分辨率越高,更准确的结果,但计算将越慢。</td>
+<td>50</td>
+</tr>
+<tr>
+<td>numBuckets</td>
+<td>生成直方图的输出桶数</td>
+<td>7</td>
+</tr>
+<tr>
+<td>lowerLimit/upperLimit</td>
+<td>限制草图逼近到给定的范围内。这个范围以外的值将聚合成两个重心。项值超过此范围仍然保持</td>
+<td>-INF/+INF</td>
+</tr>
+</tbody>
+</table>
+<p>resolution和numBuckets可以根据实际情况调整大。lowerLimit/upperLimit范围也可以根据需要进行调整。</p>
+<h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><p>摄取时<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">metricsSpec&quot; : [ &#123;</div><div class="line">        &quot;type&quot; : &quot;longSum&quot;,</div><div class="line">        &quot;name&quot; : &quot;total_num&quot;,</div><div class="line">        &quot;fieldName&quot; : &quot;total_num&quot;</div><div class="line">      &#125;, &#123;</div><div class="line">        &quot;type&quot; : &quot;approxHistogramFold&quot;,</div><div class="line">        &quot;name&quot; : &quot;rsp_time&quot;,</div><div class="line">        &quot;fieldName&quot; : &quot;rsp_time&quot;,</div><div class="line">        &quot;resolution&quot; : 500,</div><div class="line">        &quot;numBuckets&quot; : 500,</div><div class="line">        &quot;lowerLimit&quot; : 0.0,</div><div class="line">        &quot;upperLimit&quot; : 1000000.0</div><div class="line">      &#125; ],</div></pre></td></tr></table></figure></p>
+<p>查询时<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"> &quot;aggregations&quot;: [</div><div class="line">            &#123;</div><div class="line">              &quot;type&quot;: &quot;longSum&quot;,</div><div class="line">              &quot;name&quot;: &quot;total_num&quot;,</div><div class="line">              &quot;fieldName&quot;: &quot;total_num&quot;</div><div class="line">            &#125;,</div><div class="line">            &#123;</div><div class="line">              &quot;type&quot;: &quot;approxHistogramFold&quot;,</div><div class="line">              &quot;name&quot;: &quot;rsp_time&quot;,</div><div class="line">              &quot;fieldName&quot;: &quot;rsp_time&quot;,</div><div class="line">              &quot;resolution&quot; : 500,</div><div class="line">              &quot;numBuckets&quot; : 500</div><div class="line">            &#125;</div><div class="line">],</div></pre></td></tr></table></figure></p>
+<p>举个实际的例子。查询时，如果numBuckets不指定（默认为7），不使用post-aggregators的原始数据格式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&quot;rsp_time&quot; : &#123;</div><div class="line">      &quot;breaks&quot; : [ -870.6666870117188, 0.0, 870.6666870117188, 1741.3333740234375, 2612.0, 3482.666748046875, 4353.33349609375, 5224.0 ],</div><div class="line">      &quot;counts&quot; : [ 0.0, 3430.5615234375, 241.61630249023438, 18.822072982788086, 22.0, 2.0, 2.0 ]</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>break有8个值，将会分为7段，每段的count对应如上，例如：0-870之间的数量为3430个，870-1741的个数为241个。</p>
+<h2 id="数据查询时–后聚合器post-aggregators"><a href="#数据查询时–后聚合器post-aggregators" class="headerlink" title="数据查询时–后聚合器post-aggregators"></a>数据查询时–后聚合器post-aggregators</h2><p>Post-aggregators用来提取刚才查询到的原始数据，计算分位数、最小值、最大值等指标</p>
+<ul>
+<li>Equal buckets post-aggregator</li>
+<li>Buckets post-aggregator</li>
+<li>Custom buckets post-aggregator：指定break分段</li>
+<li>min post-aggregator：最小值</li>
+<li>max post-aggregator：最大值</li>
+<li>quantile post-aggregator：给定单个分位数，例如0.99</li>
+<li>quantiles post-aggregator：给定分位数数组，可以实现常用的0.75、0.99等<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;type&quot;: &quot;customBuckets&quot;,</div><div class="line">    &quot;name&quot;: &quot;histogram&quot;,</div><div class="line">    &quot;fieldName&quot;: &quot;rsp_time&quot;,</div><div class="line">    &quot;breaks&quot;: [</div><div class="line">        0,</div><div class="line">        10000,</div><div class="line">        999999999</div><div class="line">    ]</div><div class="line">&#125;</div><div class="line"></div><div class="line"> &#123;</div><div class="line">    &quot;type&quot;: &quot;quantile&quot;,</div><div class="line">    &quot;name&quot;: &quot;rsp_time&quot;,</div><div class="line">    &quot;fieldName&quot;: &quot;rsp_time&quot;,</div><div class="line">    &quot;probability&quot;: 0.99</div><div class="line">&#125;</div><div class="line"></div><div class="line">&#123; </div><div class="line">    &quot;type&quot; : &quot;quantiles&quot;,</div><div class="line">    &quot;name&quot; : &lt;output_name&gt;, </div><div class="line">    &quot;fieldName&quot; : &lt;aggregator_name&gt;,</div><div class="line">    &quot;probabilities&quot; : [ &lt;quantile&gt;, &lt;quantile&gt;, ... ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h3><p>针对刚才total_time_histogram的聚合器，对应的post-aggregators如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&quot;postAggregations&quot;:[</div><div class="line">            &#123; &quot;type&quot; : &quot;quantiles&quot;, &quot;name&quot; : &quot;rsp_time&quot;, &quot;fieldName&quot; : &quot;rsp_time&quot;,&quot;probabilities&quot; : [ 0.5,0.75,0.9,0.95,0.99] &#125;</div><div class="line">        ],</div></pre></td></tr></table></figure></p>
+<h2 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h2><p>mark一下，有空研究：<br><a href="http://jmlr.org/papers/volume11/ben-haim10a/ben-haim10a.pdf" target="_blank" rel="external">paper: A Streaming Parallel Decision Tree Algorithm</a><br><a href="https://metamarkets.com/2013/histograms/" target="_blank" rel="external">post: The Art of Approximating Distributions: Histograms and Quantiles at Scale</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://druid.io/docs/0.9.2/development/extensions-core/approximate-histograms.html" target="_blank" rel="external">官方文档</a><br><a href="http://yangyangmyself.iteye.com/blog/2321759" target="_blank" rel="external">Druid 大数据分析之查询</a><br><a href="https://groups.google.com/forum/#!searchin/druid-user/0.75$2099%7Csort:relevance/druid-user/i0JzPhWKKB0/HvEnQmJDCgAJ" target="_blank" rel="external">Google Group关于histogram的问题1</a><br><a href="https://groups.google.com/forum/#!searchin/druid-user/approximate$20histogram|sort:relevance/druid-user/fJKfw1wd_A8/--Cl4jRG-uEJ" target="_blank" rel="external">Google Group关于histogram的问题2</a><br><a href="https://groups.google.com/forum/#!searchin/druid-user/approximate$20histogram|sort:relevance/druid-user/XhoEbTMofPw/eRHkev8VAgAJ" target="_blank" rel="external">Google Group关于histogram的问题3</a></p>
+</the></excerpt>
       
     </div>
     
@@ -362,13 +383,13 @@ public void configure(Map&lt;String, ?&gt; map) {
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/28/kafka---部署/">kafka---部署</a></p>
+        <p><span>本文标题:</span><a href="/2017/03/15/druid.io实践6---实现近似直方图和分位数/">druid.io实践6---实现近似直方图和分位数</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
-        <p><span>发布时间:</span>2016-10-28, 16:19:00</p>
-        <p><span>最后更新:</span>2016-11-18, 10:39:52</p>
+        <p><span>发布时间:</span>2017-03-15, 20:33:00</p>
+        <p><span>最后更新:</span>2017-03-20, 17:24:56</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/28/kafka---部署/" title="kafka---部署">https://fangyeqing.github.io/2016/10/28/kafka---部署/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/10/28/kafka---部署/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/03/15/druid.io实践6---实现近似直方图和分位数/" title="druid.io实践6---实现近似直方图和分位数">https://fangyeqing.github.io/2017/03/15/druid.io实践6---实现近似直方图和分位数/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/03/15/druid.io实践6---实现近似直方图和分位数/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -380,16 +401,10 @@ public void configure(Map&lt;String, ?&gt; map) {
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/10/29/druid.io_0---OLAP概念/">
-                    druid.io 0---OLAP概念
-                </a>
-            </div>
-        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/28/kafka---介绍/">
-                    kafka---介绍
+                <a href="/2017/03/14/druid.io实践5---druid.io问题记录/">
+                    druid.io实践5---druid.io问题记录
                 </a>
             </div>
         
@@ -401,7 +416,7 @@ public void configure(Map&lt;String, ?&gt; map) {
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#下载、配置"><span class="toc-number">1.</span> <span class="toc-text">下载、配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动zookeeper"><span class="toc-number">2.</span> <span class="toc-text">启动zookeeper</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动kafka-broker"><span class="toc-number">3.</span> <span class="toc-text">启动kafka-broker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#broker配置"><span class="toc-number">3.1.</span> <span class="toc-text">broker配置</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#添加扩展支持"><span class="toc-number">1.</span> <span class="toc-text">添加扩展支持</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据摄入–创建直方图的草图"><span class="toc-number">2.</span> <span class="toc-text">数据摄入–创建直方图的草图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#举例"><span class="toc-number">2.1.</span> <span class="toc-text">举例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据查询时–后聚合器post-aggregators"><span class="toc-number">3.</span> <span class="toc-text">数据查询时–后聚合器post-aggregators</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#举例-1"><span class="toc-number">3.1.</span> <span class="toc-text">举例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#理论"><span class="toc-number">4.</span> <span class="toc-text">理论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
         
     </div>
     <style>
@@ -437,7 +452,7 @@ public void configure(Map&lt;String, ?&gt; map) {
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"kafka---部署　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"druid.io实践6---实现近似直方图和分位数　| 小懒的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -453,7 +468,7 @@ public void configure(Map&lt;String, ?&gt; map) {
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/28/kafka---部署/" data-title="kafka---部署" data-url="https://fangyeqing.github.io/2016/10/28/kafka---部署/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/03/15/druid.io实践6---实现近似直方图和分位数/" data-title="druid.io实践6---实现近似直方图和分位数" data-url="https://fangyeqing.github.io/2017/03/15/druid.io实践6---实现近似直方图和分位数/"></div>
     <script>
         var duoshuoQuery = {short_name:"fangyeqing"};
         var loadComment = function(){
@@ -476,15 +491,13 @@ public void configure(Map&lt;String, ?&gt; map) {
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/10/29/druid.io_0---OLAP概念/" title="上一篇: druid.io 0---OLAP概念">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/28/kafka---介绍/" title="下一篇: kafka---介绍">
+            <a href="/2017/03/14/druid.io实践5---druid.io问题记录/" title="下一篇: druid.io实践5---druid.io问题记录">
                 <i class="fa fa-angle-right"></i>
             </a>
         
