@@ -15,7 +15,7 @@
 
 
 
-<meta name="description" content="现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：
+<meta name="description" content="RDD现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：
 
 迭代算法，图算法等需要重复利用数据的应用类型
 交互式数据挖掘工具，用户反复查询一个数据子集
@@ -25,7 +25,7 @@ RDD针对上述情况，有一些改进：">
 <meta property="og:title" content="spark---RDD">
 <meta property="og:url" content="https://fangyeqing.github.io/2017/01/08/spark---RDD/index.html">
 <meta property="og:site_name" content="小懒的博客">
-<meta property="og:description" content="现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：
+<meta property="og:description" content="RDD现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：
 
 迭代算法，图算法等需要重复利用数据的应用类型
 交互式数据挖掘工具，用户反复查询一个数据子集
@@ -34,10 +34,10 @@ RDD针对上述情况，有一些改进：">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/efa1b55d3bb99ae353eb25a3f422bc8c/xmlnote/9527EAE7B4204B02A3994CE89748115C/28417">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/efa1b55d3bb99ae353eb25a3f422bc8c/xmlnote/50D165CF707E4C1BB08B4F6C183A894A/28451">
 <meta property="og:image" content="http://note.youdao.com/yws/public/resource/efa1b55d3bb99ae353eb25a3f422bc8c/xmlnote/D94936A5CC8044D7A95A59A7E9E0830D/28487">
-<meta property="og:updated_time" content="2017-01-25T08:24:39.000Z">
+<meta property="og:updated_time" content="2017-03-24T08:43:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spark---RDD">
-<meta name="twitter:description" content="现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：
+<meta name="twitter:description" content="RDD现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：
 
 迭代算法，图算法等需要重复利用数据的应用类型
 交互式数据挖掘工具，用户反复查询一个数据子集
@@ -327,7 +327,9 @@ RDD针对上述情况，有一些改进：">
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p><excerpt in="" index="" |="" 首页摘要=""><br>现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：</excerpt></p>
+        <excerpt in="" index="" |="" 首页摘要="">  
+
+<h2 id="RDD"><a href="#RDD" class="headerlink" title="RDD"></a>RDD</h2><p>现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：</p>
 <ul>
 <li>迭代算法，图算法等需要重复利用数据的应用类型</li>
 <li>交互式数据挖掘工具，用户反复查询一个数据子集</li>
@@ -336,12 +338,6 @@ RDD针对上述情况，有一些改进：">
 <a id="more"></a>  
 <the rest="" of="" contents="" |="" 余下全文=""> 
 
-<h2 id="RDD"><a href="#RDD" class="headerlink" title="RDD"></a>RDD</h2><p>现有的数据流系统（例如MapReduce）需要将数据输出到磁盘，然后在每次查询时重新加载，这带来较大的开销。因此，对以下两种应用的处理并不高效：</p>
-<ul>
-<li>迭代算法，图算法等需要重复利用数据的应用类型</li>
-<li>交互式数据挖掘工具，用户反复查询一个数据子集</li>
-</ul>
-<p>RDD针对上述情况，有一些改进：</p>
 <ul>
 <li>RDD可以被cache在内存中。这种机制无疑可以简单有效地解决MapReduce在迭代计算时反复读取写出磁盘的问题，但同时大大增大了内存开销。</li>
 <li>RDD帮助Fault Recovery. RDD可存储lineage信息来重建lost partitions. 比如记录RDD的转化过程。MapReduce采用的是checkpointing机制，代价要大很多。</li>
@@ -448,7 +444,7 @@ RDD针对上述情况，有一些改进：">
 <p><a href="https://www.zhihu.com/question/26568496" target="_blank" rel="external">知乎：与 Hadoop 对比，如何看待 Spark 技术？</a></p>
 <p><a href="http://www.cnblogs.com/zlslch/p/5723403.html" target="_blank" rel="external">博客：RDD依赖关系</a></p>
 <p><a href="https://github.com/JerryLead/SparkInternals/blob/master/markdown/2-JobLogicalPlan.md" target="_blank" rel="external">博客：Job 逻辑执行图</a></p>
-</the>
+</the></excerpt>
       
     </div>
     
@@ -459,7 +455,7 @@ RDD针对上述情况，有一些改进：">
         <p><span>本文标题:</span><a href="/2017/01/08/spark---RDD/">spark---RDD</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2017-01-08, 15:15:00</p>
-        <p><span>最后更新:</span>2017-01-25, 16:24:39</p>
+        <p><span>最后更新:</span>2017-03-24, 16:43:49</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/01/08/spark---RDD/" title="spark---RDD">https://fangyeqing.github.io/2017/01/08/spark---RDD/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2017/01/08/spark---RDD/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
