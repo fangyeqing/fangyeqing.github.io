@@ -94,7 +94,7 @@
 <p>Loading segment完本地的64828条数据之后Announcing segment，从coordinator导入一些数据之后挂了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">INFO [ZkCoordinator-loading-12] io.druid.server.coordination.ZkCoordinator - Loading segment[64082/64828][xxx_stat_2015-04-16T11:00:00.000+08:00_2015-04-16T12:00:00.000+08:00_2015-04-16T12:18:11.745+08:00_2]</div><div class="line">......</div><div class="line">INFO [main] io.druid.server.coordination.BatchDataSegmentAnnouncer - Announcing segment[xxx_stat_2015-08-19T11:00:00.000+08:00_2015-08-19T12:00:00.000+08:00_2015-08-19T12:17:07.390+08:00] at path[/druid/segments/xxx.xxx.xxx.com:8070/xxx.xxx.xxx.com:8070_historical__default_tier_2017-03-28T15:14:21.586+08:00_a3aaa395f9c24d769ed62c5e5dec84d5257]</div><div class="line">......</div><div class="line">Caused by: java.lang.OutOfMemoryError: Map failed</div><div class="line">        at sun.nio.ch.FileChannelImpl.map0</div></pre></td></tr></table></figure></p>
 <p>参考<a href="http://hellojava.info/?p=319" target="_blank" rel="external">hellojava博客</a>从生成的hs_err_pid16234.log中看到Dynamic libraries大致有以下几种类型的数据，一共65536条，其中包括一些系统依赖、jar包，最多的还是历史节点persistent数据。hs_err_pid文件的含义可以参考另一篇<a href="http://www.raychase.net/1459" target="_blank" rel="external">博客</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Dynamic libraries</div><div class="line">46338000-4633b000 ---p 46338000 00:00 0</div><div class="line">32d3000000-32d3015000 r-xp 00000000 08:01 459257                         /lib64/libselinux.so.1</div><div class="line">2aaabbdfd000-2aaabbe06000 r--s 00068000 08:06 106758257                  /disk1/xxxx/druid-0.9.1.1/lib/druid-indexing-service-0.9.1.1.jar</div><div class="line">2aac9cb92000-2aac9cba3000 r--s 00000000 08:31 162054309                  /disk4/xxxx/druid-0.9.1.1-historical-data/persistent/xxx_stat/2016-04-22T09:00:00.000+08:00_2016-04-22T10:00:00.000+08:00/2016-04-22T10:30:13.104+08:00/0/00000.smoosh</div></pre></td></tr></table></figure></p>
 <p>这个数据来自<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/proc/&#123;pid&#125;/maps</div></pre></td></tr></table></figure></p>
-<p>linux操作系统中max_map_count限制一个进程可以拥有的VMA(虚拟内存区域)的数量<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cat /proc/sys/vm/max_map_count</div><div class="line">65536</div></pre></td></tr></table></figure></p>
+<p>linux操作系统中max_map_count限制一个进程可以拥有的VMA(虚拟内存区域)的数量，虚拟内存可以参考<a href="http://www.oschina.net/translate/understanding-virtual-memory?print" target="_blank" rel="external">博客:理解虚拟内存</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cat /proc/sys/vm/max_map_count</div><div class="line">65536</div></pre></td></tr></table></figure></p>
 <p>查看sun.nio.ch.FileChannelImpl.map0的源码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">try &#123;</div><div class="line">    var7 = this.map0(var6, var34, var15);</div><div class="line">&#125; catch (OutOfMemoryError var30) &#123;</div><div class="line">    System.gc();</div><div class="line"></div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(100L);</div><div class="line">    &#125; catch (InterruptedException var29) &#123;</div><div class="line">        Thread.currentThread().interrupt();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    try &#123;</div><div class="line">        var7 = this.map0(var6, var34, var15);</div><div class="line">    &#125; catch (OutOfMemoryError var28) &#123;</div><div class="line">        throw new IOException(&quot;Map failed&quot;, var28);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>map file这里是在OOM后靠显式的去执行System.gc来回收。应用启动参数上有-XX:+DisableExplicitGC，导致了在map file个数到达了max_map_count后第一次OOM调用System.gc不起作用。</p>
 <p>原来是历史节点数据量增长，导致map file个数增长，应用启动参数上有-XX:+DisableExplicitGC，导致了在map file个数到达了max_map_count后直接OOM了。</p>
@@ -1619,7 +1619,33 @@
 <h3 id="容器和资源分配"><a href="#容器和资源分配" class="headerlink" title="容器和资源分配"></a>容器和资源分配</h3><p>task实例的数量由input stream的partition数决定。</p>
 <p>SamzaContainer数，是否什么决定的呢?如果使用yarn，容器的数量是由分配给你的CPU和内存资源决定的。</p>
 <p>每一个SamzaContainer被设计成只是用一个CPU，因此他用了单线程事件循环的模式。因此，你在开发程序的时候，不要再SamzaContainer创建自己的多线程。如果你需要进行并行，你需要配置一下你的job利用多SamzaContainer。</p>
-<h3 id="多个输入流"><a href="#多个输入流" class="headerlink" title="多个输入流 　　 　　"></a>多个输入流 　　 　　</h3><p>如果你的工作有多个输入流,Samza提供了一个简单但强大的机制来加入数据从不同的来源:每个任务实例接收消息从一个分区的每个输入流。例如,假设您有两个输入流,A和B,每四个分区。Samza创建了四个任务实例流程,分配分区如下:<br>Task instance|Consumes stream partitions<br>—|—<br>0|stream A partition 0, stream B partition 0<br>1|stream A partition 1, stream B partition 1<br>2|stream A partition 2, stream B partition 2<br>3|stream A partition 3, stream B partition 3</p>
+<h3 id="多个输入流"><a href="#多个输入流" class="headerlink" title="多个输入流 　　 　　"></a>多个输入流 　　 　　</h3><p>如果你的工作有多个输入流,Samza提供了一个简单但强大的机制来加入数据从不同的来源:每个任务实例接收消息从一个分区的每个输入流。例如,假设您有两个输入流,A和B,每四个分区。Samza创建了四个任务实例流程,分配分区如下:</p>
+<table>
+<thead>
+<tr>
+<th>Task instance</th>
+<th>Consumes stream partitions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>stream A partition 0, stream B partition 0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>stream A partition 1, stream B partition 1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>stream A partition 2, stream B partition 2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>stream A partition 3, stream B partition 3</td>
+</tr>
+</tbody>
+</table>
 <p>因此,如果想要两个在不同的流中的事件被同样的任务实例处理,需要确保它们被发送到相同的分区号，即使用相同的key发送消息。</p>
 <h2 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h2><p>SamzaContainer 是通过 SystemConsumer 与 SystemProducer 接口进行消息得读取与写入。你可以通过这两个接口实现对任何消息系统得整合。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">public interface SystemConsumer &#123;</div><div class="line">  void start();</div><div class="line">  void stop();</div><div class="line">  void register(SystemStreamPartition systemStreamPartition, String lastReadOffset);</div><div class="line"></div><div class="line">  List&lt;IncomingMessageEnvelope&gt; poll(</div><div class="line">      Map&lt;SystemStreamPartition, Integer&gt; systemStreamPartitions,</div><div class="line">      long timeout)</div><div class="line">    throws InterruptedException;</div><div class="line">&#125;</div><div class="line"></div><div class="line">public interface SystemProducer &#123;</div><div class="line">  void start();</div><div class="line">  void stop();</div><div class="line">  void register(String source);</div><div class="line"></div><div class="line">  void send(String source, OutgoingMessageEnvelope envelope);</div><div class="line">  void flush(String source);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>特点：</p>
@@ -3192,6 +3218,35 @@ Hello {{ sensitive }}
 <h3 id="光标移动：-1"><a href="#光标移动：-1" class="headerlink" title="光标移动："></a>光标移动：</h3><p>10G : 直接移动到10行<br> H - 光标移动到屏幕第一行。<br>L - 光标移动到屏幕最后一行。<br>M - 光标移动到屏幕中间。<br> zz - 光标所在行居中。   </p>
 <h3 id="改变大小写"><a href="#改变大小写" class="headerlink" title="改变大小写"></a>改变大小写</h3><p>~ ：将光标下的字母改变大小写<br> g~aw ：改变当前单词的大小写</p>
 </the></excerpt>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[科学上网配置]]></title>
+      <url>https://fangyeqing.github.io/2016/07/21/%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91%E9%85%8D%E7%BD%AE/</url>
+      <content type="html"><![CDATA[<p><excerpt in="" index="" |="" 首页摘要=""><br>百度搜索对于程序员来说简直没法用，于是就得翻过一些不可描述的东西，以下在windows下实践可以行，仅供参考：</excerpt></p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<h2 id="vpn配置"><a href="#vpn配置" class="headerlink" title="vpn配置"></a>vpn配置</h2><ul>
+<li><a href="https://www.shadowsocks.com.hk/" target="_blank" rel="external">shadowsocks</a>买个一年的套餐  </li>
+<li><a href="https://github.com/shadowsocks/shadowsocks-gui" target="_blank" rel="external">下载</a>一个shadowsocks客户端</li>
+<li>客户端配置<ul>
+<li>添加邮件里给的ip、端口和密码等，代理默认是在1080端口 </li>
+<li>启动系统代理</li>
+<li>系统代理模式选择PAC(全局：都走代理)</li>
+<li>服务器选择其中一个服务器即可</li>
+<li>有需要可以设置开机启动</li>
+</ul>
+</li>
+<li>浏览器设置：<ul>
+<li>火狐：直接设置sock5可以</li>
+<li>chrome：SwitchOmega插件添加情景模式，sock5可能会不行，设置成HTTP可以</li>
+</ul>
+</li>
+</ul>
+<p>shadowssocks客户端配置：<br><img src="http://note.youdao.com/yws/public/resource/1e4e02f3d61649b2391a67e9012ff91c/xmlnote/C5B3976F5B0544CEA45F9B81CBBB1FF8/34881" alt="image">  </p>
+<p>chrome插件SwitchOmega配置：<br><img src="http://note.youdao.com/yws/public/resource/1e4e02f3d61649b2391a67e9012ff91c/xmlnote/ADE14BF5A91E463884A835EFEFD35255/34877" alt="image">  </p>
+</the>]]></content>
     </entry>
     
   

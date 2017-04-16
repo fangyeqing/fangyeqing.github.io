@@ -29,7 +29,7 @@
 <meta property="og:image" content="http://samza.apache.org/img/0.8/learn/documentation/container/tasks-and-partitions.svg">
 <meta property="og:image" content="https://samza.apache.org/img/0.11/learn/documentation/container/checkpointing.svg">
 <meta property="og:image" content="http://samza.apache.org/img/0.10/learn/documentation/container/stateful_job.png">
-<meta property="og:updated_time" content="2016-12-02T12:48:42.000Z">
+<meta property="og:updated_time" content="2017-04-12T00:35:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Samza 2---介绍">
 <meta name="twitter:description" content="samza是一个分布式的流式数据处理框架（streaming processing），它是基于Kafka消息队列来实现类实时的流式数据处理的。下面将从为什么需要Samza、Samza一些基本概念、Samza架构、Samza的核心部件（SamzaContainer、Stream、Serialization、Checkpointing、State Management、Windowing、M">
@@ -444,7 +444,33 @@
 <h3 id="容器和资源分配"><a href="#容器和资源分配" class="headerlink" title="容器和资源分配"></a>容器和资源分配</h3><p>task实例的数量由input stream的partition数决定。</p>
 <p>SamzaContainer数，是否什么决定的呢?如果使用yarn，容器的数量是由分配给你的CPU和内存资源决定的。</p>
 <p>每一个SamzaContainer被设计成只是用一个CPU，因此他用了单线程事件循环的模式。因此，你在开发程序的时候，不要再SamzaContainer创建自己的多线程。如果你需要进行并行，你需要配置一下你的job利用多SamzaContainer。</p>
-<h3 id="多个输入流"><a href="#多个输入流" class="headerlink" title="多个输入流 　　 　　"></a>多个输入流 　　 　　</h3><p>如果你的工作有多个输入流,Samza提供了一个简单但强大的机制来加入数据从不同的来源:每个任务实例接收消息从一个分区的每个输入流。例如,假设您有两个输入流,A和B,每四个分区。Samza创建了四个任务实例流程,分配分区如下:<br>Task instance|Consumes stream partitions<br>—|—<br>0|stream A partition 0, stream B partition 0<br>1|stream A partition 1, stream B partition 1<br>2|stream A partition 2, stream B partition 2<br>3|stream A partition 3, stream B partition 3</p>
+<h3 id="多个输入流"><a href="#多个输入流" class="headerlink" title="多个输入流 　　 　　"></a>多个输入流 　　 　　</h3><p>如果你的工作有多个输入流,Samza提供了一个简单但强大的机制来加入数据从不同的来源:每个任务实例接收消息从一个分区的每个输入流。例如,假设您有两个输入流,A和B,每四个分区。Samza创建了四个任务实例流程,分配分区如下:</p>
+<table>
+<thead>
+<tr>
+<th>Task instance</th>
+<th>Consumes stream partitions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>stream A partition 0, stream B partition 0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>stream A partition 1, stream B partition 1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>stream A partition 2, stream B partition 2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>stream A partition 3, stream B partition 3</td>
+</tr>
+</tbody>
+</table>
 <p>因此,如果想要两个在不同的流中的事件被同样的任务实例处理,需要确保它们被发送到相同的分区号，即使用相同的key发送消息。</p>
 <h2 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h2><p>SamzaContainer 是通过 SystemConsumer 与 SystemProducer 接口进行消息得读取与写入。你可以通过这两个接口实现对任何消息系统得整合。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">public interface SystemConsumer &#123;</div><div class="line">  void start();</div><div class="line">  void stop();</div><div class="line">  void register(SystemStreamPartition systemStreamPartition, String lastReadOffset);</div><div class="line"></div><div class="line">  List&lt;IncomingMessageEnvelope&gt; poll(</div><div class="line">      Map&lt;SystemStreamPartition, Integer&gt; systemStreamPartitions,</div><div class="line">      long timeout)</div><div class="line">    throws InterruptedException;</div><div class="line">&#125;</div><div class="line"></div><div class="line">public interface SystemProducer &#123;</div><div class="line">  void start();</div><div class="line">  void stop();</div><div class="line">  void register(String source);</div><div class="line"></div><div class="line">  void send(String source, OutgoingMessageEnvelope envelope);</div><div class="line">  void flush(String source);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>特点：</p>
@@ -618,7 +644,7 @@
         <p><span>本文标题:</span><a href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">小懒</a></p>
         <p><span>发布时间:</span>2016-11-17, 17:41:00</p>
-        <p><span>最后更新:</span>2016-12-02, 20:48:42</p>
+        <p><span>最后更新:</span>2017-04-12, 08:35:49</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/11/17/Samza_2---介绍/" title="Samza 2---介绍">https://fangyeqing.github.io/2016/11/17/Samza_2---介绍/</a>
             <span class="copy-path" data-clipboard-text="原文: https://fangyeqing.github.io/2016/11/17/Samza_2---介绍/　　作者: 小懒" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -743,7 +769,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/03/15/druid.io实践6---实现近似直方图和分位数/">druid.io实践6---实现近似直方图和分位数</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/14/druid.io实践5---druid.io问题记录/">druid.io实践5---druid.io问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/04/superset开发环境搭建/">superset开发环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Pandas学习/">Python-Pandas学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Numpy学习/">Python-Numpy学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Web学习-Flask框架初探/">Python-Web学习-Flask框架初探</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/10/Vmware虚拟机安装Ubuntu/">Vmware虚拟机安装Ubuntu</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/spark---RDD/">spark---RDD</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/spark---hello_spark_java版/">spark---hello spark java版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/druid.io实践4---druid监控/">druid.io实践4---druid监控</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/04/druid.io可视化调研/">druid.io可视化调研</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/03/15/druid.io实践6---实现近似直方图和分位数/">druid.io实践6---实现近似直方图和分位数</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/14/druid.io实践5---druid.io问题记录/">druid.io实践5---druid.io问题记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/04/superset开发环境搭建/">superset开发环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Pandas学习/">Python-Pandas学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Numpy学习/">Python-Numpy学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/Python-Web学习-Flask框架初探/">Python-Web学习-Flask框架初探</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/10/Vmware虚拟机安装Ubuntu/">Vmware虚拟机安装Ubuntu</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/08/spark---RDD/">spark---RDD</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/spark---hello_spark_java版/">spark---hello spark java版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/07/druid.io实践4---druid监控/">druid.io实践4---druid监控</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Java程序监控---Metrics/">Java程序监控---Metrics</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/01/Camus介绍/">Camus介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_3---Samza_API/">Samza 3---Samza API</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_2---介绍/">Samza 2---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Samza_1---Hello_Samza/">Samza1---Hello Samza</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/06/Java程序员学python3.0--面向对象篇/">Java程序员学python3.0--面向对象篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/05/Java程序员学python3.0--入门篇/">Java程序员学python3.0--入门篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/04/druid.io可视化调研/">druid.io可视化调研</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/druid.io---Coordinator_balancer源码解析/">druid.io---Coordinator balancer源码解析</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/druid.io实践3---sql形式查询接口/">druid.io实践3---sql形式查询接口plyql</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践2---集群数据迁移/">druid.io实践2---集群数据迁移</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io实践1---查询速度优化/">druid.io实践1---查询速度优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_3---druid数据相关/">druid.io 3---druid数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_2---druid介绍/">druid.io 2---druid介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_1---列式存储概念/">druid.io 1---列式存储概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/29/druid.io_0---OLAP概念/">druid.io 0---OLAP概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---部署/">kafka---部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/kafka---介绍/">kafka---介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/28/hexo+github_page搭建博客/">hexo+github page搭建博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/27/程序员快捷键/">程序员快捷键</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/07/21/科学上网配置/">科学上网配置</a></li></ul>
 
 
 
