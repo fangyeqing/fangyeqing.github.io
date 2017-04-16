@@ -3249,6 +3249,38 @@ Hello {{ sensitive }}
 </the>]]></content>
     </entry>
     
+    <entry>
+      <title><![CDATA[安装windows和linux操作系统]]></title>
+      <url>https://fangyeqing.github.io/2016/07/15/%E5%AE%89%E8%A3%85windows%E5%92%8Clinux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/</url>
+      <content type="html"><![CDATA[<p><excerpt in="" index="" |="" 首页摘要=""><br>不会装操作系统的程序员不是好厨师，以下在Acer笔记本上实践：</excerpt></p>
+<a id="more"></a>  
+<the rest="" of="" contents="" |="" 余下全文=""> 
+
+<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><ul>
+<li>下载windows镜像：<a href="http://www.ylmfeng.com/index.html" target="_blank" rel="external">雨林木风操作系统</a></li>
+<li>下载<a href="http://www.tongyongpe.com/win7ghost.html" target="_blank" rel="external">通用PE工具箱</a>并安装</li>
+<li>使用通用PE工具箱一键制作usb启动盘，把iso镜像文件放到GHO目录下</li>
+<li>做完U盘之后，设置U盘启动<ul>
+<li>开机-迅速按F2或F12(不同的主板相同)进入bios</li>
+<li>菜单栏通过键盘←→移动到‘boot’</li>
+<li>通过↑↓选中U盘，通过F5/F6将U盘移动到优先级第一。</li>
+<li>继续←→移动到‘exit’，saving and exit。</li>
+<li>重启之后会自动从U盘启动了</li>
+</ul>
+</li>
+<li>重启之后，会进入到PE界面，先用分区工具，分磁盘，建议两个就够了，c盘可以多一点。</li>
+</ul>
+<h2 id="linux安装"><a href="#linux安装" class="headerlink" title="linux安装"></a>linux安装</h2><p>跟windows的差不多：</p>
+<ul>
+<li>安装版本9.6.5.3237以后的UltraISO，旧版本u盘启动时会出现“Failed to load ldlinux.c32”</li>
+<li>制作安装u盘，插入U盘</li>
+<li>文件-打开-找到ubuntu.iso目录</li>
+<li>启动-写入硬盘映像-便捷启动-写入新的硬盘主引导记录-USB-HDD+-写入</li>
+<li>安装选择语言-中文</li>
+</ul>
+</the>]]></content>
+    </entry>
+    
   
   
     
